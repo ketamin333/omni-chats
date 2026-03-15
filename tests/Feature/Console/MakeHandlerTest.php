@@ -8,6 +8,16 @@ use Tests\TestCase;
 
 class MakeHandlerTest extends TestCase
 {
+    protected string $tempPath;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->tempPath = sys_get_temp_dir() . '/test-make-handler';
+        $this->app->useAppPath($this->tempPath);
+    }
+
     public function test_creates_files_without_root_folder(): void
     {
         $name = 'Auth/Login';
@@ -94,13 +104,6 @@ class MakeHandlerTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
-
-        if (is_dir(app_path('Commands'))) {
-            (new Filesystem)->deleteDirectory(app_path('Commands'));
-        }
-
-        if (is_dir(app_path('Handlers'))) {
-            (new Filesystem)->deleteDirectory(app_path('Handlers'));
-        }
+        (new Filesystem())->deleteDirectory($this->tempPath);
     }
 }

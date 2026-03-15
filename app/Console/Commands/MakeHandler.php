@@ -24,7 +24,7 @@ class MakeHandler extends Command
      */
     protected $description = 'Create a new Handler (Command + Handler)';
 
-    protected array $createdFiles =  [];
+    protected array $createdClasses =  [];
 
     /**
      * Execute the console command.
@@ -32,7 +32,7 @@ class MakeHandler extends Command
     public function handle(): int
     {
         try {
-            $this->createdFiles = [];
+            $this->createdClasses = [];
 
             $input = $this->argument('name');
 
@@ -63,7 +63,7 @@ class MakeHandler extends Command
         } catch (RuntimeException $e) {
             $this->error($e->getMessage());
 
-            foreach ($this->createdFiles as $file) {
+            foreach ($this->createdClasses as $file) {
                 File::delete($file);
             }
 
@@ -79,7 +79,7 @@ class MakeHandler extends Command
         $fullPath = app_path(
             sprintf('%s/%s/%s%s.php',
                 $dir,
-                $path->implode('/'),
+                $path->implode(DIRECTORY_SEPARATOR),
                 $name,
                 $suffix
             )
@@ -94,7 +94,7 @@ class MakeHandler extends Command
             throw new RuntimeException("Unable to write file: {$fullPath}");
         }
 
-        $this->createdFiles[] = $fullPath;
+        $this->createdClasses[] = $fullPath;
     }
 
     protected function createCommand(Collection $path, string $name): void
