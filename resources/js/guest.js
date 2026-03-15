@@ -1,15 +1,11 @@
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import AppLayout from "./layouts/AppLayout.vue";
-import router from './router';
 import PrimeVue from 'primevue/config';
 import preset from "./theme.js";
+import Login from "./pages/Login.vue";
+import {createPinia} from "pinia";
 
-const app = createApp(AppLayout);
-
+const app = createApp(Login);
 app.use(createPinia());
-app.use(router);
-
 app.use(PrimeVue, {
     theme: {
         preset: preset,
@@ -17,4 +13,4 @@ app.use(PrimeVue, {
     }
 });
 
-app.mount('#app');
+app.mount('#guest');

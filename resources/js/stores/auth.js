@@ -1,41 +1,48 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import api from '../api'
+import { defineStore } from 'pinia';
+import {csrf, login, me} from "../api/auth.js";
 
-export const useAuthStore = defineStore('auth', () => {
-    const user = ref(null)
-    const token = ref(localStorage.getItem('token') || null)
+export const useAuthStore = defineStore('auth', {
+    state:() => ({
+        user: null,
+        initialized: false,
+    }),
 
-    const isAuth = computed(() => !!token.value)
+    getters: {
+        isAuthenticated: (state) => !!state.user,
+    },
 
-    async function login(credentials) {
-        const { data } = await api.post('/login', credentials)
-        token.value = data.token
-        user.value = data.user
-        localStorage.setItem('token', data.token)
-    }
+    actions: {
+        async fetchUser() {
+            if (this.initialized) {
+                return;
+            }
 
-    async function register(credentials) {
-        const { data } = await api.post('/register', credentials)
-        token.value = data.token
-        user.value = data.user
-        localStorage.setItem('token', data.token)
-    }
+            try {
+                const { data } = await me();
+                this.user = data;
+            } catch {
+                this.user = null;
+            } finally {
+                this.initialized = true;
+            }
+        },
 
-    async function fetchUser() {
-        try {
-            const { data } = await api.get('/user')
-            user.value = data
-        } catch {
-            logout()
+        async login(data) {
+            if (this.isAuthenticated) {
+                return;
+            }
+
+            try {
+                await csrf();
+                const user = await login(data);
+
+                console.log(user);
+
+                this.user = user.data;
+            } catch (e) {
+                this.user = null;
+                throw e;
+            }
         }
-    }
-
-    function logout() {
-        user.value = null
-        token.value = null
-        localStorage.removeItem('token')
-    }
-
-    return { user, token, isAuth, login, register, fetchUser, logout };
-})
+    },
+});

@@ -7,6 +7,7 @@ const routes = [
     {
         path: '/login',
         component: GuestLayout,
+        meta: { guest: true },
         children: [
             { path: '', component: () => import('../pages/Login.vue'), meta: { title: 'Вход' } },
         ]
@@ -14,32 +15,38 @@ const routes = [
     {
         path: '/',
         component: AuthLayout,
-        meta: { requiresAuth: true },
+        meta: { auth: true },
         children: [
-            // { path: 'dashboard', component: () => import('../pages/dashboard/Dashboard.vue') },
+            { path: 'projects', component: () => import('../pages/Projects.vue'), meta: { title: 'Проекты' } },
         ]
     },
     { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 
-const router = createRouter({ history: createWebHistory(), routes: routes });
+const router = createRouter({ history: createWebHistory(), routes });
 
 router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore();
 
     document.title = to.meta.title ? `${to.meta.title} — Проекты` : 'Проекты';
 
-    if (auth.token && !auth.user) {
-        await auth.fetchUser();
-    }
+    console.log(to);
 
-    if (to.meta.requiresAuth && !auth.isAuth) {
-        next('/login');
-    } else if (to.path === '/' && auth.isAuth) {
-        next('/');
-    } else {
-        next();
-    }
-})
+    next();
+
+    // if (!auth.initialized) {
+    //     await auth.fetchUser();
+    // }
+    //
+    // if (to.meta.auth && !auth.isAuthenticated) {
+    //     return next('/login');
+    // }
+    //
+    // if (to.meta.guest && auth.isAuthenticated) {
+    //     return next('/');
+    // }
+    //
+    // next();
+});
 
 export default router;

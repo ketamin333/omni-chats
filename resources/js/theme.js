@@ -3,66 +3,53 @@ import { definePreset } from '@primevue/themes';
 
 const preset = definePreset(Aura, {
     semantic: {
-        primary: {
-            50: '#fafafa',
-            100: '#f4f4f5',
-            200: '#e4e4e7',
-            300: '#d1d1d6',
-            400: '#a1a1aa',
-            500: '#71717a',
-            600: '#52525b',
-            700: '#3f3f46',
-            800: '#27272a',
-            900: '#18181b',
-            950: '#09090b',
-        },
         colorScheme: {
             light: {
                 primary: {
-                    color: '#09090b',
-                    hoverColor: '#18181b',
-                    activeColor: '#27272a',
-                    contrastColor: '#ffffff',
+                    color: '#020617',
+                    hoverColor: '#1E293b',
+                    activeColor: '#334155',
+                    contrastColor: '#FFF',
                 },
                 surface: {
-                    0: '#ffffff',
-                    50: '#fafafa',
-                    100: '#f4f4f5',
-                    200: '#e4e4e7',
-                    300: '#d4d4d8',
-                    400: '#a1a1aa',
-                    500: '#71717a',
-                    600: '#52525b',
-                    700: '#3f3f46',
-                    800: '#27272a',
-                    900: '#18181b',
-                    950: '#09090b',
+                    0: '#000000',
+                    50: '#232323',
+                    700: '#94a3b8',
+                    800: '#CBD5E1',
+                    900: '#F8F8F6',
+                    950: '#FFFFFF'
+                },
+                formField: {
+                    color: '{surface.50}',
+                    background: '{surface.950}',
+                    borderColor: '{surface.800}',
+                    hoverBorderColor: '{surface.700}'
                 }
             },
             dark: {
                 primary: {
-                    color: '#ffffff',
-                    hoverColor: '#f4f4f5',
-                    activeColor: '#e4e4e7',
-                    contrastColor: '#09090b',
+                    color: '#FA233B',
+                    hoverColor: '#FB394F',
+                    activeColor: '#F90722',
+                    contrastColor: '#FFF',
                 },
                 surface: {
-                    0: '#ffffff',
-                    50: '#fafafa',
-                    100: '#f4f4f5',
-                    200: '#e4e4e7',
-                    300: '#d4d4d8',
-                    400: '#a1a1aa',
-                    500: '#71717a',
-                    600: '#52525b',
-                    700: '#3f3f46',
-                    800: '#27272a',
-                    900: '#18181b',
-                    950: '#09090b',
+                    0: '#FFFFFF',
+                    50: '#F1F1F1',
+                    700: '#303030',
+                    800: '#242424',
+                    900: '#121212',
+                    950: '#060606',
+                },
+                formField: {
+                    color: '{surface.0}',
+                    background: '{surface.900}',
+                    borderColor: '{surface.800}',
+                    hoverBorderColor: '{surface.700}',
                 }
             }
-        }
-    }
+        },
+    },
 });
 
 export default preset;

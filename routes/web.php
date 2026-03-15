@@ -2,4 +2,5 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::view('/{any}', 'app')->where('any', '.*');
+Route::view('/login', 'guest')->middleware('guest')->name('login');
+Route::view('/{any}', 'app')->middleware('auth')->where('any', '.*');

@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Commands\{{ namespace }};
+
+class {{ name }}Command
+{
+    /**
+     * Data transfer object for {{ name }} handler.
+     */
+    public function __construct(
+        //
+    ) {}
+}

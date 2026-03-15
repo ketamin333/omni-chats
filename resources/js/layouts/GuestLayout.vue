@@ -5,7 +5,7 @@ const theme = useThemeStore();
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-200 dark:bg-gray-950 flex items-center justify-center transition-colors">
+    <div class="">
         <RouterView />
     </div>
 </template>

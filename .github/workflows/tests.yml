@@ -1,0 +1,26 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: copy .env
+        run: cp .env.example .env
+
+      - name: generate key
+        run: php artisan key:generate
+
+      - name: run-test
+        run: php artisan test
+

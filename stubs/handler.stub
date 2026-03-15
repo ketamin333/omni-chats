@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Handlers\{{ namespace }};
+
+class {{ name }}Handler
+{
+    /**
+     * Handles {{ name }} action.
+     */
+    public function __construct(
+        //
+    ) {}
+}
