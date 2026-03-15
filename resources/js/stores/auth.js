@@ -12,13 +12,14 @@ export const useAuthStore = defineStore('auth', {
     },
 
     actions: {
-        async fetchUser() {
-            if (this.initialized) {
+        async fetchUser(force = false) {
+            if (this.initialized && !force) {
                 return;
             }
 
             try {
                 const { data } = await me();
+
                 this.user = data;
             } catch {
                 this.user = null;
@@ -34,11 +35,8 @@ export const useAuthStore = defineStore('auth', {
 
             try {
                 await csrf();
-                const user = await login(data);
-
-                console.log(user);
-
-                this.user = user.data;
+                await login(data);
+                await this.fetchUser(true);
             } catch (e) {
                 this.user = null;
                 throw e;
