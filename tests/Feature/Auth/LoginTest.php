@@ -32,7 +32,7 @@ class LoginTest extends TestCase
 
     public function test_invalid_credentials(): void
     {
-        $this->post('/api/login', ['email' => $this->user->email, 'password' => '999999999999999'])
+        $this->postJson('/api/login', ['email' => $this->user->email, 'password' => '999999999999999'])
             ->assertStatus(401)
             ->assertJson(['success' => false]);
     }

@@ -19,10 +19,13 @@
 
 <template>
     <div class="h-full flex flex-col justify-between shrink-0 grow bg-surface-0 rounded-xl shadow-sm">
-        <div class="flex flex-col shrink-0 p-3 gap-4">
+        <div class="flex flex-col shrink-0 grow p-3 gap-4">
             <SidebarGroupItems v-for="group in groups" :group="group" :key="group.label" />
         </div>
-<!--        <div class="flex border-t p-3 justify-between gap-4 items-center border-surface-200">-->
+        <div class="flex border-t p-3 justify-between gap-4 items-center border-surface-200">
+
+        </div>
+<!--        <div class="">-->
 <!--            <div class="flex gap-3 items-center">-->
 <!--                <Image :src="auth.user?.avatar" :pt="{ image: { class: 'w-9 h-9 rounded-full object-cover' } }" />-->
 <!--                <div class="flex flex-col">-->
