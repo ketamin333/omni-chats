@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import {csrf, login, me} from "../api/auth.js";
+import {csrf, login, logout, me} from "../api/auth.js";
 
 export const useAuthStore = defineStore('auth', {
     state:() => ({
@@ -19,8 +19,7 @@ export const useAuthStore = defineStore('auth', {
 
             try {
                 const { data } = await me();
-
-                this.user = data;
+                this.user = data.data;
             } catch {
                 this.user = null;
             } finally {
@@ -39,6 +38,18 @@ export const useAuthStore = defineStore('auth', {
                 await this.fetchUser(true);
             } catch (e) {
                 this.user = null;
+                throw e;
+            }
+        },
+
+        async logout() {
+            if (!this.isAuthenticated) {
+                return;
+            }
+
+            try {
+                await logout();
+            } catch (e) {
                 throw e;
             }
         }

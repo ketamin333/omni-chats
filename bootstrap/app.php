@@ -28,7 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return ApiResponse::error($e->getMessage(), 404);
         });
 
-        $exceptions->render(function (AuthenticationException $e) {
-            return ApiResponse::error($e->getMessage(), 401);
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return ApiResponse::error($e->getMessage(), 401);
+            }
+
+            return redirect()->route('login');
         });
     })->create();

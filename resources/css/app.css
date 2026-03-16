@@ -27,3 +27,9 @@
     --p-primary-900: #4c1d95;
     --p-primary-950: #2e1065;
 }
+
+@layer base {
+    html, body, #app, #guest {
+        @apply h-full w-full overflow-hidden;
+    }
+}

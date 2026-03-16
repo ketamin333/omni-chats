@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('company_id')
+                ->after('user_id')
                 ->constrained('companies', 'company_id')
                 ->cascadeOnDelete();
         });

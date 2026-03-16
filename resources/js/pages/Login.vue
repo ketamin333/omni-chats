@@ -29,8 +29,9 @@
             loading.value = true;
 
             const data = { ...values, remember: remember.value };
-            await authStore.login(data);
 
+            await authStore.login(data);
+            window.location.href = '/projects';
         } catch (e) {
             error.value = e.response?.data?.message ?? 'Произошла ошибка';
         } finally {
@@ -40,13 +41,13 @@
 </script>
 
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-surface-900">
+    <div class="w-full h-full flex items-center justify-center bg-surface-100">
         <div class="flex flex-col gap-8">
             <div class="flex flex-col items-center gap-4 mx-20">
                 <Layers size="40" />
                 <span class="text-2xl font-bold tracking-tight">Войдите в свой аккаунт</span>
             </div>
-            <Form class="px-6 py-8 rounded-xl flex flex-col gap-4 shadow-sm bg-surface-950" @submit="auth" v-slot="$form"
+            <Form class="px-6 py-8 rounded-xl flex flex-col gap-4 shadow-sm bg-surface-0" @submit="auth" v-slot="$form"
                   :resolver="resolver"
                   :validate-on-blur="false"
                   :validate-on-value-update="false"
