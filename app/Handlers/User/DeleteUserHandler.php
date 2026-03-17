@@ -2,12 +2,17 @@
 
 namespace App\Handlers\User;
 
-class DeleteUserHandler
+use App\Commands\User\DeleteUserCommand;
+use App\Events\UserDeleted;
+use App\Handlers\User\Contracts\DeleteUserHandlerInterface;
+use Illuminate\Support\Facades\Event;
+
+class DeleteUserHandler implements DeleteUserHandlerInterface
 {
-    /**
-     * Handles DeleteUser action.
-     */
-    public function __construct(
-        //
-    ) {}
+    public function handle(DeleteUserCommand $command): void
+    {
+        $command->user->deleteOrFail();
+
+        Event::dispatch(new UserDeleted($command->user));
+    }
 }

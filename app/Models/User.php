@@ -17,6 +17,8 @@ class User extends Authenticatable
     protected $table = 'users';
     protected $primaryKey = 'user_id';
 
+    const DEFAULT_AVATAR = 'default_avatar.png';
+
     protected $fillable = [
         'company_id',
         'username',
@@ -29,7 +31,7 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
     protected $attributes = [
-        'avatar' => 'default_avatar.png',
+        'avatar' => self::DEFAULT_AVATAR,
     ];
 
     protected $casts = [

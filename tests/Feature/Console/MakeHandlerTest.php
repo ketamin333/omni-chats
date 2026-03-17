@@ -93,7 +93,7 @@ class MakeHandlerTest extends TestCase
         $this->artisan('make:handler', ['name' => $name]);
 
         $this->assertStringContainsString(
-            "class LoginCommand",
+            "readonly class LoginCommand",
             file_get_contents(app_path('Commands/Auth/LoginCommand.php'))
         );
     }

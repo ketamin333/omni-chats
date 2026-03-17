@@ -12,7 +12,7 @@ readonly class LoginCommand
     public function __construct(
         public string     $email,
         public string     $password,
-        public bool| null $remember = false,
+        public bool|null  $remember = false,
     ) {}
 
     public static function fromRequest(LoginRequest $request): static

@@ -2,6 +2,7 @@
 
 use App\Support\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,6 +28,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (NotFoundHttpException $e) {
             return ApiResponse::error($e->getMessage(), 404);
+        });
+
+        $exceptions->render(function (ModelNotFoundException $e) {
+            return ApiResponse::error('Not found', 404);
         });
 
         $exceptions->render(function (AuthenticationException $e, Request $request) {

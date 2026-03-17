@@ -3,9 +3,11 @@
 namespace App\Handlers\User;
 
 use App\Commands\User\CreateUserCommand;
+use App\Events\UserCreated;
 use App\Handlers\User\Contracts\CreateUserHandlerInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -30,6 +32,7 @@ class CreateUserHandler implements CreateUserHandlerInterface
                 ]);
 
                 $user->assignRole($command->role);
+                Event::dispatch(new UserCreated($user));
 
                 return $user;
             });

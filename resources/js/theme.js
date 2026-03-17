@@ -89,13 +89,13 @@ const preset = definePreset(Aura, {
             light: {
                 primary: {
                     color: '{zinc.950}',
-                    inverseColor: '#ffffff',
+                    inverseColor: '#FFFFFF',
                     hoverColor: '{zinc.900}',
                     activeColor: '{zinc.800}',
-                    contrastColor: '#ffffff',
+                    contrastColor: '#FFFFFF',
                 },
                 surface: {
-                    0: '#ffffff',
+                    0: '#FFFFFF',
                     50: '#F8F8F6',
                     100: '#ECECEA',
                     200: '{zinc.200}',
@@ -118,7 +118,7 @@ const preset = definePreset(Aura, {
                     contrastColor: '{zinc.950}',
                 },
                 surface: {
-                    0: '#ffffff',
+                    0: '#FFFFFF',
                     50: '{zinc.50}',
                     100: '{zinc.100}',
                     200: '{zinc.200}',

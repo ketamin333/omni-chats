@@ -2,7 +2,7 @@
 
 namespace App\Commands\{{ namespace }};
 
-class {{ name }}Command
+readonly class {{ name }}Command
 {
     /**
      * Data transfer object for {{ name }} handler.

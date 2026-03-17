@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Commands\User\CreateUserCommand;
+use App\Commands\User\DeleteUserCommand;
 use App\Commands\User\GetUserCommand;
 use App\Commands\User\GetUsersCommand;
+use App\Commands\User\UpdateUserCommand;
 use App\Handlers\User\Contracts\CreateUserHandlerInterface;
 use App\Handlers\User\Contracts\DeleteUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUserHandlerInterface;
@@ -23,8 +25,8 @@ class UserController extends Controller
         private readonly GetUserHandlerInterface $getUserHandler,
         private readonly GetUsersHandlerInterface $getUsersHandler,
         private readonly CreateUserHandlerInterface $createUserHandler,
-//        private readonly UpdateUserHandlerInterface $updateUserHandler,
-//        private readonly DeleteUserHandlerInterface $deleteUserHandler,
+        private readonly UpdateUserHandlerInterface $updateUserHandler,
+        private readonly DeleteUserHandlerInterface $deleteUserHandler,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -60,6 +62,33 @@ class UserController extends Controller
         return ApiResponse::success($user);
     }
 
-    public function update(UpdateRequest $request, User $user) {}
-    public function destroy(User $user) {}
+    public function update(UpdateRequest $request, int $userId): JsonResponse
+    {
+        $user = $this->getUserHandler->handle(
+            new GetUserCommand($userId, $request->user()->company_id)
+        );
+
+        $this->authorize('update', $user);
+
+        $user = $this->updateUserHandler->handle(
+            UpdateUserCommand::fromRequest($request, $user)
+        );
+
+        return ApiResponse::success($user);
+    }
+
+    public function destroy(Request $request, int $userId): JsonResponse
+    {
+        $user = $this->getUserHandler->handle(
+            new GetUserCommand($userId, $request->user()->company_id)
+        );
+
+        $this->authorize('delete', $user);
+
+        $this->deleteUserHandler->handle(
+            new DeleteUserCommand($user)
+        );
+
+        return ApiResponse::success(null, 204);
+    }
 }

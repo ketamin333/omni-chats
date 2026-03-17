@@ -35,7 +35,7 @@ class CreateUserTest extends TestCase
         $this->user->assignRole(Role::USER);
     }
 
-    private function data(array $overrides = []): array
+    private function payload(array $overrides = []): array
     {
         return array_merge([
             'username' => 'John',
@@ -49,10 +49,10 @@ class CreateUserTest extends TestCase
 
     public function test_admin_can_create_user(): void
     {
-        $data = $this->data();
+        $payload = $this->payload();
 
         $response = $this->actingAs($this->admin)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
@@ -60,10 +60,10 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_empty_avatar(): void
     {
-        $data = $this->data(['avatar' => null]);
+        $payload = $this->payload(['avatar' => null]);
 
         $response = $this->actingAs($this->admin)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
@@ -71,10 +71,10 @@ class CreateUserTest extends TestCase
 
     public function test_user_cannot_create_user(): void
     {
-        $data = $this->data();
+        $payload = $this->payload();
 
         $response = $this->actingAs($this->user)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(403)
             ->assertJson(['success' => false]);
@@ -83,9 +83,9 @@ class CreateUserTest extends TestCase
 
     public function test_unauthenticated_user_gets_401(): void
     {
-        $data = $this->data();
+        $payload = $this->payload();
 
-        $response = $this->postJson('/api/users', $data);
+        $response = $this->postJson('/api/users', $payload);
 
         $response->assertStatus(401)
             ->assertJson(['success' => false]);
@@ -94,10 +94,10 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_invalid_email(): void
     {
-        $data = $this->data(['email' => 'test']);
+        $payload = $this->payload(['email' => 'test']);
 
         $response = $this->actingAs($this->admin)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
@@ -105,11 +105,11 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_duplicate_email(): void
     {
-        $data = $this->data();
-        User::factory()->create(['email' => $data['email']]);
+        $payload = $this->payload();
+        User::factory()->create(['email' => $payload['email']]);
 
         $response = $this->actingAs($this->admin)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
@@ -117,10 +117,10 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_invalid_password(): void
     {
-        $data = $this->data(['password' => '1234', 'password_confirmation' => '1234']);
+        $payload = $this->payload(['password' => '1234', 'password_confirmation' => '1234']);
 
         $response = $this->actingAs($this->admin)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
@@ -128,10 +128,10 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_password_not_confirmed(): void
     {
-        $data = $this->data(['password' => 'password12345', 'password_confirmation' => 'password123456']);
+        $payload = $this->payload(['password' => 'password12345', 'password_confirmation' => 'password123456']);
 
         $response = $this->actingAs($this->admin)
-            ->postJson('/api/users', $data);
+            ->postJson('/api/users', $payload);
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
