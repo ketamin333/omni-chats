@@ -15,7 +15,7 @@
         <aside class="w-60 shrink-0">
             <Sidebar />
         </aside>
-        <section class="flex-1 min-w-0 bg-surface-0 rounded-xl shadow-sm">
+        <section class="flex-1 min-w-0 bg-surface-0 rounded-xl shadow-sm p-4">
             <RouterView />
         </section>
     </div>

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone', 20)->nullable();
 
             $table->rememberToken();
-            $table->timestamp('login_at')->nullable();
+            $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

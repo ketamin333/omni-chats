@@ -19,56 +19,77 @@ class LoginTest extends TestCase
     {
         parent::setUp();
 
-        /** @var User $user */
+        $this->withHeaders(['Accept' => 'application/json']);
         $this->user = User::factory()->create(['password' => Hash::make('password123456')]);
     }
 
     public function test_success_login(): void
     {
-        $this->post('/api/login', ['email' => $this->user->email, 'password' => $this->password])
-            ->assertStatus(200)
+        $payload = ['email' => $this->user->email, 'password' => $this->password];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(200)
             ->assertJson(['success' => true]);
     }
 
     public function test_invalid_credentials(): void
     {
-        $this->postJson('/api/login', ['email' => $this->user->email, 'password' => '999999999999999'])
-            ->assertStatus(401)
+        $payload = ['email' => $this->user->email, 'password' => '999999999999999'];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(401)
             ->assertJson(['success' => false]);
     }
 
     public function test_invalid_email(): void
     {
-        $this->post('/api/login', ['email' => 'qwe', 'password' => '99999999'])
-            ->assertStatus(422)
+        $payload = ['email' => 'qwe', 'password' => '9999999999'];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 
     public function test_invalid_password(): void
     {
-        $this->post('/api/login', ['email' => $this->user->email, 'password' => 'qwe'])
-            ->assertStatus(422)
+        $payload = ['email' => $this->user->email, 'password' => 'qwe'];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 
     public function test_empty_email(): void
     {
-        $this->post('/api/login', ['password' => 'qwe'])
-            ->assertStatus(422)
+        $payload = ['password' => 'qwe'];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 
     public function test_empty_password(): void
     {
-        $this->post('/api/login', ['email' => $this->user->email])
-            ->assertStatus(422)
+        $payload = ['email' => $this->user->email];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 
     public function test_remember_not_bool(): void
     {
-        $this->post('/api/login', ['email' => $this->user->email, 'password' => $this->password, 'remember' => 'ok'])
-            ->assertStatus(422)
+        $payload = ['email' => $this->user->email, 'password' => $this->password, 'remember' => 'ok'];
+
+        $response = $this->post('/api/login', $payload);
+
+        $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 }

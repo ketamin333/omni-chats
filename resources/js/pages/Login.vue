@@ -31,7 +31,7 @@
             const data = { ...values, remember: remember.value };
 
             await authStore.login(data);
-            window.location.href = '/projects';
+            window.location.href = '/';
         } catch (e) {
             error.value = e.response?.data?.message ?? 'Произошла ошибка';
         } finally {

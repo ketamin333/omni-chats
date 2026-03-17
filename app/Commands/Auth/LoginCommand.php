@@ -4,7 +4,7 @@ namespace App\Commands\Auth;
 
 use App\Http\Requests\Auth\LoginRequest;
 
-class LoginCommand
+readonly class LoginCommand
 {
     /**
      * Data transfer object for Login handler.

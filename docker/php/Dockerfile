@@ -2,13 +2,17 @@ FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     gcc \
     make \
     curl \
     git \
     zip \
     unzip \
-    && docker-php-ext-install opcache pdo pdo_pgsql
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install opcache pdo pdo_pgsql gd
 
 RUN pecl install redis && docker-php-ext-enable redis
 

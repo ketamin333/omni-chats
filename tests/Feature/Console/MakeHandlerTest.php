@@ -3,7 +3,7 @@
 namespace Tests\Feature\Console;
 
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Console\Command;
+use Symfony\Component\Console\Command\Command as CommandAlias;
 use Tests\TestCase;
 
 class MakeHandlerTest extends TestCase
@@ -31,6 +31,7 @@ class MakeHandlerTest extends TestCase
     public function test_creates_files_without_subfolder(): void
     {
         $name = 'Login';
+
         $this->artisan('make:handler', ['name' => $name]);
 
         $this->assertFileExists(app_path('Commands/LoginCommand.php'));
@@ -39,12 +40,15 @@ class MakeHandlerTest extends TestCase
 
     public function test_fails_when_name_is_empty(): void
     {
-        $this->artisan('make:handler')->assertExitCode(Command::FAILURE);
+        $output = $this->artisan('make:handler');
+
+        $output->assertExitCode(CommandAlias::FAILURE);
     }
 
     public function test_creates_command_and_handler_files(): void
     {
         $name = 'Auth/Login';
+
         $this->artisan('make:handler', ['name' => $name]);
 
         $this->assertFileExists(app_path('Commands/Auth/LoginCommand.php'));
@@ -54,6 +58,7 @@ class MakeHandlerTest extends TestCase
     public function test_creates_only_handler_with_flag(): void
     {
         $name = 'Auth/Login';
+
         $this->artisan('make:handler', ['name' => $name, '--handler' => true]);
 
         $this->assertFileDoesNotExist(app_path('Commands/Auth/LoginCommand.php'));
@@ -63,6 +68,7 @@ class MakeHandlerTest extends TestCase
     public function test_creates_only_command_with_flag(): void
     {
         $name = 'Auth/Login';
+
         $this->artisan('make:handler', ['name' => $name, '--command' => true]);
 
         $this->assertFileDoesNotExist(app_path('Handlers/Auth/LoginHandler.php'));
@@ -73,6 +79,7 @@ class MakeHandlerTest extends TestCase
     {
         $name = 'Auth/Login';
         $this->artisan('make:handler', ['name' => $name]);
+
         $this->artisan('make:handler', ['name' => $name]);
 
         $this->assertFileExists(app_path('Handlers/Auth/LoginHandler.php'));
@@ -82,6 +89,7 @@ class MakeHandlerTest extends TestCase
     public function test_created_command_file_has_correct_class_name(): void
     {
         $name = 'Auth/Login';
+
         $this->artisan('make:handler', ['name' => $name]);
 
         $this->assertStringContainsString(

@@ -7,17 +7,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class LogoutTest extends TestCase
+class MeTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_authenticated_user_can_logout(): void
+    public function test_authenticated_user_can_get_own_data(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
             ->withHeaders(['Referer' => config('app.url')])
-            ->post('/api/logout');
+            ->get('/api/me');
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
@@ -25,7 +25,7 @@ class LogoutTest extends TestCase
 
     public function test_unauthenticated_user_gets_401(): void
     {
-        $response = $this->postJson('/api/logout');
+        $response = $this->getJson('/api/me');
 
         $response->assertStatus(401)
             ->assertJson(['success' => false]);

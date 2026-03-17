@@ -4,31 +4,32 @@ const routes = [
     {
         path: '/dashboard',
         name: 'dashboard',
+        meta: { title: 'Дашборд' },
         // component: import('../pages/Projects.vue'),
-        component: '',
-        children: [],
     },
     {
         path: '/projects',
         name: 'projects',
+        meta: { title: 'Проекты' },
         component: '',
-        children: [],
     },
     {
         path: '/tasks',
         name: 'tasks',
+        meta: { title: 'Задачи' },
         component: '',
-        children: [],
     },
     {
         path: '/users',
         name: 'users',
-        component: '',
-        children: []
+        meta: { title: 'Команда' },
+        component: import('../pages/Users.vue'),
     },
-    { path: '/:pathMatch(.*)*', redirect: '/' }
+    { path: '/:pathMatch(.*)*', redirect: 'dashboard' }
 ];
 
 const router = createRouter({ history: createWebHistory(), routes });
+
+router.afterEach(to => document.title = to?.meta?.title || 'Проекты');
 
 export default router;
