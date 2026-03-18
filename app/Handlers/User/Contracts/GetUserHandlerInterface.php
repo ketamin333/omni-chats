@@ -2,10 +2,10 @@
 
 namespace App\Handlers\User\Contracts;
 
-use App\Commands\User\GetUserCommand;
 use App\Models\User;
+use App\Queries\User\GetUserQuery;
 
 interface GetUserHandlerInterface
 {
-    public function handle(GetUserCommand $command): ?User;
+    public function handle(GetUserQuery $query): ?User;
 }

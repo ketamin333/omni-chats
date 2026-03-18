@@ -12,7 +12,7 @@ const groups = [
     {
         label: 'Настройки',
         items: [
-            { to: { name: 'users' }, label: 'Команда', icon: UsersRound },
+            { to: { name: 'users' }, label: 'Пользователи', icon: UsersRound },
         ]
     }
 ];

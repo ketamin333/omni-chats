@@ -1,6 +1,6 @@
 <script setup>
   import {onMounted} from "vue";
-  import Sidebar from "../components/sidebar/Sidebar.vue";
+  import Sidebar from "../components/Sidebar/Sidebar.vue";
   import {useAuthStore} from "../stores/auth.js";
 
   const authStore = useAuthStore();
@@ -15,7 +15,7 @@
         <aside class="w-60 shrink-0">
             <Sidebar />
         </aside>
-        <section class="flex-1 min-w-0 bg-surface-0 rounded-xl shadow-sm p-4">
+        <section class="flex-1 min-w-0 bg-surface-0 rounded-xl shadow-sm grow overflow-hidden">
             <RouterView />
         </section>
     </div>

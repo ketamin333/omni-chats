@@ -7,115 +7,109 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Throwable;
+use function Laravel\Prompts\multiselect;
+use function Laravel\Prompts\text;
 
 class MakeHandler extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'make:handler {name?} {--handler} {--command}';
+    protected $signature = 'make:handler {name? : Handler name e.g. User/CreateUser}
+                                         {--command : Generate a Command DTO}
+                                         {--query : Generate a Query DTO}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Create a new Handler (Command + Handler)';
+    protected $description = 'Create a new Handler (Command/Query + Handler)';
 
-    protected array $createdClasses =  [];
+    protected array $createdFiles = [];
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         try {
-            $this->createdClasses = [];
+            $name = $this->argument('name');
+            $withCommand = $this->option('command');
+            $withQuery = $this->option('query');
+            $isInteractive = !$this->argument('name');
 
-            $input = $this->argument('name');
-
-            if (!$input) {
-                throw new RuntimeException('Name cannot be empty');
+            if (!$name) {
+                $name = text(
+                    label: 'What should the handler be named?',
+                    placeholder: 'User/CreateUser',
+                    required: true,
+                );
             }
 
-            $parts = new Collection(explode('/', $input));
-            $name = $parts->pop();
+            if ($isInteractive && !$withCommand && !$withQuery) {
+                $options = multiselect(
+                    label: 'What to generate?',
+                    options: ['Command', 'Query'],
+                    default: ['Command']
+                );
 
-            $isCreateHandler = $this->option('handler');
-            $isCreateCommand = $this->option('command');
-
-            if (!$isCreateHandler && !$isCreateCommand) {
-                $this->createCommand($parts, $name);
-                $this->createHandler($parts, $name);
+                $withCommand = in_array('Command', $options);
+                $withQuery = in_array('Query', $options);
             }
 
-            if ($isCreateHandler) {
-                $this->createHandler($parts, $name);
+            $parts = collect(explode('/', $name));
+            $baseName = Str::replaceLast('Handler', '', $parts->pop());
+
+            $this->generate('Handlers', $parts, $baseName, 'Handler', $this->getStub('handler'));
+
+            if ($withCommand) {
+                $this->generate('Commands', $parts, $baseName, 'Command', $this->getStub('command'));
             }
 
-            if ($isCreateCommand) {
-                $this->createCommand($parts, $name);
+            if ($withQuery) {
+                $this->generate('Queries', $parts, $baseName, 'Query', $this->getStub('query'));
             }
+
+            $this->components->info('All files generated successfully.');
 
             return self::SUCCESS;
-        } catch (RuntimeException $e) {
-            $this->error($e->getMessage());
-
-            foreach ($this->createdClasses as $file) {
-                File::delete($file);
-            }
+        } catch (Throwable $e) {
+            $this->rollback();
+            $this->components->error($e->getMessage());
 
             return self::FAILURE;
         }
     }
 
-    protected function createFile(Collection $path, string $name, string $dir, string $suffix, string $stub): void
+    protected function generate(string $dir, Collection $path, string $name, string $suffix, string $stub): void
     {
-        $namespace = $path->implode('\\');
-        $content = Str::replace(['{{ namespace }}', '{{ name }}'], [$namespace, $name], $stub);
+        $subPath = $path->isEmpty() ? '' : $path->implode('/') . '/';
+        $namespace = 'App\\' . $dir . ($path->isEmpty() ? '' : '\\' . $path->implode('\\'));
 
-        $fullPath = app_path(
-            sprintf('%s/%s/%s%s.php',
-                $dir,
-                $path->implode(DIRECTORY_SEPARATOR),
-                $name,
-                $suffix
-            )
-        );
+        $fileName = "{$name}{$suffix}.php";
+        $fullPath = app_path("{$dir}/{$subPath}{$fileName}");
 
         if (File::exists($fullPath)) {
             throw new RuntimeException("File already exists: {$fullPath}");
         }
 
+        $content = str_replace(
+            ['{{ namespace }}', '{{ name }}'],
+            [$namespace, $name],
+            $stub
+        );
+
         File::ensureDirectoryExists(dirname($fullPath));
-        if (!File::put($fullPath, $content)) {
-            throw new RuntimeException("Unable to write file: {$fullPath}");
+        File::put($fullPath, $content);
+
+        $this->createdFiles[] = $fullPath;
+        $this->components->task("Creating {$dir}/{$subPath}{$fileName}");
+    }
+
+    protected function getStub(string $type): string
+    {
+        $path = base_path("stubs/{$type}.stub");
+        if (!File::exists($path)) {
+            throw new RuntimeException("Stub not found: {$path}");
         }
-
-        $this->createdClasses[] = $fullPath;
+        return File::get($path);
     }
 
-    protected function createCommand(Collection $path, string $name): void
+    protected function rollback(): void
     {
-        $this->createFile($path, $name, 'Commands', 'Command', $this->getCommandStub());
-        $this->info("Created: Commands/{$name}Command.php");
-    }
-
-    protected function createHandler(Collection $path, string $name): void
-    {
-        $this->createFile($path, $name, 'Handlers', 'Handler', $this->getHandlerStub());
-        $this->info("Created: Handlers/{$name}Handler.php");
-    }
-
-    protected function getCommandStub(): string
-    {
-        return File::get(base_path('stubs/command.stub'));
-    }
-
-    protected function getHandlerStub(): string
-    {
-        return File::get(base_path('stubs/handler.stub'));
+        foreach ($this->createdFiles as $file) {
+            File::delete($file);
+        }
     }
 }

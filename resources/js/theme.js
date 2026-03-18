@@ -108,6 +108,10 @@ const preset = definePreset(Aura, {
                     900: '{zinc.900}',
                     950: '{zinc.950}',
                 },
+                highlight: {
+                    background: '{primary.950}',
+                    color: '{primary.50}',
+                },
             },
             dark: {
                 primary: {
@@ -131,6 +135,26 @@ const preset = definePreset(Aura, {
                     900: '{zinc.900}',
                     950: '{zinc.950}',
                 },
+            }
+        }
+    },
+    components: {
+        datatable: {
+            headerCell: {},
+            header: {
+                borderColor: 'transparent'
+            },
+            bodyCell: {
+                borderColor: 'transparent'
+            },
+            paginatorBottom: {
+                borderColor: 'transparent',
+            },
+        },
+        paginator: {
+            navButton: {
+                width: '2rem',
+                height: '2rem',
             }
         }
     }

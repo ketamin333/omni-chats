@@ -3,13 +3,14 @@
 namespace App\Repositories\Contracts;
 
 use App\Commands\User\GetUserCommand;
-use App\Commands\User\GetUsersCommand;
 use App\Models\User;
+use App\Queries\User\GetUserQuery;
+use App\Queries\User\GetUsersQuery;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface UserRepositoryInterface
 {
-    public function getPaginated(GetUsersCommand $command): LengthAwarePaginator;
+    public function getPaginated(GetUsersQuery $query): LengthAwarePaginator;
 
-    public function findById(GetUserCommand $command): User;
+    public function findById(GetUserQuery $query): User;
 }

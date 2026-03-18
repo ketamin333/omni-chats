@@ -17,7 +17,7 @@ class User extends Authenticatable
     protected $table = 'users';
     protected $primaryKey = 'user_id';
 
-    const DEFAULT_AVATAR = 'default_avatar.png';
+    const DEFAULT_AVATAR = 'storage/default_avatar.png';
 
     protected $fillable = [
         'company_id',
@@ -35,7 +35,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'password' => 'hashed'
+        'password'      => 'hashed',
+        'last_login_at' => 'datetime',
     ];
 
     public function company(): BelongsTo

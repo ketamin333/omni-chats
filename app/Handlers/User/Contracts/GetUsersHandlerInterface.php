@@ -2,10 +2,10 @@
 
 namespace App\Handlers\User\Contracts;
 
-use App\Commands\User\GetUsersCommand;
+use App\Queries\User\GetUsersQuery;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface GetUsersHandlerInterface
 {
-    public function handle(GetUsersCommand $command): LengthAwarePaginator;
+    public function handle(GetUsersQuery $query): LengthAwarePaginator;
 }

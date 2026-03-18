@@ -1,13 +1,23 @@
 <?php
 
-namespace App\Handlers\{{ namespace }};
+namespace {{ namespace }};
 
 class {{ name }}Handler
 {
     /**
-     * Handles {{ name }} action.
+     * Handler for {{ name }} action.
+     *
+     * Inject dependencies via constructor (repositories, services, etc.)
      */
     public function __construct(
         //
     ) {}
+
+    /**
+     * Execute the {{ name }} action.
+     */
+    public function handle()
+    {
+        //
+    }
 }

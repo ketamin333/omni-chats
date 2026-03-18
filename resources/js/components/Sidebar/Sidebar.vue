@@ -5,6 +5,7 @@
     import { ref } from 'vue';
     import SidebarGroupItems from "./SidebarGroupItems.vue";
     import groups from "../../config/navigation.js";
+    import UserInfo from "../User/UserInfo.vue";
 
     const auth = useAuthStore();
 
@@ -28,13 +29,11 @@
             <SidebarGroupItems v-for="group in groups" :group="group" :key="group.label" />
         </div>
         <div class="flex p-3 justify-between gap-2 items-center">
-            <div class="flex gap-2 items-center min-w-0 flex-1">
-                <Image :src="auth.user?.avatar" class="shrink-0" :pt="{ image: { class: 'w-[2.25rem] h-[2.25rem] rounded-full object-cover' } }" />
-                <div class="flex flex-col min-w-0">
-                    <span class="text-sm font-medium truncate">{{ auth.user?.username }}</span>
-                    <span class="text-xs text-surface-500">{{ auth.user?.email }}</span>
-                </div>
-            </div>
+            <UserInfo
+                :avatar="auth.user?.avatar"
+                :username="auth.user?.username"
+                :email="auth.user?.email"
+            />
             <Button size="small" variant="text" severity="secondary" @click="toggle">
                 <template #icon><ChevronRight size="16" /></template>
             </Button>

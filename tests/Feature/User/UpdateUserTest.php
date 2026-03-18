@@ -3,12 +3,14 @@
 namespace Tests\Feature\User;
 
 use App\Enums\Role;
+use App\Events\UserUpdated;
 use App\Models\Company;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -170,5 +172,19 @@ class UpdateUserTest extends TestCase
             'user_id' => $this->target->user_id,
             'email'   => $originalEmail,
         ]);
+    }
+
+    public function test_user_updated_event_is_dispatched(): void
+    {
+        Event::fake();
+
+        $payload = $this->payload();
+
+        $this->actingAs($this->admin)
+            ->patch("/api/users/{$this->target->user_id}", $payload);
+
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($payload) {
+            return $event->user->username === $payload['username'];
+        });
     }
 }

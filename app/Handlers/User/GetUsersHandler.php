@@ -2,8 +2,8 @@
 
 namespace App\Handlers\User;
 
-use App\Commands\User\GetUsersCommand;
 use App\Handlers\User\Contracts\GetUsersHandlerInterface;
+use App\Queries\User\GetUsersQuery;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -13,8 +13,8 @@ class GetUsersHandler implements GetUsersHandlerInterface
         protected UserRepositoryInterface $repository,
     ) {}
 
-    public function handle(GetUsersCommand $command): LengthAwarePaginator
+    public function handle(GetUsersQuery $query): LengthAwarePaginator
     {
-        return $this->repository->getPaginated($command);
+        return $this->repository->getPaginated($query);
     }
 }

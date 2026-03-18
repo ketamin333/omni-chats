@@ -2,9 +2,9 @@
 
 namespace App\Handlers\User;
 
-use App\Commands\User\GetUserCommand;
 use App\Handlers\User\Contracts\GetUserHandlerInterface;
 use App\Models\User;
+use App\Queries\User\GetUserQuery;
 use App\Repositories\UserRepository;
 
 class GetUserHandler implements GetUserHandlerInterface
@@ -16,8 +16,8 @@ class GetUserHandler implements GetUserHandlerInterface
         protected UserRepository $repository,
     ) {}
 
-    public function handle(GetUserCommand $command): ?User
+    public function handle(GetUserQuery $query): ?User
     {
-        return $this->repository->findById($command);
+        return $this->repository->findById($query);
     }
 }

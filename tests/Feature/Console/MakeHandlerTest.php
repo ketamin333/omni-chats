@@ -3,6 +3,7 @@
 namespace Tests\Feature\Console;
 
 use Illuminate\Filesystem\Filesystem;
+use Laravel\Prompts\Prompt;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 use Tests\TestCase;
 
@@ -16,102 +17,84 @@ class MakeHandlerTest extends TestCase
 
         $this->tempPath = sys_get_temp_dir() . '/test-make-handler';
         $this->app->useAppPath($this->tempPath);
+
+        Prompt::fallbackWhen(true);
     }
 
-    public function test_creates_files_without_root_folder(): void
+    public function test_create_only_handler_via_parameters(): void
     {
-        $name = 'Auth/Login';
+        $this->artisan('make:handler', ['name' => 'Auth/Test'])
+            ->assertExitCode(CommandAlias::SUCCESS);
 
-        $this->artisan('make:handler', ['name' => $name]);
-
-        $this->assertFileExists(app_path('Commands/Auth/LoginCommand.php'));
-        $this->assertFileExists(app_path('Handlers/Auth/LoginHandler.php'));
+        $this->assertFileExists(app_path('Handlers/Auth/TestHandler.php'));
+        $this->assertFileDoesNotExist(app_path('Commands/Auth/TestCommand.php'));
+        $this->assertFileDoesNotExist(app_path('Queries/Auth/TestQuery.php'));
     }
 
-    public function test_creates_files_without_subfolder(): void
+    public function test_create_handler_with_command_via_parameters(): void
     {
-        $name = 'Login';
+        $this->artisan('make:handler', ['name' => 'Auth/Test', '--command' => true])
+            ->assertExitCode(CommandAlias::SUCCESS);
 
-        $this->artisan('make:handler', ['name' => $name]);
+        $this->assertFileExists(app_path('Handlers/Auth/TestHandler.php'));
+        $this->assertFileExists(app_path('Commands/Auth/TestCommand.php'));
+        $this->assertFileDoesNotExist(app_path('Queries/Auth/TestQuery.php'));
+    }
 
-        $this->assertFileExists(app_path('Commands/LoginCommand.php'));
+    public function test_create_handler_with_query_via_parameters(): void
+    {
+        $this->artisan('make:handler', ['name' => 'Auth/Test', '--query' => true])
+            ->assertExitCode(CommandAlias::SUCCESS);
+
+        $this->assertFileExists(app_path('Handlers/Auth/TestHandler.php'));
+        $this->assertFileDoesNotExist(app_path('Commands/Auth/TestCommand.php'));
+        $this->assertFileExists(app_path('Queries/Auth/TestQuery.php'));
+    }
+
+    public function test_create_handler_with_command_and_query_via_parameters(): void
+    {
+        $this->artisan('make:handler', ['name' => 'Auth/Test', '--command' => true, '--query' => true])
+            ->assertExitCode(CommandAlias::SUCCESS);
+
+        $this->assertFileExists(app_path('Handlers/Auth/TestHandler.php'));
+        $this->assertFileExists(app_path('Commands/Auth/TestCommand.php'));
+        $this->assertFileExists(app_path('Queries/Auth/TestQuery.php'));
+    }
+
+    public function test_rolls_back_on_failure(): void
+    {
+        (new Filesystem())->ensureDirectoryExists(app_path('Handlers/Auth'));
+        file_put_contents(app_path('Handlers/Auth/TestHandler.php'), '<?php');
+
+        $this->artisan('make:handler', ['name' => 'Auth/Test', '--command' => true])
+            ->assertExitCode(CommandAlias::FAILURE);
+
+        $this->assertFileDoesNotExist(app_path('Commands/Auth/TestCommand.php'));
+    }
+
+    public function test_correct_namespace_in_generated_file(): void
+    {
+        $this->artisan('make:handler', ['name' => 'Billing/Invoice/Create', '--command' => true])
+            ->assertExitCode(CommandAlias::SUCCESS);
+
+        $content = file_get_contents(app_path('Commands/Billing/Invoice/CreateCommand.php'));
+        $this->assertStringContainsString('namespace App\Commands\Billing\Invoice;', $content);
+        $this->assertStringContainsString('readonly class CreateCommand', $content);
+    }
+
+    public function test_works_without_subfolder(): void
+    {
+        $this->artisan('make:handler', ['name' => 'Login', '--command' => true])
+            ->assertExitCode(CommandAlias::SUCCESS);
+
         $this->assertFileExists(app_path('Handlers/LoginHandler.php'));
-    }
-
-    public function test_fails_when_name_is_empty(): void
-    {
-        $output = $this->artisan('make:handler');
-
-        $output->assertExitCode(CommandAlias::FAILURE);
-    }
-
-    public function test_creates_command_and_handler_files(): void
-    {
-        $name = 'Auth/Login';
-
-        $this->artisan('make:handler', ['name' => $name]);
-
-        $this->assertFileExists(app_path('Commands/Auth/LoginCommand.php'));
-        $this->assertFileExists(app_path('Handlers/Auth/LoginHandler.php'));
-    }
-
-    public function test_creates_only_handler_with_flag(): void
-    {
-        $name = 'Auth/Login';
-
-        $this->artisan('make:handler', ['name' => $name, '--handler' => true]);
-
-        $this->assertFileDoesNotExist(app_path('Commands/Auth/LoginCommand.php'));
-        $this->assertFileExists(app_path('Handlers/Auth/LoginHandler.php'));
-    }
-
-    public function test_creates_only_command_with_flag(): void
-    {
-        $name = 'Auth/Login';
-
-        $this->artisan('make:handler', ['name' => $name, '--command' => true]);
-
-        $this->assertFileDoesNotExist(app_path('Handlers/Auth/LoginHandler.php'));
-        $this->assertFileExists(app_path('Commands/Auth/LoginCommand.php'));
-    }
-
-    public function test_rolls_back_command_if_handler_exists(): void
-    {
-        $name = 'Auth/Login';
-        $this->artisan('make:handler', ['name' => $name]);
-
-        $this->artisan('make:handler', ['name' => $name]);
-
-        $this->assertFileExists(app_path('Handlers/Auth/LoginHandler.php'));
-        $this->assertFileExists(app_path('Commands/Auth/LoginCommand.php'));
-    }
-
-    public function test_created_command_file_has_correct_class_name(): void
-    {
-        $name = 'Auth/Login';
-
-        $this->artisan('make:handler', ['name' => $name]);
-
-        $this->assertStringContainsString(
-            "readonly class LoginCommand",
-            file_get_contents(app_path('Commands/Auth/LoginCommand.php'))
-        );
-    }
-
-    public function test_created_command_file_has_correct_namespace(): void
-    {
-        $name = 'Auth/Login';
-        $this->artisan('make:handler', ['name' => $name]);
-
-        $this->assertStringContainsString(
-            "namespace App\Commands\Auth;",
-            file_get_contents(app_path('Commands/Auth/LoginCommand.php'))
-        );
+        $this->assertFileExists(app_path('Commands/LoginCommand.php'));
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
+
         (new Filesystem())->deleteDirectory($this->tempPath);
     }
 }

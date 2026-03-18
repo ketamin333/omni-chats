@@ -2,19 +2,19 @@
 
 namespace {{ namespace }};
 
-readonly class {{ name }}Command
+readonly class {{ name }}Query
 {
     /**
-     * Data Transfer Object for {{ name }} write operation.
+     * Data Transfer Object for {{ name }} read operation.
      *
-     * Carries validated input from Request to Handler.
+     * Carries filter/pagination params from Request to Handler.
      */
     public function __construct(
         //
     ) {}
 
     /**
-     * Create a {{ name }}Command instance from a FormRequest.
+     * Create a {{ name }}Query instance from a FormRequest.
      */
     public static function fromRequest(): self
     {

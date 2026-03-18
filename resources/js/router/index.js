@@ -22,7 +22,7 @@ const routes = [
     {
         path: '/users',
         name: 'users',
-        meta: { title: 'Команда' },
+        meta: { title: 'Пользователи' },
         component: import('../pages/Users.vue'),
     },
     { path: '/:pathMatch(.*)*', redirect: 'dashboard' }

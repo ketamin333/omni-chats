@@ -3,11 +3,13 @@
 namespace Tests\Feature\User;
 
 use App\Enums\Role;
+use App\Events\UserDeleted;
 use App\Models\Company;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class DeleteUserTest extends TestCase
@@ -94,5 +96,17 @@ class DeleteUserTest extends TestCase
         $this->assertSoftDeleted('users', [
             'user_id' => $this->target->user_id,
         ]);
+    }
+
+    public function test_user_deleted_event_is_dispatched(): void
+    {
+        Event::fake();
+
+        $this->actingAs($this->admin)
+            ->delete("/api/users/{$this->target->user_id}");
+
+        Event::assertDispatched(UserDeleted::class, function ($event) {
+            return $event->user->user_id === $this->target->user_id;
+        });
     }
 }

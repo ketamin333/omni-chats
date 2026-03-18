@@ -3,11 +3,13 @@
 namespace Tests\Feature\User;
 
 use App\Enums\Role;
+use App\Events\UserCreated;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -135,5 +137,19 @@ class CreateUserTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
+    }
+
+    public function test_user_created_event_is_dispatched(): void
+    {
+        Event::fake();
+
+        $payload = $this->payload();
+
+        $this->actingAs($this->admin)
+            ->postJson('/api/users', $payload);
+
+        Event::assertDispatched(UserCreated::class, function ($event) use ($payload) {
+            return $event->user->email === $payload['email'];
+        });
     }
 }
