@@ -9,7 +9,7 @@ use Illuminate\Http\UploadedFile;
 readonly class CreateUserCommand
 {
     public function __construct(
-        public int $companyId,
+        public int    $companyId,
         public string $username,
         public string $password,
         public string $email,

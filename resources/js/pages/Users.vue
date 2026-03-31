@@ -4,7 +4,6 @@
     import {DataTable, Column, Button, Dialog} from 'primevue';
     import UserRoleBadge from "../components/User/UserRoleBadge.vue";
     import {UserRoundPlus} from 'lucide-vue-next';
-    import {useRouter} from "vue-router";
     import CreateUserForm from "../components/User/CreateUserForm.vue";
 
     const loading = ref(false);

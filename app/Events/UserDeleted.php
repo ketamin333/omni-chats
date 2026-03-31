@@ -17,6 +17,6 @@ class UserDeleted
      * Create a new event instance.
      */
     public function __construct(
-        public User $user
+        public readonly User $user
     ) {}
 }

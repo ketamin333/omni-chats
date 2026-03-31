@@ -16,6 +16,6 @@ class UserCreated implements ShouldDispatchAfterCommit
      * Create a new event instance.
      */
     public function __construct(
-        public User $user,
+        public readonly User $user,
     ) {}
 }

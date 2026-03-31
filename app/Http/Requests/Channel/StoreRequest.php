@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Channel;
 
+use App\Enums\ChannelType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -18,10 +20,15 @@ class StoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
-        return [];
+        return [
+            'channel_name' => ['required', 'string', 'max:255'],
+            'type'         => ['required', Rule::enum(ChannelType::class)],
+            'avatar'       => ['nullable', 'image', 'max:2048'],
+            'credentials'  => ['required', 'array'],
+        ];
     }
 }
