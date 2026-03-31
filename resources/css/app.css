@@ -32,4 +32,17 @@
     html, body, #app, #guest {
         @apply h-full w-full overflow-hidden;
     }
+
+    label {
+        @apply text-muted-color text-sm mb-1
+    }
+
+    label.required:after {
+        content: ' *';
+        @apply text-red-500 font-semibold
+    }
+
+    .p-button {
+        @apply font-semibold
+    }
 }

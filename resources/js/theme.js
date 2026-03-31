@@ -156,7 +156,25 @@ const preset = definePreset(Aura, {
                 width: '2rem',
                 height: '2rem',
             }
-        }
+        },
+        badge: {
+            colorScheme: {
+                light: {
+                    danger: {
+                        background: '{red.100}',
+                        color: '{red.500}',
+                    },
+                    info: {
+                        background: '{indigo.100}',
+                        color: '{indigo.500}',
+                    },
+                    secondary: {
+                        background: '{neutral.100}',
+                        color: '{neutral.500}',
+                    }
+                }
+            }
+        },
     }
 });
 
