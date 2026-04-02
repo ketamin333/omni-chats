@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Commands\User\GetUserCommand;
 use App\Models\User;
 use App\Queries\User\GetUserQuery;
 use App\Queries\User\GetUsersQuery;
@@ -17,7 +16,6 @@ class UserRepository implements UserRepositoryInterface
         return User::where('company_id', $query->companyId)
             ->paginate($query->perPage);
     }
-
 
     public function findById(GetUserQuery $query): User
     {

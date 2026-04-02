@@ -2,7 +2,6 @@
 
 namespace App\Commands\User;
 
-use App\Enums\Role;
 use App\Http\Requests\User\StoreRequest;
 use Illuminate\Http\UploadedFile;
 
@@ -15,7 +14,7 @@ readonly class CreateUserCommand
         public string $email,
         public ?UploadedFile $avatar,
         public ?string $phone = null,
-        public Role $role = Role::USER,
+        public array   $permissions = [],
     ) {}
 
     public static function fromRequest(StoreRequest $request): self
@@ -27,7 +26,7 @@ readonly class CreateUserCommand
             email: $request->email,
             avatar: $request->file('avatar'),
             phone: $request->phone ?? null,
-            role: Role::from($request->role),
+            permissions: $request->permissions ?? [],
         );
     }
 }

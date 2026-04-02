@@ -1,8 +1,7 @@
 <script setup>
     import {onMounted, ref} from "vue";
     import {getUsers} from "../api/users.js";
-    import {DataTable, Column, Button, Dialog} from 'primevue';
-    import UserRoleBadge from "../components/User/UserRoleBadge.vue";
+    import {DataTable, Column, Button, Avatar} from 'primevue';
     import {UserRoundPlus} from 'lucide-vue-next';
     import CreateUserForm from "../components/User/CreateUserForm.vue";
 
@@ -30,13 +29,10 @@
         page.value = event.page + 1;
         await loadUsers();
     };
-
-    const formRef = ref(null);
-
 </script>
 
 <template>
-    <div class="flex flex-col h-full overflow-hidden pt-1 pb-2">
+    <div class="flex flex-col h-full overflow-hidden pt-1 pb-2 text-base">
         <DataTable
             scrollable
             scrollHeight="flex"
@@ -56,8 +52,8 @@
                         <span class="text-muted-color">{{ total }}</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <Button size="small" @click="visibleCreate = true">
-                            <UserRoundPlus size="16" />
+                        <Button @click="visibleCreate = true">
+                            <UserRoundPlus size="14" />
                             Создать
                         </Button>
                     </div>
@@ -66,40 +62,24 @@
             <Column header="Пользователь">
                 <template #body="{data}">
                     <div class="flex gap-2 items-center">
-                        <img :src="data.avatar" width="32" height="32" alt="" />
-                        <span class="text-sm font-medium text-color">{{ data.username }}</span>
+                        <Avatar shape="circle" size="normal" :image="data?.avatar_url || undefined"
+                                :label="!data?.avatar_url ? data?.username?.charAt(0).toUpperCase() : undefined" />
+                        <span class="font-medium text-color">{{ data?.username }}</span>
                     </div>
-                </template>
-            </Column>
-            <Column header="Телефон">
-                <template #body="{data}">
-                    <span class="text-sm text-muted-color">{{ data.phone }}</span>
                 </template>
             </Column>
             <Column header="Email">
                 <template #body="{data}">
-                    <span class="text-sm text-muted-color">{{ data.email }}</span>
+                    <span class="text-muted-color">{{ data?.email }}</span>
                 </template>
             </Column>
-            <Column header="Роль">
+            <Column header="Телефон">
                 <template #body="{data}">
-                    <UserRoleBadge :role="data.role" />
+                    <span class="text-muted-color">{{ data?.phone }}</span>
                 </template>
             </Column>
         </DataTable>
     </div>
 
-    <Dialog v-model:visible="visibleCreate"
-            modal :closable="false" class="w-[38rem]" :show-header="false">
-        <template #default>
-            <div class="pt-6">
-                <CreateUserForm ref="formRef" />
-            </div>
-        </template>
-
-        <template #footer>
-            <Button size="small" text @click="visibleCreate = false">Отмена</Button>
-            <Button size="small">Создать</Button>
-        </template>
-    </Dialog>
+    <CreateUserForm v-model:visible="visibleCreate" />
 </template>

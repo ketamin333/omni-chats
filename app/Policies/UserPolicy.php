@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Enums\Role;
+use App\Enums\PermissionSlug;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
@@ -13,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(Role::ADMIN);
+        return $user->hasPermission(PermissionSlug::USERS_MANAGE);
     }
 
     /**
@@ -21,7 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->hasRole(Role::ADMIN) || $user->user_id === $model->user_id;
+        return $user->hasPermission(PermissionSlug::USERS_MANAGE) || $user->user_id === $model->user_id;
     }
 
     /**
@@ -29,7 +28,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(Role::ADMIN);
+        return $user->hasPermission(PermissionSlug::USERS_MANAGE);
     }
 
     /**
@@ -37,7 +36,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->hasRole(Role::ADMIN);
+        return $user->hasPermission(PermissionSlug::USERS_MANAGE);
     }
 
     /**
@@ -45,6 +44,6 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->hasRole(Role::ADMIN);
+        return $user->hasPermission(PermissionSlug::USERS_MANAGE);
     }
 }

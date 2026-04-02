@@ -25,22 +25,22 @@
                 <Layers size="24" stroke-width="2.25" />
                 <Image src="/storage/logo_name.svg" :pt="{ image: { class: 'h-[1.5rem]' } }" />
             </RouterLink>
-            <InputText placeholder="Поиск..." size="small" type="text" />
+            <InputText placeholder="Поиск..." type="text" />
             <SidebarGroupItems v-for="group in groups" :group="group" :key="group.label" />
         </div>
         <div class="flex p-3 justify-between gap-2 items-center">
             <UserInfo
-                :avatar="auth.user?.avatar"
                 :username="auth.user?.username"
                 :email="auth.user?.email"
+                :avatar="auth.user?.avatar_url"
             />
-            <Button size="small" variant="text" severity="secondary" @click="toggle">
-                <template #icon><ChevronRight size="16" /></template>
+            <Button variant="text" severity="secondary" @click="toggle">
+                <template #icon><ChevronRight size="14" /></template>
             </Button>
             <Popover ref="userPopover">
                 <div class="flex flex-col gap-1">
-                    <Button variant="text" fluid size="small" label="Выйти" @click="logout">
-                        <template #icon><LogOut size="16" /></template>
+                    <Button variant="text" fluid label="Выйти" @click="logout">
+                        <template #icon><LogOut size="14" /></template>
                     </Button>
                 </div>
             </Popover>

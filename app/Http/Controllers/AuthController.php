@@ -6,6 +6,7 @@ use App\Commands\Auth\LoginCommand;
 use App\Handlers\Auth\Contracts\LoginHandlerInterface;
 use App\Handlers\Auth\Contracts\LogoutHandlerInterface;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\User\UserResource;
 use App\Support\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
@@ -38,6 +39,8 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return ApiResponse::success($request->user());
+        return ApiResponse::success(
+            new UserResource($request->user())
+        );
     }
 }

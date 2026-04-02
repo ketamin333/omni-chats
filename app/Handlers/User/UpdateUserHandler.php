@@ -4,6 +4,7 @@ namespace App\Handlers\User;
 
 use App\Commands\User\UpdateUserCommand;
 use App\Events\UserUpdated;
+use App\Handlers\User\Contracts\SyncUserPermissionsHandlerInterface;
 use App\Handlers\User\Contracts\UpdateUserHandlerInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Storage;
 
 class UpdateUserHandler implements UpdateUserHandlerInterface
 {
+    public function __construct(
+        protected SyncUserPermissionsHandlerInterface $syncUserPermissionsHandler,
+    ) {}
+
     public function handle(UpdateUserCommand $command): User
     {
         return DB::transaction(function () use ($command) {
@@ -23,15 +28,12 @@ class UpdateUserHandler implements UpdateUserHandlerInterface
             ], fn ($i) => $i !== null);
 
             if ($command->avatar) {
-                if ($command->user->avatar !== User::DEFAULT_AVATAR) {
-                    Storage::disk('public')->delete($command->user->avatar);
-                }
-
+                Storage::disk('public')->delete($command->user->avatar);
                 $data['avatar'] = $command->avatar->store('avatars', 'public');
             }
 
-            if ($command->role) {
-                $command->user->syncRoles($command->role);
+            if ($command->permissions !== null) {
+                $this->syncUserPermissionsHandler->handle($command->user, $command->permissions);
             }
 
             $command->user->update($data);

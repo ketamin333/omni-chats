@@ -30,19 +30,27 @@
 
 @layer base {
     html, body, #app, #guest {
-        @apply h-full w-full overflow-hidden;
+        @apply h-full w-full overflow-hidden text-sm;
     }
 
-    label {
-        @apply text-muted-color text-sm mb-1
+    .form-label {
+        @apply text-muted-color text-base mb-1
     }
 
-    label.required:after {
+    .form-label.required:after {
         content: ' *';
         @apply text-red-500 font-semibold
     }
 
     .p-button {
         @apply font-semibold
+    }
+
+    .p-avatar {
+        --p-avatar-background: var(--color-surface-100);
+    }
+
+    .p-select-option {
+        @apply text-base
     }
 }

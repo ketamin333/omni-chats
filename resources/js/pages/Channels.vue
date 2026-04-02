@@ -12,15 +12,9 @@
             <Stepper value="1" linear class="pt-6">
                 <StepList>
                     <Step value="1" asChild v-slot="{active}">
-                        <div class="flex flex-col">
-                            <div class="inline-flex">
-                                <button class="rounded-full p-2"
-                                        :class="active ? 'bg-surface-950 text-surface-0' : 'border border-surface'">
-                                    <MessageCirclePlus size="20"/>
-                                </button>
-                            </div>
-                        </div>
-
+                        <button class="rounded-full p-2 text-muted-color">
+                            <MessageCirclePlus />
+                        </button>
                     </Step>
                 </StepList>
                 <StepPanels>

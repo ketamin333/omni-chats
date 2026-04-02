@@ -30,7 +30,7 @@ class ChannelPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(Role::ADMIN);
+        return true;
     }
 
     /**

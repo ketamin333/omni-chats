@@ -7,24 +7,24 @@
         "dev": "vite"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.2.1",
-        "axios": "^1.13.6",
-        "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
-        "tailwindcss": "^4.2.1",
-        "vite": "^7.0.7"
+        "@tailwindcss/vite": "^4.2.2",
+        "axios": "^1.14.0",
+        "concurrently": "^9.2.1",
+        "laravel-vite-plugin": "^3.0.1",
+        "tailwindcss": "^4.2.2",
+        "vite": "^8.0.3"
     },
     "dependencies": {
         "@primeuix/themes": "^2.0.3",
         "@primevue/forms": "^4.5.4",
         "@primevue/themes": "^4.5.4",
         "@vitejs/plugin-vue": "^6.0.5",
-        "lucide-vue-next": "^0.577.0",
+        "lucide-vue-next": "^1.0.0",
         "pinia": "^3.0.4",
         "primevue": "^4.5.4",
         "tailwindcss-primeui": "^0.6.1",
-        "vue": "^3.5.30",
-        "vue-router": "^4.6.4",
+        "vue": "^3.5.31",
+        "vue-router": "^5.0.4",
         "zod": "^4.3.6"
     }
 }

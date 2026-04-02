@@ -5,6 +5,7 @@ namespace App\Handlers\User;
 use App\Commands\User\CreateUserCommand;
 use App\Events\UserCreated;
 use App\Handlers\User\Contracts\CreateUserHandlerInterface;
+use App\Handlers\User\Contracts\SyncUserPermissionsHandlerInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -13,6 +14,10 @@ use Throwable;
 
 class CreateUserHandler implements CreateUserHandlerInterface
 {
+    public function __construct(
+        protected SyncUserPermissionsHandlerInterface $syncUserPermissionsHandler,
+    ) {}
+
     /**
      * @throws Throwable
      */
@@ -31,7 +36,8 @@ class CreateUserHandler implements CreateUserHandlerInterface
                     'phone'      => $command->phone,
                 ]);
 
-                $user->assignRole($command->role);
+                $this->syncUserPermissionsHandler->handle($user, $command->permissions);
+
                 Event::dispatch(new UserCreated($user));
 
                 return $user;

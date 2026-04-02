@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Contracts;
 
-use App\Commands\User\GetUserCommand;
 use App\Models\User;
 use App\Queries\User\GetUserQuery;
 use App\Queries\User\GetUsersQuery;

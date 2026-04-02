@@ -15,12 +15,11 @@ class UserListResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'user_id'  => $this->user_id,
-            'username' => $this->username,
-            'email'    => $this->email,
-            'avatar'   => $this->avatar,
-            'phone'    => $this->phone,
-            'role'     => $this->getRoleNames()->first(),
+            'user_id'     => $this->user_id,
+            'username'    => $this->username,
+            'email'       => $this->email,
+            'avatar_url'  => $this->avatar_url,
+            'phone'       => $this->phone,
 
             'timestamps' => [
                 'last_login_at' => $this->last_login_at?->unix(),

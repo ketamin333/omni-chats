@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -15,5 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->parameter('user', 'userId');
     Route::apiResource('channels', ChannelController::class)
         ->parameter('channel', 'channelId');
+
+    Route::get('permissions', [PermissionController::class, 'index']);
 });
 
