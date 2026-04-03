@@ -3,7 +3,7 @@
 namespace App\Commands\Channel;
 
 use App\Enums\ChannelType;
-use App\Http\Requests\Channel\StoreRequest;
+use App\Http\Requests\Channel\ChannelStoreRequest;
 use Illuminate\Http\UploadedFile;
 
 readonly class CreateChannelCommand
@@ -24,7 +24,7 @@ readonly class CreateChannelCommand
     /**
      * Create a CreateChannelCommand instance from a FormRequest.
      */
-    public static function fromRequest(StoreRequest $request): self
+    public static function fromRequest(ChannelStoreRequest $request): self
     {
         return new self(
             companyId: $request->user()->company_id,

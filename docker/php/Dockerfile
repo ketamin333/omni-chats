@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install opcache pdo pdo_pgsql gd
+    && docker-php-ext-install opcache pdo pdo_pgsql gd pcntl
 
 RUN pecl install redis && docker-php-ext-enable redis
 

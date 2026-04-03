@@ -1,8 +1,11 @@
 <script setup>
-    import {Dialog, InputText, IconField, InputIcon, Password, InputMask,
-        Button, Tabs, Tab, TabList, TabPanels, TabPanel, Avatar, ToggleSwitch} from "primevue";
-    import {UserRoundCog, UserRoundKey, UserRound, Plus, Mail, Camera} from "lucide-vue-next";
-    import {computed, onMounted, ref, watch} from "vue";
+    import {
+        Dialog, InputText, IconField, InputIcon, Password, InputMask,
+        Button, Tabs, Tab, TabList, TabPanels, TabPanel, Avatar, ToggleSwitch
+    } from "primevue";
+    import {useToast} from 'primevue/usetoast';
+    import {UserRoundCog, UserRoundKey, Plus, Mail, Camera} from "lucide-vue-next";
+    import {computed, onMounted, ref} from "vue";
     import {getPermissions} from "../../api/permissions.js";
     import {createUser} from "../../api/users.js";
 
@@ -12,10 +15,12 @@
     const permissions = ref([]);
     const fileInput = ref(null);
     const avatarPreview = ref(null);
+    const loading = ref(false);
+    const toast = useToast();
 
-    const localVisible = computed({
+    const show = computed({
         get: () => props.visible,
-        set: (val) => emit('update:visible', val)
+        set: val => emit('update:visible', val)
     });
 
     onMounted(() => loadPermissions());
@@ -42,29 +47,38 @@
     const onAvatarUpload = e => {
         const file = e.target.files[0];
 
-        if (!file) {
-            return;
+        if (file) {
+            avatarPreview.value = URL.createObjectURL(file);
+            user.value.avatar = file;
         }
-
-        avatarPreview.value = URL.createObjectURL(file);
-        user.value.avatar = file;
     }
+
+    const hide = () => show.value = false;
 
     const handlerCreateUser = async () => {
-        const response = await createUser(user.value);
-        console.log(response);
-    }
+        loading.value = true;
+
+        try {
+            await createUser(user.value);
+
+            toast.add({ severity: 'success', summary: 'Пользователь создан' });
+            hide();
+        } catch (e) {
+            toast.add({ severity: 'error', summary: 'Ошибка создания', detail: e.response?.data?.message });
+        } finally {
+            loading.value = false;
+        }
+    };
 </script>
 
 <template>
-    <Dialog modal v-model:visible="localVisible" :show-header="false" class="w-[40rem]">
+    <Dialog modal v-model:visible="show" :show-header="false" class="w-[44rem]">
         <div class="flex flex-col gap-6 pt-6">
             <div class="flex justify-center items-center">
-                <div class="flex relative cursor-pointer">
+                <div class="flex relative cursor-pointer" @click="fileInput.click()">
                     <input ref="fileInput" type="file" accept="image/*" hidden @change="onAvatarUpload" />
-                    <Avatar shape="circle" class="!w-24 !h-24 cursor-pointer shadow-sm"
-                            @click="fileInput.click()" :image="avatarPreview">
-                        <template #icon v-if="!user.avatar"><Camera size="36"/></template>
+                    <Avatar shape="circle" class="!w-24 !h-24 shadow-sm" :image="avatarPreview">
+                        <template #icon v-if="!user.avatar"><Camera size="36" /></template>
                     </Avatar>
                     <div class="absolute bottom-0 right-0 rounded-full text-surface-0 bg-surface-950 p-1 flex items-center">
                         <Plus size="14" />
@@ -126,12 +140,8 @@
         </div>
         <template #footer>
             <div class="flex gap-2 px-6 pb-6">
-                <Button outlined @click="localVisible = false">
-                    Закрыть
-                </Button>
-                <Button @click="handlerCreateUser">
-                    Создать
-                </Button>
+                <Button outlined @click="hide">Закрыть</Button>
+                <Button @click="handlerCreateUser" :loading="loading">Создать</Button>
             </div>
         </template>
     </Dialog>

@@ -2,7 +2,7 @@
 
 namespace App\Commands\User;
 
-use App\Http\Requests\User\UpdateRequest;
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
@@ -20,7 +20,7 @@ readonly class UpdateUserCommand
         public ?array  $permissions,
     ) {}
 
-    public static function fromRequest(UpdateRequest $request, User $user): UpdateUserCommand
+    public static function fromRequest(UserUpdateRequest $request, User $user): UpdateUserCommand
     {
         return new self(
             user: $user,

@@ -10,8 +10,8 @@ use App\Handlers\User\Contracts\DeleteUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUsersHandlerInterface;
 use App\Handlers\User\Contracts\UpdateUserHandlerInterface;
-use App\Http\Requests\User\StoreRequest;
-use App\Http\Requests\User\UpdateRequest;
+use App\Http\Requests\User\UserStoreRequest;
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserListResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -53,7 +53,7 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function store(StoreRequest $request): JsonResponse
+    public function store(UserStoreRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -64,7 +64,7 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function update(UpdateRequest $request, int $userId): JsonResponse
+    public function update(UserUpdateRequest $request, int $userId): JsonResponse
     {
         $user = $this->getUserHandler->handle(
             new GetUserQuery($userId, $request->user()->company_id)

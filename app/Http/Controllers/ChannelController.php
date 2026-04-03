@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Commands\Channel\CreateChannelCommand;
 use App\Handlers\Channel\Contracts\CreateChannelHandlerInterface;
-use App\Http\Requests\Channel\StoreRequest;
+use App\Http\Requests\Channel\ChannelStoreRequest;
 use App\Models\Channel;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -27,7 +27,7 @@ class ChannelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequest $request): JsonResponse
+    public function store(ChannelStoreRequest $request): JsonResponse
     {
         $this->authorize('create', Channel::class);
 

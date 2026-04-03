@@ -53,4 +53,9 @@
     .p-select-option {
         @apply text-base
     }
+
+    .p-toast-message {
+        --p-toast-border-width: 0;
+        --p-toast-close-button-border-radius: .5rem;
+    }
 }

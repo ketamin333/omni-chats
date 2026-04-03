@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateRequest extends FormRequest
+class UserStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,12 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username'      => ['sometimes', 'string', 'max:255'],
-            'password'      => ['sometimes', 'string', 'min:8', 'confirmed', 'max:255'],
-            'avatar'        => ['sometimes', 'nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
-            'phone'         => ['sometimes', 'nullable', 'string', 'max:20'],
-            'permissions'   => ['sometimes', 'nullable', 'array'],
+            'username'      => ['required', 'string', 'max:255'],
+            'email'         => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
+            'password'      => ['required', 'string', 'min:8', 'confirmed', 'max:255'],
+            'avatar'        => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'phone'         => ['nullable', 'string', 'max:20'],
+            'permissions'   => ['nullable', 'array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'slug')],
         ];
     }

@@ -1,9 +1,10 @@
 <script setup>
-    import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
     import {getUsers} from "../api/users.js";
     import {DataTable, Column, Button, Avatar} from 'primevue';
     import {UserRoundPlus} from 'lucide-vue-next';
     import CreateUserForm from "../components/User/CreateUserForm.vue";
+    import echo from "../echo.js";
 
     const loading = ref(false);
     const users = ref([]);
@@ -11,7 +12,17 @@
     const page = ref(1);
     const perPage = 25;
 
-    onMounted(() => loadUsers());
+    onMounted(() => {
+        loadUsers();
+
+        echo.private('users')
+            .listen('UserCreated', e => {
+                users.value.unshift(e);
+                total.value++;
+            });
+    });
+
+    onUnmounted(() => echo.leave('users'));
 
     const loadUsers = async () => {
         loading.value = true;

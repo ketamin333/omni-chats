@@ -28,6 +28,23 @@ services:
     command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
     restart: always
 
+  reverb:
+    container_name: reverb
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    user: "1000:1000"
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    depends_on:
+      - db
+      - redis
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8081:8080"
+    restart: always
+
   nginx:
     container_name: nginx
     image: nginx:alpine

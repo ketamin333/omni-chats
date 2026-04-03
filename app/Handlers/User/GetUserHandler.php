@@ -6,7 +6,6 @@ use App\Handlers\User\Contracts\GetUserHandlerInterface;
 use App\Models\User;
 use App\Queries\User\GetUserQuery;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\UserRepository;
 
 class GetUserHandler implements GetUserHandlerInterface
 {

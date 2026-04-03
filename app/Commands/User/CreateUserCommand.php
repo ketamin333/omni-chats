@@ -2,7 +2,7 @@
 
 namespace App\Commands\User;
 
-use App\Http\Requests\User\StoreRequest;
+use App\Http\Requests\User\UserStoreRequest;
 use Illuminate\Http\UploadedFile;
 
 readonly class CreateUserCommand
@@ -17,7 +17,7 @@ readonly class CreateUserCommand
         public array   $permissions = [],
     ) {}
 
-    public static function fromRequest(StoreRequest $request): self
+    public static function fromRequest(UserStoreRequest $request): self
     {
         return new self(
             companyId: $request->user()->company_id,

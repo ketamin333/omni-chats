@@ -2,12 +2,11 @@
   import {onMounted} from "vue";
   import Sidebar from "../components/Sidebar/Sidebar.vue";
   import {useAuthStore} from "../stores/auth.js";
+  import {Toast} from "primevue";
 
   const authStore = useAuthStore();
 
-  onMounted(async () => {
-      await authStore.fetchUser();
-  });
+  onMounted(async () => await authStore.fetchUser());
 </script>
 
 <template>
@@ -19,4 +18,6 @@
             <RouterView />
         </section>
     </div>
+
+    <Toast />
 </template>

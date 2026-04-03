@@ -15,7 +15,7 @@ class GetPermissionsHandler implements GetPermissionsHandlerInterface
      * Inject dependencies via constructor (repositories, services, etc.)
      */
     public function __construct(
-        private readonly PermissionRepositoryInterface $repository,
+        protected PermissionRepositoryInterface $repository,
     ) {}
 
     /**

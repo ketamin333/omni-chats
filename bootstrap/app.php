@@ -1,6 +1,7 @@
 <?php
 
 use App\Support\ApiResponse;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
         then: function () {
             Route::middleware('api')
@@ -48,7 +50,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return redirect()->route('login');
         });
 
-        $exceptions->render(function (AccessDeniedHttpException  $e) {
+        $exceptions->render(function (AccessDeniedHttpException $e) {
             return ApiResponse::error($e->getMessage(), 403);
+        });
+
+        $exceptions->render(function (ThrottleRequestsException $e) {
+            return ApiResponse::error('Слишком много попыток. Попробуйте позже', 429);
         });
     })->create();

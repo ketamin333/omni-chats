@@ -5,5 +5,6 @@ return [
     App\Providers\AuthServiceProvider::class,
     App\Providers\ChannelServiceProvider::class,
     App\Providers\PermissionServiceProvider::class,
+    App\Providers\RouteServiceProvider::class,
     App\Providers\UserServiceProvider::class,
 ];
