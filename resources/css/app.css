@@ -58,4 +58,8 @@
         --p-toast-border-width: 0;
         --p-toast-close-button-border-radius: .5rem;
     }
+
+    .p-inputtext:disabled {
+        --p-inputtext-disabled-background: var(--color-surface-100);
+    }
 }

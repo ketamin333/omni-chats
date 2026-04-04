@@ -120,7 +120,7 @@ const preset = definePreset(Aura, {
         toast: {
             icon: { size: '20px' },
             content: { padding: '1rem' },
-        }
+        },
     }
 });
 

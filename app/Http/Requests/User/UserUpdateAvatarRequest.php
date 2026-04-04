@@ -4,9 +4,8 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UserUpdateRequest extends FormRequest
+class UserUpdateAvatarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +23,7 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username'      => ['sometimes', 'string', 'max:255'],
-            'phone'         => ['sometimes', 'nullable', 'string', 'max:20'],
-            'permissions'   => ['sometimes', 'nullable', 'array'],
-            'permissions.*' => ['string', Rule::exists('permissions', 'slug')],
+            'avatar' => ['required', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
         ];
     }
 }

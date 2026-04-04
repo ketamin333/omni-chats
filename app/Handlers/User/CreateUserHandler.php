@@ -8,14 +8,15 @@ use App\Handlers\User\Contracts\CreateUserHandlerInterface;
 use App\Handlers\User\Contracts\SyncUserPermissionsHandlerInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Events\Dispatcher;
 use Throwable;
 
 class CreateUserHandler implements CreateUserHandlerInterface
 {
     public function __construct(
         protected SyncUserPermissionsHandlerInterface $syncUserPermissionsHandler,
+        protected Dispatcher $dispatcher,
     ) {}
 
     /**
@@ -38,7 +39,7 @@ class CreateUserHandler implements CreateUserHandlerInterface
 
                 $this->syncUserPermissionsHandler->handle($user, $command->permissions);
 
-                Event::dispatch(new UserCreated($user));
+                $this->dispatcher->dispatch(new UserCreated($user));
 
                 return $user;
             });

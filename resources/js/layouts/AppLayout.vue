@@ -2,11 +2,12 @@
   import {onMounted} from "vue";
   import Sidebar from "../components/Sidebar/Sidebar.vue";
   import {useAuthStore} from "../stores/auth.js";
-  import {Toast} from "primevue";
+  import {Toast, DynamicDialog} from "primevue";
+  import AppConfirmDialog from "../components/Common/AppConfirmDialog.vue";
 
   const authStore = useAuthStore();
 
-  onMounted(async () => await authStore.fetchUser());
+  onMounted(() => authStore.fetchUser());
 </script>
 
 <template>
@@ -20,4 +21,6 @@
     </div>
 
     <Toast />
+    <DynamicDialog />
+    <AppConfirmDialog />
 </template>

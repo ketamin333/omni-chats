@@ -1,44 +1,66 @@
 <script setup>
-import {onMounted, onUnmounted, ref} from "vue";
+    import {onMounted, onUnmounted, ref} from "vue";
     import {getUsers} from "../api/users.js";
     import {DataTable, Column, Button, Avatar} from 'primevue';
     import {UserRoundPlus} from 'lucide-vue-next';
-    import CreateUserForm from "../components/User/CreateUserForm.vue";
-    import echo from "../echo.js";
+    import CreateUserDialog from "../components/User/CreateUserDialog.vue";
+    import UpdateUserDialog from "../components/User/UpdateUserDialog.vue";
+    import {useDialog} from "primevue/usedialog";
+    import {useUsersChannel} from '../composables/useUsersChannel.js';
 
     const loading = ref(false);
     const users = ref([]);
     const total = ref(0);
     const page = ref(1);
     const perPage = 25;
+    const dialog = useDialog();
+    const { subscribe, unsubscribe } = useUsersChannel(users, total);
 
     onMounted(() => {
         loadUsers();
-
-        echo.private('users')
-            .listen('UserCreated', e => {
-                users.value.unshift(e);
-                total.value++;
-            });
+        subscribe();
     });
 
-    onUnmounted(() => echo.leave('users'));
+    onUnmounted(() => unsubscribe());
 
     const loadUsers = async () => {
         loading.value = true;
 
         const { data } = await getUsers(page.value);
 
-        users.value = data.data.data;
-        total.value = data.data.meta.total;
+        users.value = data.data;
+        total.value = data.meta.total;
         loading.value = false;
     };
 
-    const visibleCreate = ref(false);
+    const showCreateDialog = ref(false);
 
-    const onPage = async event => {
-        page.value = event.page + 1;
+    const onPage = async e => {
+        page.value = e.page + 1;
         await loadUsers();
+    };
+
+    const onRowClick = e => {
+        dialog.open(UpdateUserDialog, {
+            props: {
+                modal: true,
+                showHeader: false,
+                class: 'w-[44rem]',
+            },
+            data: {
+                userId: e.data.user_id,
+            }
+        });
+    };
+
+    const onCreateClick = () => {
+        dialog.open(CreateUserDialog, {
+            props: {
+                modal: true,
+                showHeader: false,
+                class: 'w-[44rem]',
+            },
+        });
     };
 </script>
 
@@ -55,6 +77,7 @@ import {onMounted, onUnmounted, ref} from "vue";
             :total-records="total"
             @page="onPage"
             rowHover
+            @row-click="onRowClick"
         >
             <template #header>
                 <div class="shrink-0 flex justify-between items-center">
@@ -63,7 +86,7 @@ import {onMounted, onUnmounted, ref} from "vue";
                         <span class="text-muted-color">{{ total }}</span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <Button @click="visibleCreate = true">
+                        <Button @click="onCreateClick">
                             <UserRoundPlus size="14" />
                             Создать
                         </Button>
@@ -91,6 +114,4 @@ import {onMounted, onUnmounted, ref} from "vue";
             </Column>
         </DataTable>
     </div>
-
-    <CreateUserForm v-model:visible="visibleCreate" />
 </template>

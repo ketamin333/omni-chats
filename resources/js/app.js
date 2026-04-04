@@ -5,19 +5,24 @@ import router from './router';
 import PrimeVue from 'primevue/config';
 import preset from "./theme.js";
 import ToastService from 'primevue/toastservice';
+import DialogService  from 'primevue/dialogservice';
+import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp(AppLayout);
 
-app.use(createPinia());
-app.use(router);
-app.use(ToastService);
+app
+    .use(createPinia())
+    .use(router)
+    .use(ToastService)
+    .use(DialogService)
+    .use(ConfirmationService);
 
 app.use(PrimeVue, {
     theme: {
         preset: preset,
         options: { darkModeSelector: '.dark', }
     },
-    toast: { life: 600000 }
+    toast: { life: 5000 }
 });
 
 app.mount('#app');

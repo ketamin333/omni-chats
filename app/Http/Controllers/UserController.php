@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Commands\User\CreateUserCommand;
 use App\Commands\User\DeleteUserCommand;
+use App\Commands\User\UpdateUserAvatarCommand;
 use App\Commands\User\UpdateUserCommand;
 use App\Handlers\User\Contracts\CreateUserHandlerInterface;
 use App\Handlers\User\Contracts\DeleteUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUsersHandlerInterface;
+use App\Handlers\User\Contracts\UpdateUserAvatarHandlerInterface;
 use App\Handlers\User\Contracts\UpdateUserHandlerInterface;
 use App\Http\Requests\User\UserStoreRequest;
+use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserListResource;
 use App\Http\Resources\User\UserResource;
@@ -28,6 +31,7 @@ class UserController extends Controller
         private readonly GetUserHandlerInterface $getUserHandler,
         private readonly CreateUserHandlerInterface $createUserHandler,
         private readonly UpdateUserHandlerInterface $updateUserHandler,
+        private readonly UpdateUserAvatarHandlerInterface $updateUserAvatarHandler,
         private readonly DeleteUserHandlerInterface $deleteUserHandler,
     ) {}
 
@@ -74,6 +78,21 @@ class UserController extends Controller
 
         $user = $this->updateUserHandler->handle(
             UpdateUserCommand::fromRequest($request, $user)
+        );
+
+        return ApiResponse::success(new UserResource($user));
+    }
+
+    public function updateAvatar(UserUpdateAvatarRequest $request, int $userId): JsonResponse
+    {
+        $user = $this->getUserHandler->handle(
+            new GetUserQuery($userId, $request->user()->company_id)
+        );
+
+        $this->authorize('update', $user);
+
+        $user = $this->updateUserAvatarHandler->handle(
+            UpdateUserAvatarCommand::fromRequest($request, $user)
         );
 
         return ApiResponse::success(new UserResource($user));

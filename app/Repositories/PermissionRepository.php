@@ -6,6 +6,7 @@ use App\Models\Permission;
 use App\Repositories\Contracts\PermissionRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class PermissionRepository implements PermissionRepositoryInterface
 {
@@ -19,7 +20,7 @@ class PermissionRepository implements PermissionRepositoryInterface
     public function getIdsBySlug(array $slugs): Collection
     {
         return $this->getAll()
-            ->whereIn('slug', $slugs)
+            ->filter(fn($p) => in_array($p->slug->value, $slugs))
             ->pluck('permission_id');
     }
 

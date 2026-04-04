@@ -19,7 +19,7 @@ const echo = new Echo({
                     socket_id: socketId,
                     channel_name: channel.name
                 })
-                .then(r => callback(null, r.data))
+                .then(r => callback(null, r))
                 .catch(e => callback(e));
         }
     }),
