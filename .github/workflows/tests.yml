@@ -5,6 +5,22 @@ on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-22.04
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: chats_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
       - name: setup-php
@@ -23,4 +39,10 @@ jobs:
 
       - name: run-test
         run: php artisan test
-
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: chats_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
