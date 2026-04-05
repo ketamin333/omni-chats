@@ -6,7 +6,7 @@ use App\Handlers\User\Contracts\SyncUserPermissionsHandlerInterface;
 use App\Models\User;
 use App\Repositories\Contracts\PermissionRepositoryInterface;
 
-class SyncUserPermissionsHandler implements SyncUserPermissionsHandlerInterface
+class SyncPermissionsUserHandler implements SyncUserPermissionsHandlerInterface
 {
     /**
      * Handler for SyncUserPermissions action.

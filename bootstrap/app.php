@@ -31,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), 422, $e->errors());
+            return ApiResponse::error('Ошибка валидации', 422, $e->errors());
         });
 
         $exceptions->render(function (NotFoundHttpException $e) {

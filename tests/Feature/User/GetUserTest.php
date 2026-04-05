@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\User;
 
-use App\Enums\Role;
-use App\Models\Company;
+use App\Enums\PermissionSlug;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -20,13 +20,13 @@ class GetUserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(RoleSeeder::class);
+        $this->seed(PermissionSeeder::class);
+        $permission = Permission::where('slug', PermissionSlug::USERS_MANAGE)->first();
 
         $this->admin = User::factory()->create();
-        $this->admin->assignRole(Role::ADMIN);
+        $this->admin->permissions()->sync([$permission->permission_id]);
 
         $this->user = User::factory()->create();
-        $this->user->assignRole(Role::USER);
     }
 
     public function test_admin_can_get_user(): void
@@ -79,5 +79,37 @@ class GetUserTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson(['success' => false]);
+    }
+
+    public function test_returns_404_for_nonexistent_user(): void
+    {
+        $response = $this->actingAs($this->admin)
+            ->withHeaders(['Referer' => config('app.url')])
+            ->getJson('/api/users/999999');
+
+        $response->assertStatus(404)
+            ->assertJson(['success' => false]);
+    }
+
+    public function test_response_has_correct_structure(): void
+    {
+        $user = User::factory()->for($this->admin->company)->create();
+
+        $response = $this->actingAs($this->admin)
+            ->withHeaders(['Referer' => config('app.url')])
+            ->getJson("/api/users/{$user->user_id}");
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'user_id',
+                    'username',
+                    'email',
+                    'phone',
+                    'avatar_url',
+                    'permissions',
+                    'timestamps' => ['created_at', 'last_login_at'],
+                ]
+            ]);
     }
 }

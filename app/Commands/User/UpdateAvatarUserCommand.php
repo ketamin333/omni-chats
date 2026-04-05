@@ -2,11 +2,11 @@
 
 namespace App\Commands\User;
 
-use App\Http\Requests\User\UserUpdateAvatarRequest;
+use App\Http\Requests\User\UpdateAvatarRequest;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
-readonly class UpdateUserAvatarCommand
+readonly class UpdateAvatarUserCommand
 {
     /**
      * Data Transfer Object for UpdateUserAvatar write operation.
@@ -21,7 +21,7 @@ readonly class UpdateUserAvatarCommand
     /**
      * Create a UpdateUserAvatarCommand instance from a FormRequest.
      */
-    public static function fromRequest(UserUpdateAvatarRequest $request, User $user): self
+    public static function fromRequest(UpdateAvatarRequest $request, User $user): self
     {
         return new self(
             user: $user,

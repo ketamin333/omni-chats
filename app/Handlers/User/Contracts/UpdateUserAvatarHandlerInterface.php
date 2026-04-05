@@ -2,10 +2,10 @@
 
 namespace App\Handlers\User\Contracts;
 
-use App\Commands\User\UpdateUserAvatarCommand;
+use App\Commands\User\UpdateAvatarUserCommand;
 use App\Models\User;
 
 interface UpdateUserAvatarHandlerInterface
 {
-    public function handle(UpdateUserAvatarCommand $command): User;
+    public function handle(UpdateAvatarUserCommand $command): User;
 }

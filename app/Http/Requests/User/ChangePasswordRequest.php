@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Channel;
+namespace App\Http\Requests\User;
 
-use App\Enums\ChannelType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
-class ChannelStoreRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +24,7 @@ class ChannelStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'channel_name' => ['required', 'string', 'max:255'],
-            'type'         => ['required', Rule::enum(ChannelType::class)],
-            'avatar'       => ['nullable', 'image', 'max:2048'],
-            'credentials'  => ['required', 'array'],
+            'password' => ['required', 'string', 'confirmed', Password::default()],
         ];
     }
 }

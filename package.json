@@ -19,6 +19,7 @@
         "@primevue/forms": "^4.5.4",
         "@primevue/themes": "^4.5.4",
         "@vitejs/plugin-vue": "^6.0.5",
+        "dayjs": "^1.11.20",
         "laravel-echo": "^2.3.3",
         "lucide-vue-next": "^1.0.0",
         "pinia": "^3.0.4",

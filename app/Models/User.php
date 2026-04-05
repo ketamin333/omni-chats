@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use App\Enums\PermissionSlug;
+use App\Traits\HasPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens, HasPermissions;
 
     protected $table = 'users';
     protected $primaryKey = 'user_id';
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'phone',
+        'last_login_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -52,14 +54,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Permission::class, 'user_permissions', 'user_id', 'permission_id');
     }
 
-    public function hasPermission(PermissionSlug|string $slug): bool
+    public function scopeSearch(Builder $query, ?string $search): Builder
     {
-        if (!$this->relationLoaded('permissions')) {
-            $this->load('permissions');
-        }
-
-        $value = $slug instanceof PermissionSlug ? $slug->value : $slug;
-
-        return $this->permissions->contains('slug', $value);
+        return $query->when($search,
+            fn($q) => $q->where(fn($q) => $q->where('username', 'ilike', "%$search%")->orWhere('email', 'ilike', "%$search%"))
+        );
     }
 }

@@ -15,11 +15,10 @@ class PermissionServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        /** Обработчики */
+        /** HANDLERS */
         $this->app->bind(GetPermissionsHandlerInterface::class, GetPermissionsHandler::class);
 
-
-        /** Репозиторий */
+        /** REPOSITORIES */
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
     }
 

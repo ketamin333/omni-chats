@@ -4,6 +4,7 @@ namespace App\Support;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApiResponse
@@ -23,6 +24,11 @@ class ApiResponse
             'message' => $message,
             'errors' => $errors,
         ], $code);
+    }
+
+    public static function noContent(int $status = 204): Response
+    {
+        return response()->noContent($status);
     }
 
     /**

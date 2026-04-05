@@ -5,7 +5,7 @@ namespace App\Http\Requests\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserUpdateAvatarRequest extends FormRequest
+class UpdateAvatarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

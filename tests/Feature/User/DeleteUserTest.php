@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\User;
 
-use App\Enums\Role;
+use App\Enums\PermissionSlug;
 use App\Events\UserDeleted;
 use App\Models\Company;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -23,19 +23,14 @@ class DeleteUserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(PermissionSeeder::class);
+        $permission = Permission::where('slug', PermissionSlug::USERS_MANAGE)->first();
 
-        $this->seed(RoleSeeder::class);
+        $this->admin = User::factory()->create();
+        $this->admin->permissions()->sync([$permission->permission_id]);
 
-        $company = Company::factory()->create();
-
-        $this->admin = User::factory()->for($company)->create();
-        $this->admin->assignRole(Role::ADMIN);
-
-        $this->user = User::factory()->for($company)->create();
-        $this->user->assignRole(Role::USER);
-
-        $this->target = User::factory()->for($company)->create();
-        $this->target->assignRole(Role::USER);
+        $this->user = User::factory()->create();
+        $this->target = User::factory()->for($this->admin->company)->create();
     }
 
     public function test_admin_can_delete_user(): void
@@ -49,8 +44,10 @@ class DeleteUserTest extends TestCase
 
     public function test_user_cannot_delete_other_user(): void
     {
+        $target = User::factory()->for($this->user->company)->create();
+
         $response = $this->actingAs($this->user)
-            ->delete("/api/users/{$this->target->user_id}");
+            ->delete("/api/users/{$target->user_id}");
 
         $response->assertStatus(403)
             ->assertJson(['success' => false]);

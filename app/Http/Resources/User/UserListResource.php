@@ -22,6 +22,7 @@ class UserListResource extends JsonResource
             'phone'       => $this->phone,
 
             'timestamps' => [
+                'created_at'    => $this->created_at->unix(),
                 'last_login_at' => $this->last_login_at?->unix(),
             ]
         ];

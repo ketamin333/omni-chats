@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Commands\User\ChangePasswordUserCommand;
 use App\Commands\User\CreateUserCommand;
 use App\Commands\User\DeleteUserCommand;
-use App\Commands\User\UpdateUserAvatarCommand;
+use App\Commands\User\UpdateAvatarUserCommand;
 use App\Commands\User\UpdateUserCommand;
+use App\Handlers\User\Contracts\ChangePasswordUserHandlerInterface;
 use App\Handlers\User\Contracts\CreateUserHandlerInterface;
 use App\Handlers\User\Contracts\DeleteUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUserHandlerInterface;
 use App\Handlers\User\Contracts\GetUsersHandlerInterface;
 use App\Handlers\User\Contracts\UpdateUserAvatarHandlerInterface;
 use App\Handlers\User\Contracts\UpdateUserHandlerInterface;
-use App\Http\Requests\User\UserStoreRequest;
-use App\Http\Requests\User\UserUpdateAvatarRequest;
-use App\Http\Requests\User\UserUpdateRequest;
+use App\Http\Requests\User\ChangePasswordRequest;
+use App\Http\Requests\User\IndexRequest;
+use App\Http\Requests\User\StoreRequest;
+use App\Http\Requests\User\UpdateAvatarRequest;
+use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\User\UserListResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -23,6 +27,7 @@ use App\Queries\User\GetUsersQuery;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -32,15 +37,16 @@ class UserController extends Controller
         private readonly CreateUserHandlerInterface $createUserHandler,
         private readonly UpdateUserHandlerInterface $updateUserHandler,
         private readonly UpdateUserAvatarHandlerInterface $updateUserAvatarHandler,
+        private readonly ChangePasswordUserHandlerInterface $changePasswordUserHandler,
         private readonly DeleteUserHandlerInterface $deleteUserHandler,
     ) {}
 
-    public function index(Request $request): JsonResponse
+    public function index(IndexRequest $request): JsonResponse
     {
         $this->authorize('viewAny', User::class);
 
         $users = $this->getUsersHandler->handle(
-            new GetUsersQuery($request->user()->company_id)
+            GetUsersQuery::fromRequest($request)
         );
 
         return ApiResponse::paginated($users, UserListResource::class);
@@ -57,7 +63,7 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function store(UserStoreRequest $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -68,7 +74,7 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function update(UserUpdateRequest $request, int $userId): JsonResponse
+    public function update(UpdateRequest $request, int $userId): JsonResponse
     {
         $user = $this->getUserHandler->handle(
             new GetUserQuery($userId, $request->user()->company_id)
@@ -83,7 +89,7 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function updateAvatar(UserUpdateAvatarRequest $request, int $userId): JsonResponse
+    public function updateAvatar(UpdateAvatarRequest $request, int $userId): JsonResponse
     {
         $user = $this->getUserHandler->handle(
             new GetUserQuery($userId, $request->user()->company_id)
@@ -92,13 +98,28 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         $user = $this->updateUserAvatarHandler->handle(
-            UpdateUserAvatarCommand::fromRequest($request, $user)
+            UpdateAvatarUserCommand::fromRequest($request, $user)
         );
 
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function destroy(Request $request, int $userId): JsonResponse
+    public function changePassword(ChangePasswordRequest $request, int $userId): Response
+    {
+        $user = $this->getUserHandler->handle(
+            new GetUserQuery($userId, $request->user()->company_id)
+        );
+
+        $this->authorize('update', $user);
+
+        $this->changePasswordUserHandler->handle(
+            ChangePasswordUserCommand::fromRequest($request, $user)
+        );
+
+        return ApiResponse::noContent();
+    }
+
+    public function destroy(Request $request, int $userId): Response
     {
         $user = $this->getUserHandler->handle(
             new GetUserQuery($userId, $request->user()->company_id)
@@ -110,6 +131,6 @@ class UserController extends Controller
             new DeleteUserCommand($user)
         );
 
-        return ApiResponse::success(null, 204);
+        return ApiResponse::noContent();
     }
 }

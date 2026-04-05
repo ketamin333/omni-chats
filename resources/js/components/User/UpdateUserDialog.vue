@@ -1,23 +1,24 @@
 <script setup>
     import {ref, inject, onMounted} from "vue";
-    import {deleteUser, getUser, updateUser, updateUserAvatar} from "../../api/users.js";
+    import {changeUserPassword, getUser, updateUser, updateUserAvatar} from "../../api/users.js";
     import {
         IconField, InputIcon, InputMask, InputText, Password, Tab, TabList,
         TabPanel, TabPanels, Tabs, Button,
     } from "primevue";
     import AvatarUserUpload from "./AvatarUserUpload.vue";
-    import {Mail, UserRoundCog, UserRoundKey, LockKeyhole, Trash2} from "lucide-vue-next";
+    import {Mail, UserRoundCog, UserRoundKey, LockKeyhole} from "lucide-vue-next";
     import UserPermissionToggle from "./UserPermissionToggle.vue";
-    import {useConfirm} from "primevue/useconfirm";
-    import {useToast} from "primevue/usetoast";
+    import ChangePasswordUserDialog from "./ChangePasswordUserDialog.vue";
+    import {useDialog} from "primevue/usedialog";
+    import {useApi} from "../../composables/useApi.js";
 
     onMounted(() => loadUser());
 
-    const dialog = inject('dialogRef');
-    const userId = dialog.value.data.userId;
-    const confirm = useConfirm();
-    const loading = ref(false);
-    const toast = useToast();
+    const dialogRef = inject('dialogRef');
+    const dialog = useDialog();
+    const userId = dialogRef.value.data.userId;
+
+    const { execute, loading } = useApi();
 
     const user = ref({
         username: null,
@@ -29,41 +30,31 @@
     });
 
     const loadUser = async () => user.value = (await getUser(userId)).data;
-    const hide = () => dialog.value.close();
+    const hide = () => dialogRef.value.close();
 
-    const confirmDeleteUser = () => {
-        confirm.require({
+    const onPasswordChangeClick = () => dialog.open(ChangePasswordUserDialog, {
+        props: {
             modal: true,
-            message: 'Пользователь будет помечен как удалённый и скрыт из активного списка',
-            header: 'Вы действительно хотите удалить пользователя?',
-            accept: async () => {
-                await deleteUser(userId);
-                hide();
-            },
-        });
-    };
+            showHeader: false,
+            class: 'w-[30rem]'
+        },
+        data: {userId}
+    });
 
-    const handleUpdateUser = async () => {
-        loading.value = true;
-
-        try {
+    const handleUpdateUser = () => execute(
+        async () => {
             await updateUser(userId, {
                 username: user.value.username,
                 phone: user.value.phone,
-                permissions: user.value.permissions,
+                permissions: user.value.permissions
             });
 
             if (user.value.avatar instanceof File) {
                 await updateUserAvatar(userId, user.value.avatar);
             }
-
-            hide();
-        } catch (e) {
-            toast.add({ severity: 'error', summary: 'Не удалось обновить пользователя', detail: e.response?.data?.message })
-        } finally {
-            loading.value = false;
-        }
-    }
+        },
+        { successMessage: 'Пользователь успешно обновлен', onSuccess: hide }
+    );
 </script>
 
 <template>
@@ -81,7 +72,7 @@
                     <UserRoundKey size="14" />
                     <span>Доступы</span>
                 </Tab>
-                <Tab value="password" as="div" class="flex gap-2 items-center text-base">
+                <Tab as="div" class="flex gap-2 items-center text-base" @click.capture.stop="onPasswordChangeClick">
                     <LockKeyhole size="14" />
                     <span>Сменить пароль</span>
                 </Tab>
@@ -115,14 +106,9 @@
                 </TabPanel>
             </TabPanels>
         </Tabs>
-        <div class="flex justify-between px-6">
-            <Button severity="danger" variant="text" @click="confirmDeleteUser">
-                <Trash2 size="14" /> Удалить
-            </Button>
-            <div class="flex gap-2">
-                <Button outlined @click="hide" label="Закрыть" />
-                <Button label="Сохранить" :loading="loading" @click="handleUpdateUser" />
-            </div>
+        <div class="flex justify-end px-6 gap-2">
+            <Button outlined @click="hide" label="Закрыть" />
+            <Button label="Сохранить" :loading="loading" @click="handleUpdateUser" />
         </div>
     </div>
 </template>

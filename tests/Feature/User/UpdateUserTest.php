@@ -2,16 +2,14 @@
 
 namespace Tests\Feature\User;
 
-use App\Enums\Role;
+use App\Enums\PermissionSlug;
 use App\Events\UserUpdated;
-use App\Models\Company;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class UpdateUserTest extends TestCase
@@ -21,170 +19,101 @@ class UpdateUserTest extends TestCase
     protected User $admin;
     protected User $user;
     protected User $target;
-    protected UploadedFile $file;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-        Storage::fake('public');
-        $this->file = UploadedFile::fake()->image('avatar.jpg');
+        $this->seed(PermissionSeeder::class);
+        $permission = Permission::where('slug', PermissionSlug::USERS_MANAGE)->first();
 
         $this->admin = User::factory()->create();
-        $this->admin->assignRole(Role::ADMIN);
+        $this->admin->permissions()->sync([$permission->permission_id]);
 
-        $this->user = User::factory()->create(['company_id' => $this->admin->company_id]);
-        $this->user->assignRole(Role::USER);
-
-        $this->target = User::factory()->create(['company_id' => $this->admin->company_id]);
-        $this->target->assignRole(Role::USER);
+        $this->user = User::factory()->create();
+        $this->target = User::factory()->for($this->admin->company)->create();
     }
 
     private function payload(array $overrides = []): array
     {
-        return array_merge(['username' => 'test'], $overrides);
+        return array_merge([
+            'username' => 'Updated Name',
+            'phone' => '(999) 123-45-67',
+            'permissions' => [PermissionSlug::USERS_MANAGE->value],
+        ], $overrides);
     }
 
     public function test_admin_can_update_user(): void
     {
-        $payload = $this->payload(['phone' => null]);
-
         $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
+            ->withHeaders(['Referer' => config('app.url')])
+            ->patchJson("/api/users/{$this->target->user_id}", $this->payload());
 
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
     }
 
-    public function test_update_only_one_field(): void
+    public function test_user_cannot_update_another_user(): void
     {
-        $payload = $this->payload();
-
-        $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
-
-        $response->assertStatus(200)
-            ->assertJson(['success' => true]);
-    }
-
-    public function test_update_with_avatar(): void
-    {
-        $payload = $this->payload(['avatar' => $this->file]);
-
-        $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
-
-        $response->assertStatus(200)
-            ->assertJson(['success' => true]);
-    }
-
-    public function test_user_cannot_update_other_user(): void
-    {
-        $payload = $this->payload();
+        $target = User::factory()->for($this->user->company)->create();
 
         $response = $this->actingAs($this->user)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
+            ->withHeaders(['Referer' => config('app.url')])
+            ->patchJson("/api/users/{$target->user_id}", $this->payload());
 
         $response->assertStatus(403)
             ->assertJson(['success' => false]);
     }
 
-    public function test_unauthenticated_user_gets_401(): void
+    public function test_admin_cannot_update_user_from_another_company(): void
     {
-        $payload = $this->payload();
-
-        $response = $this->patchJson("/api/users/{$this->target->user_id}", $payload);
-
-        $response->assertStatus(401)
-            ->assertJson(['success' => false]);
-    }
-
-    public function test_user_not_found_gets_404(): void
-    {
-        $payload = $this->payload();
-
         $response = $this->actingAs($this->admin)
-            ->patch('/api/users/555', $payload);
+            ->withHeaders(['Referer' => config('app.url')])
+            ->patchJson("/api/users/{$this->user->user_id}", $this->payload());
 
         $response->assertStatus(404)
             ->assertJson(['success' => false]);
     }
 
-    public function test_user_from_other_company_gets_404(): void
+    public function test_username_max_length_validation(): void
     {
-        $company = Company::factory()->create();
-        $this->target->update(['company_id' => $company->company_id]);
-        $payload = $this->payload();
-
         $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
-
-        $response->assertStatus(404)
-            ->assertJson(['success' => false]);
-    }
-
-    public function test_update_with_invalid_password(): void
-    {
-        $payload = $this->payload(['password' => '1234']);
-
-        $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
+            ->withHeaders(['Referer' => config('app.url')])
+            ->patchJson("/api/users/{$this->target->user_id}", $this->payload([
+                'username' => str_repeat('a', 256)
+            ]));
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 
-    public function test_update_with_password_not_confirmed(): void
+    public function test_invalid_permission_slug_returns_422(): void
     {
-        $payload = $this->payload(['password' => 'password12345', 'password_confirmation' => 'password1234']);
-
         $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
+            ->withHeaders(['Referer' => config('app.url')])
+            ->patchJson("/api/users/{$this->target->user_id}", $this->payload([
+                'permissions' => ['invalid.permission']
+            ]));
 
         $response->assertStatus(422)
             ->assertJson(['success' => false]);
-    }
-
-    public function test_update_with_invalid_role(): void
-    {
-        $payload = $this->payload(['role' => 'qweqwe']);
-
-        $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
-
-        $response->assertStatus(422)
-            ->assertJson(['success' => false]);
-    }
-
-    public function test_update_with_email(): void
-    {
-        $originalEmail = $this->target->email;
-        $payload = $this->payload(['email' => 'newemail@example.com']);
-
-        $response = $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
-
-        $response->assertStatus(200)
-            ->assertJson(['success' => true]);
-
-        $this->assertDatabaseHas('users', [
-            'user_id' => $this->target->user_id,
-            'email'   => $originalEmail,
-        ]);
     }
 
     public function test_user_updated_event_is_dispatched(): void
     {
         Event::fake();
 
-        $payload = $this->payload();
-
         $this->actingAs($this->admin)
-            ->patch("/api/users/{$this->target->user_id}", $payload);
+            ->withHeaders(['Referer' => config('app.url')])
+            ->patchJson("/api/users/{$this->target->user_id}", $this->payload());
 
-        Event::assertDispatched(UserUpdated::class, function ($event) use ($payload) {
-            return $event->user->username === $payload['username'];
-        });
+        Event::assertDispatched(UserUpdated::class, fn($e) => $e->user->user_id === $this->target->user_id);
+    }
+
+    public function test_unauthenticated_user_gets_401(): void
+    {
+        $response = $this->patchJson("/api/users/{$this->target->user_id}", $this->payload());
+
+        $response->assertStatus(401)
+            ->assertJson(['success' => false]);
     }
 }

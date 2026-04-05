@@ -10,13 +10,15 @@ const api = axios.create({
 });
 
 api.interceptors.response.use(
-    response => response.data,
-    error => {
-        if (error.response?.status === 401 && !error.config.url.includes('/login')) {
+    r => r.data,
+    e => {
+        if (e.response?.status === 401 && !e.config.url.includes('/login')) {
             window.location.href = '/login';
+
+            return Promise.reject(e);
         }
 
-        return Promise.reject(error);
+        return Promise.reject(e?.response?.data || e);
     }
 );
 

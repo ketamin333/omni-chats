@@ -13,6 +13,7 @@ class ChannelServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        /** HANDLERS */
         $this->app->bind(CreateChannelHandlerInterface::class, CreateChannelHandler::class);
     }
 

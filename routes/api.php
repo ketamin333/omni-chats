@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)
         ->parameter('user', 'userId');
     Route::post('users/{userId}/avatar', [UserController::class, 'updateAvatar']);
+    Route::put('users/{userId}/password', [UserController::class, 'changePassword']);
 
     /** CHANNELS ROUTES */
     Route::apiResource('channels', ChannelController::class)

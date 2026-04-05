@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\User;
 
-use App\Enums\Role;
+use App\Enums\PermissionSlug;
 use App\Events\UserCreated;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -19,33 +20,28 @@ class CreateUserTest extends TestCase
 
     protected User $admin;
     protected User $user;
-    protected UploadedFile $file;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->seed(RoleSeeder::class);
-
-        Storage::fake('public');
-        $this->file = UploadedFile::fake()->image('avatar.jpg');
+        $this->seed(PermissionSeeder::class);
+        $permission = Permission::where('slug', PermissionSlug::USERS_MANAGE)->first();
 
         $this->admin = User::factory()->create();
-        $this->admin->assignRole(Role::ADMIN);
+        $this->admin->permissions()->sync([$permission->permission_id]);
 
         $this->user = User::factory()->create();
-        $this->user->assignRole(Role::USER);
     }
 
     private function payload(array $overrides = []): array
     {
         return array_merge([
-            'username' => 'John',
+            'username' => 'John Doe',
             'email' => 'john@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-            'role' => Role::USER->value,
-            'avatar' => $this->file,
+            'password' => '03d0fa8b8aa4491e0b2003047ae52504A',
+            'password_confirmation' => '03d0fa8b8aa4491e0b2003047ae52504A',
+            'phone' => null,
+            'permissions' => [PermissionSlug::USERS_MANAGE->value],
         ], $overrides);
     }
 
@@ -107,8 +103,8 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_duplicate_email(): void
     {
-        $payload = $this->payload();
-        User::factory()->create(['email' => $payload['email']]);
+        $payload = $this->payload(['email' => 'duplicate@example.com']);
+        User::factory()->create(['email' => 'duplicate@example.com']);
 
         $response = $this->actingAs($this->admin)
             ->postJson('/api/users', $payload);
@@ -130,7 +126,7 @@ class CreateUserTest extends TestCase
 
     public function test_create_user_with_password_not_confirmed(): void
     {
-        $payload = $this->payload(['password' => 'password12345', 'password_confirmation' => 'password123456']);
+        $payload = $this->payload(['password' => '03d0fa8b8aa4491e0b2003047ae52504A', 'password_confirmation' => '03d0fa8b8aa4491e0b2003047ae525041A']);
 
         $response = $this->actingAs($this->admin)
             ->postJson('/api/users', $payload);
@@ -148,8 +144,6 @@ class CreateUserTest extends TestCase
         $this->actingAs($this->admin)
             ->postJson('/api/users', $payload);
 
-        Event::assertDispatched(UserCreated::class, function ($event) use ($payload) {
-            return $event->user->email === $payload['email'];
-        });
+        Event::assertDispatched(UserCreated::class, fn($e) => $e->user->email === $payload['email']);
     }
 }

@@ -30,7 +30,7 @@
 
 @layer base {
     html, body, #app, #guest {
-        @apply h-full w-full overflow-hidden text-sm;
+        @apply h-full w-full overflow-hidden text-sm
     }
 
     .form-label {
@@ -46,6 +46,11 @@
         @apply font-semibold
     }
 
+    .p-button-sm {
+        --p-button-sm-padding-y: .25rem;
+        --p-button-sm-padding-x: .5rem;
+    }
+
     .p-avatar {
         --p-avatar-background: var(--color-surface-100);
     }
@@ -54,12 +59,23 @@
         @apply text-base
     }
 
-    .p-toast-message {
-        --p-toast-border-width: 0;
-        --p-toast-close-button-border-radius: .5rem;
-    }
-
     .p-inputtext:disabled {
         --p-inputtext-disabled-background: var(--color-surface-100);
+    }
+
+    .p-datatable-column-header-content [data-pc-section="sort"] {
+        @apply flex
+    }
+
+    .p-tag {
+        @apply leading-4
+    }
+
+    .p-datatable-sort-icon {
+        --p-datatable-sort-icon-size: 12px;
+    }
+
+    .p-avatar-label {
+        @apply font-semibold
     }
 }

@@ -2,14 +2,14 @@
 
 namespace App\Handlers\User;
 
-use App\Commands\User\UpdateUserAvatarCommand;
+use App\Commands\User\UpdateAvatarUserCommand;
 use App\Events\UserUpdated;
 use App\Handlers\User\Contracts\UpdateUserAvatarHandlerInterface;
 use App\Models\User;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Storage;
 
-class UpdateUserAvatarHandler implements UpdateUserAvatarHandlerInterface
+class UpdateAvatarUserHandler implements UpdateUserAvatarHandlerInterface
 {
     public function __construct(
         protected Dispatcher $dispatcher,
@@ -18,7 +18,7 @@ class UpdateUserAvatarHandler implements UpdateUserAvatarHandlerInterface
     /**
      * Execute the UpdateUserAvatar action.
      */
-    public function handle(UpdateUserAvatarCommand $command): User
+    public function handle(UpdateAvatarUserCommand $command): User
     {
         $oldAvatar = $command->user->avatar;
 

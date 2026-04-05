@@ -8,7 +8,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class TestSeeder extends Seeder
+class ExampleSeeder extends Seeder
 {
     use WithoutModelEvents;
 
@@ -19,12 +19,12 @@ class TestSeeder extends Seeder
     {
         $company = Company::factory()->create();
 
-        User::factory()->for($company)->create([
-            'username' => 'Фомин Александр',
-            'email'    => 'afomin@gmail.com',
+        $user = User::factory()->for($company)->create([
+            'username' => 'ketamin333',
+            'email'    => 'fomin.casch@yandex.ru',
             'password' => Hash::make('password12345'),
         ]);
 
-//        User::factory()->count(100)->for($company)->create();
+        User::factory()->count(100)->for($company)->create();
     }
 }

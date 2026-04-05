@@ -10,10 +10,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository implements UserRepositoryInterface
 {
-
     public function getPaginated(GetUsersQuery $query): LengthAwarePaginator
     {
         return User::where('company_id', $query->companyId)
+            ->search($query->search)
+            ->when($query->sortField !== null, fn($q) => $q->orderBy($query->sortField, $query->sortOrder))
             ->paginate($query->perPage);
     }
 

@@ -22,6 +22,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        /** RATE LIMITER */
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinutes(5, 5)->by($request->email);
         });

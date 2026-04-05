@@ -3,16 +3,15 @@
         InputText, IconField, InputIcon, Password, InputMask,
         Button, Tabs, Tab, TabList, TabPanels, TabPanel
     } from "primevue";
-    import {useToast} from 'primevue/usetoast';
     import {UserRoundCog, UserRoundKey, Mail} from "lucide-vue-next";
     import {inject, ref} from "vue";
     import {createUser} from "../../api/users.js";
     import AvatarUserUpload from "./AvatarUserUpload.vue";
     import UserPermissionToggle from "./UserPermissionToggle.vue";
+    import {useApi} from "../../composables/useApi.js";
 
     const dialog = inject('dialogRef');
-    const loading = ref(false);
-    const toast = useToast();
+    const { execute, loading } = useApi();
 
     const user = ref({
         username: null,
@@ -26,20 +25,10 @@
 
     const hide = () => dialog.value.close();
 
-    const handlerCreateUser = async () => {
-        loading.value = true;
-
-        try {
-            await createUser(user.value);
-
-            toast.add({ severity: 'success', summary: 'Пользователь создан' });
-            hide();
-        } catch (e) {
-            toast.add({ severity: 'error', summary: 'Ошибка создания', detail: e.response?.data?.message });
-        } finally {
-            loading.value = false;
-        }
-    };
+    const handlerCreateUser = () => execute(
+        async () => await createUser(user.value),
+        { successMessage: 'Пользователь успешно создан', onSuccess: hide }
+    );
 </script>
 
 <template>

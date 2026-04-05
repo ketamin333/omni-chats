@@ -29,7 +29,7 @@ const preset = definePreset(Aura, {
                     0: '#FFFFFF',
                     50: '#F8F8F6',
                     100: '#ECECEA',
-                    200: '{zinc.200}',
+                    200: '#DCDCDA',
                     300: '{zinc.300}',
                     400: '{zinc.400}',
                     500: '#817E78',
@@ -73,7 +73,8 @@ const preset = definePreset(Aura, {
         datatable: {
             headerCell: {},
             header: {
-                borderColor: 'transparent'
+                borderColor: 'transparent',
+                padding: '1rem'
             },
             bodyCell: {
                 borderColor: 'transparent'

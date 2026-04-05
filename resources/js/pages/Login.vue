@@ -21,7 +21,7 @@
             await authStore.login(data.value);
             window.location.href = '/';
         } catch (e) {
-            error.value = e.response?.data?.message ?? 'Ошибка авторизации';
+            error.value = e.message || 'Ошибка авторизации';
         } finally {
             loading.value = false;
         }

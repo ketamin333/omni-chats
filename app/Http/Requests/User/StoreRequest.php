@@ -5,8 +5,9 @@ namespace App\Http\Requests\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
-class UserUpdateRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +25,12 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username'      => ['sometimes', 'string', 'max:255'],
-            'phone'         => ['sometimes', 'nullable', 'string', 'max:20'],
-            'permissions'   => ['sometimes', 'nullable', 'array'],
+            'username'      => ['required', 'string', 'max:255'],
+            'email'         => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
+            'password'      => ['required', 'string', 'confirmed', Password::default()],
+            'avatar'        => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
+            'phone'         => ['nullable', 'string', 'max:20'],
+            'permissions'   => ['nullable', 'array'],
             'permissions.*' => ['string', Rule::exists('permissions', 'slug')],
         ];
     }
