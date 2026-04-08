@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum BroadcastChannel: string
 {
-    case USER = 'users';
+    case USERS = 'users';
     case ONLINE = 'online.{companyId}';
+    case CHANNELS = 'channels';
 }

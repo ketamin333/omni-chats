@@ -1,8 +1,10 @@
 import echo from '../echo.js';
 
 export function useUsersChannel(users, total) {
+    const channel = 'users';
+
     const subscribe = () => {
-        echo.private('users')
+        echo.private(channel)
             .listen('UserCreated', user => {
                 users.value.unshift(user);
                 total.value++;
@@ -19,7 +21,7 @@ export function useUsersChannel(users, total) {
             });
     };
 
-    const unsubscribe = () => echo.leave('users');
+    const unsubscribe = () => echo.leave(channel);
 
     return { subscribe, unsubscribe };
 }

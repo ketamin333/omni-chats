@@ -38,7 +38,6 @@ class CreateUserHandler implements CreateUserHandlerInterface
                 ]);
 
                 $this->syncUserPermissionsHandler->handle($user, $command->permissions);
-
                 $this->dispatcher->dispatch(new UserCreated($user));
 
                 return $user;

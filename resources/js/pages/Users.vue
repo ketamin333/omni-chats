@@ -3,7 +3,7 @@ import {onMounted, onUnmounted, ref} from "vue";
 import {deleteUser, getUsers} from "../api/users.js";
     import {DataTable, Column, Button, Avatar, IconField, InputText, InputIcon, Tag} from 'primevue';
     import {Search, UserRoundPlus, X, MousePointerClick, SquarePen, Trash2, Mail,
-        Phone, CalendarDays, CircleUserRound, CalendarPlus, CircleFadingPlus
+        Phone, CalendarDays, CircleUserRound, CalendarPlus, CircleDotDashed
     } from 'lucide-vue-next';
     import CreateUserDialog from "../components/User/CreateUserDialog.vue";
     import UpdateUserDialog from "../components/User/UpdateUserDialog.vue";
@@ -108,7 +108,6 @@ import {deleteUser, getUsers} from "../api/users.js";
             scrollHeight="flex"
             :value="users"
             :loading="loading"
-            lazy
             paginator
             @page="onPage"
             :rows="perPage"
@@ -121,7 +120,7 @@ import {deleteUser, getUsers} from "../api/users.js";
                     <div class="flex flex-col">
                         <div class="flex gap-2 items-center">
                             <span class="text-color font-bold text-2xl">Пользователи</span>
-                            <Tag :value="total"></Tag>
+                            <Tag :value="total" />
                         </div>
                         <span class="text-muted-color text-base">Добавляйте сотрудников и настраивайте их права доступа</span>
                     </div>
@@ -169,7 +168,7 @@ import {deleteUser, getUsers} from "../api/users.js";
             </Column>
             <Column header="Активность">
                 <template #header>
-                    <CircleFadingPlus size="14" />
+                    <CircleDotDashed size="14" />
                 </template>
                 <template #body="{data: { user_id }}" >
                     <Tag v-bind="isOnline(user_id)

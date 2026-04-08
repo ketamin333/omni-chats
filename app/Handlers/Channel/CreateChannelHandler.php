@@ -6,13 +6,15 @@ use App\Commands\Channel\CreateChannelCommand;
 use App\Events\ChannelCreated;
 use App\Handlers\Channel\Contracts\CreateChannelHandlerInterface;
 use App\Models\Channel;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Events\Dispatcher;
 use Throwable;
 
 class CreateChannelHandler implements CreateChannelHandlerInterface
 {
+    public function __construct(
+        protected Dispatcher $dispatcher,
+    ) {}
+
     /**
      * Execute the CreateChannel action.
      *
@@ -22,26 +24,16 @@ class CreateChannelHandler implements CreateChannelHandlerInterface
      */
     public function handle(CreateChannelCommand $command): Channel
     {
-        $avatar = $command->avatar?->store('channels', 'public');
+        $channel = Channel::create([
+            'company_id'   => $command->companyId,
+            'adapter_id'   => $command->adapterId,
+            'channel_name' => $command->channelName,
+            'credentials'  => $command->credentials,
+            'settings'     => $command->settings,
+        ]);
 
-        try {
-            return DB::transaction(function () use ($command, $avatar) {
-                $channel = Channel::create([
-                    'company_id'   => $command->companyId,
-                    'channel_name' => $command->channelName,
-                    'type'         => $command->type,
-                    'credentials'  => $command->credentials,
-                    'avatar'       => $avatar,
-                ]);
+        $this->dispatcher->dispatch(new ChannelCreated($channel));
 
-                Event::dispatch(new ChannelCreated($channel));
-
-                return $channel;
-            });
-        } catch (Throwable $e) {
-            Storage::disk('public')->delete($avatar);
-
-            throw $e;
-        }
+        return $channel;
     }
 }

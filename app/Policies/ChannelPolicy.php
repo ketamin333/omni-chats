@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Enums\Role;
+use App\Enums\PermissionSlug;
 use App\Models\Channel;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -14,7 +14,7 @@ class ChannelPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermission(PermissionSlug::CHANNELS_MANAGE);
     }
 
     /**
@@ -30,7 +30,7 @@ class ChannelPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermission(PermissionSlug::CHANNELS_MANAGE);
     }
 
     /**

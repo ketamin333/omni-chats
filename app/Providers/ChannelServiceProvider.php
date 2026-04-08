@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Handlers\Channel\Contracts\GetChannelProvidersHandlerInterface;
-use App\Handlers\Channel\GetChannelProvidersHandler;
-use App\Repositories\ChannelProviderRepository;
-use App\Repositories\ChannelProviderTypeRepository;
-use App\Repositories\Contracts\ChannelProviderRepositoryInterface;
-use App\Repositories\Contracts\ChannelProviderTypeRepositoryInterface;
+use App\Handlers\Channel\Contracts\CreateChannelHandlerInterface;
+use App\Handlers\Channel\Contracts\GetChannelsHandlerInterface;
+use App\Handlers\Channel\CreateChannelHandler;
+use App\Handlers\Channel\GetChannelsHandler;
+use App\Repositories\ChannelRepository;
+use App\Repositories\Contracts\ChannelRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class ChannelServiceProvider extends ServiceProvider
@@ -18,12 +18,11 @@ class ChannelServiceProvider extends ServiceProvider
     public function register(): void
     {
         /** HANDLERS */
-//        $this->app->bind(CreateChannelHandlerInterface::class, CreateChannelHandler::class);
-        $this->app->bind(GetChannelProvidersHandlerInterface::class, GetChannelProvidersHandler::class);
-
+        $this->app->bind(GetChannelsHandlerInterface::class, GetChannelsHandler::class);
+        $this->app->bind(CreateChannelHandlerInterface::class, CreateChannelHandler::class);
 
         /** REPOSITORIES */
-
+        $this->app->bind(ChannelRepositoryInterface::class, ChannelRepository::class);
     }
 
     /**

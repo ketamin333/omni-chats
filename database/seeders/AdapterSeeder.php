@@ -34,7 +34,28 @@ class AdapterSeeder extends Seeder
                             'type'     => 'text',
                             'label'    => 'Токен бота',
                             'required' => true,
-                            'rules'    => ['required', 'string', 'min:10'],
+                        ],
+                    ]
+                ]
+            ],
+            [
+                'adapter_name'    => AdapterName::WHATSAPP,
+                'adapter_type'    => AdapterType::GREEN_API,
+                'slug'            => $this->getSlug(AdapterName::WHATSAPP, AdapterType::GREEN_API),
+                'handler'         => 'TEST',
+                'settings_schema' => [
+                    'fields' => [
+                        [
+                            'name'     => 'instance',
+                            'type'     => 'text',
+                            'label'    => 'Инстанс',
+                            'required' => true,
+                        ],
+                        [
+                            'name'     => 'secret',
+                            'type'     => 'text',
+                            'label'    => 'Инстанс токен',
+                            'required' => true,
                         ],
                     ]
                 ]
@@ -42,7 +63,7 @@ class AdapterSeeder extends Seeder
         ];
 
         foreach ($adapters as $adapter) {
-            Adapter::firstOrCreate(['slug' => $adapter['slug']], $adapter);
+            Adapter::updateOrCreate(['slug' => $adapter['slug']], $adapter);
         }
 
         $this->repository->forget();

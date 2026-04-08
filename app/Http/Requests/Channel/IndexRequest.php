@@ -4,9 +4,8 @@ namespace App\Http\Requests\Channel;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class IndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +23,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'adapter_id'   => ['required', 'integer', Rule::exists('adapters', 'adapter_id')],
-            'channel_name' => ['required', 'string', 'max:255'],
-            'credentials'  => ['required', 'array'],
-            'settings'     => ['nullable', 'array'],
-            'settings.*'   => ['nullable', 'string', 'max:255'],
+            //
         ];
     }
 }

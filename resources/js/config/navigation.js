@@ -1,4 +1,4 @@
-import {ListChecks, House, UsersRound, MessageCircle, Rss} from "lucide-vue-next";
+import {ListChecks, House, UsersRound, MessageCircle, Layers} from "lucide-vue-next";
 
 const groups = [
     {
@@ -12,7 +12,7 @@ const groups = [
     {
         label: 'Настройки',
         items: [
-            { to: { name: 'channels' }, label: 'Каналы', icon: Rss },
+            { to: { name: 'channels' }, label: 'Каналы', icon: Layers },
             { to: { name: 'users' }, label: 'Пользователи', icon: UsersRound },
         ]
     }

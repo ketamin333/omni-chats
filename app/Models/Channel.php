@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ChannelStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,17 +16,23 @@ class Channel extends Model
 
     protected $fillable = [
         'company_id',
-        'provider_type_id',
+        'adapter_id',
+        'status',
         'channel_name',
         'credentials',
-        'is_active',
+        'settings',
     ];
 
     protected $hidden = ['credentials'];
 
     protected $casts = [
+        'status'      => ChannelStatus::class,
         'credentials' => 'array',
-        'is_active'   => 'boolean',
+        'settings'    => 'array',
+    ];
+
+    protected $attributes = [
+        'status' => ChannelStatus::PENDING,
     ];
 
     public function company(): BelongsTo
@@ -33,8 +40,8 @@ class Channel extends Model
         return $this->belongsTo(Company::class, 'company_id', 'company_id');
     }
 
-    public function providerType(): BelongsTo
+    public function adapter(): BelongsTo
     {
-        return $this->belongsTo(ChannelProviderType::class, 'provider_type_id', 'provider_type_id');
+        return $this->belongsTo(Adapter::class, 'adapter_id', 'adapter_id');
     }
 }

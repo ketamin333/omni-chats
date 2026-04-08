@@ -1,21 +1,28 @@
-import {LockKeyhole, Building} from "lucide-vue-next";
+import {
+    Loader, WifiHigh, Router, Check, LoaderCircle, CirclePause, Infinity, RefreshCcw, GitMergeConflict,
+    CalendarX, GlobeX, Ban
+} from "lucide-vue-next";
 
-export const providerConfig = {
-    telegram: {
-        description: 'Боты и интеграции',
-        color: 'text-sky-500',
-        tagSeverity: 'info',
-        borderColor: '!border-sky-500'
-    },
-    whatsapp: {
-        description: 'Business & Green API',
-        color: 'text-green-500',
-        tagSeverity: 'success',
-        borderColor: '!border-green-500'
-    },
-};
+export const channelStatus = {
+    // BASE STATES
+    pending: { label: 'Ожидание', severity: 'info', icon: Loader },
+    connecting: { label: 'Соединение', severity: 'info', icon: WifiHigh },
+    authenticating: { label: 'Авторизация', severity: 'info', icon: Router },
 
-export const typeConfig = {
-    bot: { icon: LockKeyhole, description: 'Bot API' },
-    business: { icon: Building },
+    // ACTIVE STATES
+    authenticated: { label: 'Авторизирован', severity: 'success', icon: LoaderCircle },
+    active: { label: 'Активен', severity: 'success', icon: Check },
+
+    // WORK STATES
+    paused: { label: 'На паузе', severity: 'warn', icon: CirclePause },
+    rate_limited: { label: 'Спам', severity: 'warn', icon: Infinity },
+    reconnecting: { label: 'Перезапуск', severity: 'warn', icon: RefreshCcw },
+
+    // ERRORS STATES
+    invalid_credentials: { label: 'Неверные данные', severity: 'danger', icon: GitMergeConflict },
+    expired: { label: 'Истек', severity: 'danger', icon: CalendarX },
+
+    // CRIT STATES
+    disconnected: { label: 'Отключен', severity: 'danger', icon: GlobeX },
+    banned: { label: 'Заблокирован', severity: 'danger', icon: Ban },
 };

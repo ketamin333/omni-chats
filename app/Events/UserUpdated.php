@@ -23,7 +23,7 @@ class UserUpdated implements ShouldDispatchAfterCommit, ShouldBroadcast
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel(BroadcastChannel::USER->value);
+        return new PrivateChannel(BroadcastChannel::USERS->value);
     }
 
     public function broadcastWith(): array
