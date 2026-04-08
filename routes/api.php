@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdapterController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
@@ -26,5 +27,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /** PERMISSIONS ROUTES */
     Route::get('permissions', [PermissionController::class, 'index']);
+
+    /** ADAPTERS ROUTES */
+    Route::get('adapters', [AdapterController::class, 'index']);
 });
 

@@ -75,6 +75,10 @@
         --p-datatable-sort-icon-size: 12px;
     }
 
+    .p-steppanels {
+        --p-stepper-steppanels-padding: 0;
+    }
+
     .p-avatar-label {
         @apply font-semibold
     }

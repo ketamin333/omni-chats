@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Channel;
 
-use App\Enums\ChannelType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -25,10 +24,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'channel_name' => ['required', 'string', 'max:255'],
-            'type'         => ['required', Rule::enum(ChannelType::class)],
-            'avatar'       => ['nullable', 'image', 'max:2048'],
-            'credentials'  => ['required', 'array'],
+            'channel_name'      => ['required', 'string', 'max:255'],
+//            'provider_type_id'  => ['required', Rule::exists(ChannelType::class, 'channel_type_id')],
+            'credentials'       => ['required', 'array'],
         ];
     }
 }

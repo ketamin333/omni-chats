@@ -24,6 +24,11 @@ class PermissionSeeder extends Seeder
                 'slug'        => PermissionSlug::USERS_MANAGE,
                 'label'       => 'Управление пользователями',
                 'description' => 'Разрешить пользователю управлять другими пользователями'
+            ],
+            [
+                'slug'        => PermissionSlug::CHANNELS_MANAGE,
+                'label'       => 'Управление каналами',
+                'description' => 'Разрешить пользователю управлять каналами компании'
             ]
         ];
 
@@ -31,6 +36,6 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate(['slug' => $permission['slug']], $permission);
         }
 
-        $this->repository->flush();
+        $this->repository->forget();
     }
 }

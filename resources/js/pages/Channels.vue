@@ -1,42 +1,47 @@
 <script setup>
-    import {Button, Dialog, Stepper, Step, StepList, StepPanel, StepPanels, Divider} from "primevue";
-    import {MessageCirclePlus} from 'lucide-vue-next';
+    import {Button, DataTable, IconField, InputIcon, InputText, Tag} from "primevue";
+    import {MessageCirclePlus} from "lucide-vue-next";
     import {ref} from "vue";
+    import {useDialog} from "primevue/usedialog";
+    import CreateChannelDialog from "../components/Channel/CreateChannelDialog.vue";
 
-    const visible = ref(true);
+    const dialog = useDialog();
+
+    const total = ref(0);
+
+    const onCreateChannelClick = () => dialog.open(CreateChannelDialog, {
+        props: {
+            modal: true,
+            showHeader: false,
+            class: 'w-[38rem]'
+        },
+    });
 </script>
 
 <template>
-    <Dialog v-model:visible="visible" modal class="w-[45rem]" :show-header="false">
-        <template #default>
-            <Stepper value="1" linear class="pt-6">
-                <StepList>
-                    <Step value="1" asChild v-slot="{active}">
-                        <button class="rounded-full p-2 text-muted-color">
-                            <MessageCirclePlus />
-                        </button>
-                    </Step>
-                </StepList>
-                <StepPanels>
-                    <StepPanel v-slot="{ activateCallback }" value="1">
-<!--                        <div class="grid grid-cols-4 gap-3">-->
-<!--                            <div class="p-4 rounded-xl cursor-pointer bg-sky-200 transition shadow-sm">-->
-<!--                                <div class="flex flex-col gap-2 items-center">-->
-<!--                                    <img width="32" height="32"-->
-<!--                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/960px-Telegram_logo.svg.png?_=20220101141644">-->
-<!--                                    <span class="font-bold text-sm text-sky-700">Telegram</span>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-                    </StepPanel>
-                    <StepPanel v-slot="{ activateCallback }" value="2">
+    <div class="flex flex-col h-full overflow-hidden pt-1 pb-2 text-base">
+        <DataTable
+            scrollable
+            scrollHeight="flex"
 
-                    </StepPanel>
-                    <StepPanel v-slot="{ activateCallback }" value="3">
+        >
+            <template #header>
+                <div class="shrink-0 flex justify-between items-start">
+                    <div class="flex flex-col">
+                        <div class="flex gap-2 items-center">
+                            <span class="text-color font-bold text-2xl">Каналы</span>
+                            <Tag :value="total"></Tag>
+                        </div>
+                        <span class="text-muted-color text-base">Добавляйте новые каналы связи</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <Button label="Добавить" @click="onCreateChannelClick">
+                            <template #icon><MessageCirclePlus size="14" /></template>
+                        </Button>
+                    </div>
+                </div>
+            </template>
+        </DataTable>
+    </div>
 
-                    </StepPanel>
-                </StepPanels>
-            </Stepper>
-        </template>
-    </Dialog>
 </template>

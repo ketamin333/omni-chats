@@ -4,11 +4,9 @@ namespace App\Repositories\Contracts;
 
 use Illuminate\Support\Collection;
 
-interface PermissionRepositoryInterface
+interface AdapterRepositoryInterface
 {
     public function getAll(): Collection;
-
-    public function getIdsBySlug(array $slugs): Collection;
 
     public function forget(): void;
 }

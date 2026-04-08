@@ -6,7 +6,6 @@ use App\Models\Permission;
 use App\Repositories\Contracts\PermissionRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class PermissionRepository implements PermissionRepositoryInterface
 {
@@ -24,7 +23,7 @@ class PermissionRepository implements PermissionRepositoryInterface
             ->pluck('permission_id');
     }
 
-    public function flush(): void
+    public function forget(): void
     {
         Cache::forget(self::CACHE_KEY);
     }

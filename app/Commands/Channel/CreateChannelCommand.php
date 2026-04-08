@@ -2,7 +2,7 @@
 
 namespace App\Commands\Channel;
 
-use App\Enums\ChannelType;
+use App\Enums\AdapterType;
 use App\Http\Requests\Channel\StoreRequest;
 use Illuminate\Http\UploadedFile;
 
@@ -16,7 +16,7 @@ readonly class CreateChannelCommand
     public function __construct(
         public int           $companyId,
         public string        $channelName,
-        public ChannelType   $type,
+        public AdapterType   $type,
         public array         $credentials,
         public ?UploadedFile $avatar
     ) {}
@@ -29,7 +29,7 @@ readonly class CreateChannelCommand
         return new self(
             companyId: $request->user()->company_id,
             channelName: $request->channel_name,
-            type: ChannelType::from($request->type),
+            type: AdapterType::from($request->type),
             credentials: $request->credentials,
             avatar: $request->file('avatar'),
         );
