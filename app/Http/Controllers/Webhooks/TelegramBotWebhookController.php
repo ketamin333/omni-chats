@@ -19,10 +19,12 @@ class TelegramBotWebhookController extends Controller
 
     public function __invoke(Request $request, Channel $channelTelegramBot): Response
     {
-        (new ProcessTelegramBotUpdateJob(
-            $channelTelegramBot,
-            new TelegramBotUpdate($request->collect())
-        ))->handle();
+        $this->bus->dispatch(
+            new ProcessTelegramBotUpdateJob(
+                $channelTelegramBot,
+                new TelegramBotUpdate($request->collect())
+            )
+        );
 
         return ApiResponse::noContent();
     }
