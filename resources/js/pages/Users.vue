@@ -114,6 +114,7 @@ import {deleteUser, getUsers} from "../api/users.js";
             :total-records="total"
             @sort="onSort"
             removable-sort
+            lazy
         >
             <template #header>
                 <div class="shrink-0 flex justify-between items-start">
@@ -201,18 +202,18 @@ import {deleteUser, getUsers} from "../api/users.js";
                 </template>
                 <template #body="{data: { user_id }}">
                     <div class="flex gap-2">
-                        <Button outlined rounded severity="danger"
-                                @click="onDeleteUserClick(user_id)"
-                                v-tooltip.bottom="'Удалить'">
-                            <template #icon>
-                                <Trash2 size="14" />
-                            </template>
-                        </Button>
                         <Button outlined rounded
                                 @click="onUpdateUserClick(user_id)"
                                 v-tooltip.bottom="'Изменить'">
                             <template #icon>
                                 <SquarePen size="14" />
+                            </template>
+                        </Button>
+                        <Button outlined rounded severity="danger"
+                                @click="onDeleteUserClick(user_id)"
+                                v-tooltip.bottom="'Удалить'">
+                            <template #icon>
+                                <Trash2 size="14" />
                             </template>
                         </Button>
                     </div>

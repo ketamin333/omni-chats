@@ -55,7 +55,7 @@
         --p-avatar-background: var(--color-surface-100);
     }
 
-    .p-select-option {
+    .p-select-option, .p-menu-list {
         @apply text-base
     }
 

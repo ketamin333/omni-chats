@@ -52,10 +52,10 @@ class UserController extends Controller
         return ApiResponse::paginated($users, UserListResource::class);
     }
 
-    public function show(Request $request, int $userId): JsonResponse
+    public function show(Request $request, string $userId): JsonResponse
     {
         $user = $this->getUserHandler->handle(
-            new GetUserQuery($userId, $request->user()->company_id)
+            new GetUserQuery($request->user()->company_id, $userId)
         );
 
         $this->authorize('view', $user);
@@ -74,10 +74,10 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function update(UpdateRequest $request, int $userId): JsonResponse
+    public function update(UpdateRequest $request, string $userId): JsonResponse
     {
         $user = $this->getUserHandler->handle(
-            new GetUserQuery($userId, $request->user()->company_id)
+            new GetUserQuery($request->user()->company_id, $userId)
         );
 
         $this->authorize('update', $user);
@@ -89,10 +89,10 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function updateAvatar(UpdateAvatarRequest $request, int $userId): JsonResponse
+    public function updateAvatar(UpdateAvatarRequest $request, string $userId): JsonResponse
     {
         $user = $this->getUserHandler->handle(
-            new GetUserQuery($userId, $request->user()->company_id)
+            new GetUserQuery($request->user()->company_id, $userId)
         );
 
         $this->authorize('update', $user);
@@ -104,10 +104,10 @@ class UserController extends Controller
         return ApiResponse::success(new UserResource($user));
     }
 
-    public function changePassword(ChangePasswordRequest $request, int $userId): Response
+    public function changePassword(ChangePasswordRequest $request, string $userId): Response
     {
         $user = $this->getUserHandler->handle(
-            new GetUserQuery($userId, $request->user()->company_id)
+            new GetUserQuery($request->user()->company_id, $userId)
         );
 
         $this->authorize('update', $user);
@@ -119,10 +119,10 @@ class UserController extends Controller
         return ApiResponse::noContent();
     }
 
-    public function destroy(Request $request, int $userId): Response
+    public function destroy(Request $request, string $userId): Response
     {
         $user = $this->getUserHandler->handle(
-            new GetUserQuery($userId, $request->user()->company_id)
+            new GetUserQuery($request->user()->company_id, $userId)
         );
 
         $this->authorize('delete', $user);

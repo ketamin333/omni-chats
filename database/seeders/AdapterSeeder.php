@@ -6,7 +6,7 @@ use App\Enums\AdapterName;
 use App\Enums\AdapterType;
 use App\Models\Adapter;
 use App\Repositories\Contracts\AdapterRepositoryInterface;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Services\Adapters\Telegram\Bot\TelegramBotAdapterService;
 use Illuminate\Database\Seeder;
 
 class AdapterSeeder extends Seeder
@@ -26,7 +26,7 @@ class AdapterSeeder extends Seeder
                 'adapter_name'    => AdapterName::TELEGRAM,
                 'adapter_type'    => AdapterType::BOT,
                 'slug'            => $this->getSlug(AdapterName::TELEGRAM, AdapterType::BOT),
-                'handler'         => 'TEST',
+                'handler'         => TelegramBotAdapterService::class,
                 'settings_schema' => [
                     'fields' => [
                         [

@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     /** CHANNELS ROUTES */
     Route::apiResource('channels', ChannelController::class)
         ->parameter('channel', 'channelId');
+    Route::patch('channels/{channelId}/status', [ChannelController::class, 'updateStatus']);
 
     /** PERMISSIONS ROUTES */
     Route::get('permissions', [PermissionController::class, 'index']);

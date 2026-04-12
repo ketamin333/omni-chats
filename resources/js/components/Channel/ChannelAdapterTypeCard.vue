@@ -8,12 +8,15 @@
     const emit = defineEmits(['update:active']);
 
     const typesList = computed(
-        () => (props.adapter.types || []).map(type => ({
-            ...type,
-            config: {
-                ...adapterNamesConfig[props.adapter.adapter_name].slugs[type.adapter_type],
-                ...adapterTypesConfig[type.adapter_type],
-            }})
+        () => (props.adapter.types || [])
+            .sort((a ,b) => a.adapter_type.localeCompare(b.adapter_type))
+            .map(type => ({
+                ...type,
+                config: {
+                    ...adapterNamesConfig[props.adapter.adapter_name].slugs[type.adapter_type],
+                    ...adapterTypesConfig[type.adapter_type],
+                }}
+            )
         )
     );
 

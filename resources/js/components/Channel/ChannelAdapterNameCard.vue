@@ -8,7 +8,9 @@
     const emit = defineEmits(['update:active']);
 
     const adaptersList = computed(
-        () => props.adapters.map(adapter => ({...adapter, config: adapterNamesConfig[adapter.adapter_name]}))
+        () => props.adapters
+            .sort((a, b) => a.adapter_name.localeCompare(b.adapter_name))
+            .map(adapter => ({...adapter, config: adapterNamesConfig[adapter.adapter_name]}))
     );
 
     const onAdapterNameClick = name => emit('update:active', name);

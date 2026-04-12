@@ -16,6 +16,11 @@ class AdapterRepository implements AdapterRepositoryInterface
         return Cache::rememberForever(self::CACHE_KEY, fn() => Adapter::all());
     }
 
+    public function getById(int $adapterId): ?Adapter
+    {
+        return $this->getAll()->firstWhere('adapter_id', $adapterId);
+    }
+
     public function forget(): void
     {
         Cache::forget(self::CACHE_KEY);

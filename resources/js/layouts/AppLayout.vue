@@ -20,7 +20,7 @@ import {onMounted, onUnmounted} from "vue";
 
 <template>
     <div class="bg-surface-50 h-full w-full flex gap-2 p-2">
-        <aside class="w-60 shrink-0">
+        <aside class="max-w-70 shrink-0">
             <Sidebar />
         </aside>
         <section class="flex-1 min-w-0 bg-surface-0 rounded-xl shadow-sm grow overflow-hidden">

@@ -5,10 +5,13 @@
     import {useDialog} from "primevue/usedialog";
     import CreateChannelDialog from "../components/Channel/CreateChannelDialog.vue";
     import {useChannelsChannel} from "../composables/useChannelsChannel.js";
-    import {getChannels} from "../api/channels.js";
-    import {adapterTypesConfig, adapterNamesConfig} from "../config/adapterConfig.js";
+    import {deleteChannel, getChannels, updateStatusChannel} from "../api/channels.js";
+    import {adapterNamesConfig} from "../config/adapterConfig.js";
     import dayjs from "../config/dayjs.js";
-    import {channelStatus} from "../config/channelConfig.js";
+    import {channelHandler, channelStatus} from "../config/channelConfig.js";
+    import {useApi} from "../composables/useApi.js";
+    import {useToast} from "primevue/usetoast";
+    import {useConfirm} from "primevue/useconfirm";
 
     const dialog = useDialog();
     const total = ref(0);
@@ -17,7 +20,11 @@
     const perPage = 25;
     const page = ref(1);
 
+    const toast = useToast();
+    const confirm = useConfirm();
+
     const { subscribe, unsubscribe } = useChannelsChannel(channels, total);
+    const { execute } = useApi();
 
     onMounted(() => { loadChannels(); subscribe(); });
     onUnmounted(() => unsubscribe());
@@ -43,6 +50,32 @@
             class: 'w-[38rem]'
         },
     });
+
+    const onDeleteChannelClick = channelId => confirm.require({
+        modal: true,
+        message: 'Канал будет помечен как удалённый и скрыт из активного списка',
+        header: 'Вы действительно хотите удалить канал?',
+        accept: async () => {
+            try {
+                await deleteChannel(channelId);
+                toast.add({ severity: 'success', summary: 'Канал успешно удален' });
+            } catch (e) {
+                toast.add({ severity: 'error', summary: e.message, detail: e.errors });
+            }
+        },
+    });
+
+    const handleStopChannel = async channelId => execute(
+        async () => await updateStatusChannel(channelId, 'paused'),
+        { successMessage: 'Канал успешно остановен' },
+    );
+
+    const handleStartChannel = async channelId => execute(
+        async () => await updateStatusChannel(channelId, 'connecting'),
+        { successMessage: 'Канал успешно активинован' }
+    );
+
+    const handlers = { handleStopChannel, handleStartChannel };
 </script>
 
 <template>
@@ -56,6 +89,7 @@
             :total-records="total"
             :rows="perPage"
             @page="onPage"
+            lazy
         >
             <template #header>
                 <div class="shrink-0 flex justify-between items-start">
@@ -118,12 +152,30 @@
                 <template #header>
                     <MousePointerClick size="14" />
                 </template>
-                <template #body="{data: { channel_id }}">
+                <template #body="{data: { channel_id, status }}">
                     <div class="flex gap-2">
                         <Button outlined rounded
                                 v-tooltip.bottom="'Изменить'">
                             <template #icon>
                                 <SquarePen size="14" />
+                            </template>
+                        </Button>
+                        <Button
+                            v-for="handler in channelStatus[status]?.handlers || []"
+                            :key="handler"
+                            outlined rounded
+                            v-tooltip.bottom="channelHandler[handler].label"
+                            @click="handlers[channelHandler[handler].handler](channel_id)"
+                        >
+                            <template #icon>
+                                <component :is="channelHandler[handler].icon" size="14" />
+                            </template>
+                        </Button>
+                        <Button outlined severity="danger" rounded
+                                @click="onDeleteChannelClick(channel_id)"
+                                v-tooltip.bottom="'Удалить'">
+                            <template #icon>
+                                <Trash2 size="14" />
                             </template>
                         </Button>
                     </div>

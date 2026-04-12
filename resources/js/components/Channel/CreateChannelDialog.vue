@@ -1,14 +1,13 @@
 <script setup>
     import {computed, inject, onMounted, ref} from "vue";
     import {X, Router, Code, Check, Sun, ChevronRight, ChevronLeft, Sparkles} from "lucide-vue-next";
-    import {Stepper, StepList, StepPanels, Step, StepPanel, Button, Divider, InputText, Textarea} from 'primevue';
+    import {Stepper, StepList, StepPanels, Step, StepPanel, Button, Divider, InputText, Textarea, Avatar} from 'primevue';
     import {createChannel} from "../../api/channels.js";
     import ChannelAdapterNameCard from "./ChannelAdapterNameCard.vue";
     import {useApi} from "../../composables/useApi.js";
     import {getAdapters} from "../../api/adapters.js";
     import ChannelAdapterTypeCard from "./ChannelAdapterTypeCard.vue";
     import {adapterNamesConfig, adapterTypesConfig} from "../../config/adapterConfig.js";
-    import api from "../../api/axios.js";
 
     const dialogRef = inject('dialogRef');
     const activeStep = ref('1');
@@ -68,8 +67,9 @@
         selectedType.value = adapters.value.find(a => a.adapter_id === adapterId);
     };
 
-    const handleCreateChannel = () => execute(
+    const handleCreateChannel = callback => execute(
         async () => await createChannel(channel.value),
+        { onSuccess: callback }
     );
 </script>
 
@@ -216,10 +216,22 @@
                             <Button outlined @click="activateCallback('3')">
                                 <ChevronLeft size="14" /> Назад
                             </Button>
-                            <Button @click="handleCreateChannel">
+                            <Button :loading="loading" @click="() => handleCreateChannel(() => activateCallback('5'))">
                                 Создать канал
                             </Button>
                         </div>
+                    </div>
+                </StepPanel>
+                <StepPanel value="5" as-child>
+                    <div class="flex flex-col gap-6 items-center">
+                        <Avatar shape="circle" size="large" class="!bg-green-100 !text-green-500">
+                            <template #icon><Check size="24" /></template>
+                        </Avatar>
+                        <div class="flex flex-col gap-2 text-center">
+                            <span class="font-semibold text-base">Канал создан</span>
+                            <span class="text-muted-color">«{{ channel.channel_name }}» успешно создан и готов к работе</span>
+                        </div>
+                        <Button label="Закрыть" outlined fluid @click="hide" />
                     </div>
                 </StepPanel>
             </StepPanels>
