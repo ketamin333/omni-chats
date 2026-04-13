@@ -19,7 +19,7 @@ class TelegramBotUpdate
 
     public function type(): TelegramBotUpdateType
     {
-        /** @var string|null $type */
+        /** @var string|null $type Type telegram bot webhook */
         $type = $this->data->keys()->first(
             fn ($key) => in_array($key, TelegramBotUpdateType::values())
         );
@@ -39,6 +39,17 @@ class TelegramBotUpdate
 
         return new TelegramBotMessage(
             new Collection($this->data->get('message'))
+        );
+    }
+
+    public function myChatMember(): ?TelegramBotMyChatMember
+    {
+        if (!$this->data->has('my_chat_member')) {
+            return null;
+        }
+
+        return new TelegramBotMyChatMember(
+            new Collection($this->data->get('my_chat_member'))
         );
     }
 }

@@ -10,7 +10,6 @@ use App\Support\ApiResponse;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class TelegramBotWebhookController extends Controller
 {

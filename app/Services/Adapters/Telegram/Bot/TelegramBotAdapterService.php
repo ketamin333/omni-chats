@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class TelegramBotAdapterService implements AdapterHandlerInterface, HasCredentialRules
+readonly class TelegramBotAdapterService implements AdapterHandlerInterface, HasCredentialRules
 {
     public function __construct(
-        private TelegramBotClientFactory $factory,
-        private UpdateStatusChannelHandlerInterface $updateStatusChannelHandler,
+        private TelegramBotClientFactory                 $factory,
+        private UpdateStatusChannelHandlerInterface      $updateStatusChannelHandler,
         private UpdateCredentialsChannelHandlerInterface $updateCredentialsChannelHandler,
     ) {}
 
