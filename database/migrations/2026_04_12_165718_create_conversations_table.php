@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('conversations', function (Blueprint $table) {
-            $table->id('conversation_id');
+            $table->uuid('conversation_id')->primary();
 
             $table->foreignId('contact_id')
                 ->constrained('contacts', 'contact_id')
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['channel_id', 'external_id']);
+            $table->index(['channel_id', 'external_id']);
         });
     }
 

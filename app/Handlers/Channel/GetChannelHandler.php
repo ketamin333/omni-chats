@@ -21,7 +21,7 @@ class GetChannelHandler implements GetChannelHandlerInterface
     /**
      * Execute the GetChannel action.
      */
-    public function handle(GetChannelQuery $query): ?Channel
+    public function handle(GetChannelQuery $query): Channel
     {
         return $this->repository->findById($query);
     }

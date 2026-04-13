@@ -4,7 +4,6 @@ namespace App\Services\Adapters\Telegram\Bot\DTO;
 
 use App\Enums\Telegram\TelegramBotUpdateType;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class TelegramBotUpdate

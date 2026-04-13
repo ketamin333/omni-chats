@@ -10,11 +10,12 @@ use App\Support\ApiResponse;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class TelegramBotWebhookController extends Controller
 {
     public function __construct(
-        private Dispatcher $bus,
+        private readonly Dispatcher $bus,
     ) {}
 
     public function __invoke(Request $request, Channel $channelTelegramBot): Response

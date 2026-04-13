@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use App\Enums\ConversationStatus;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Conversation extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasUuids;
 
     protected $table = 'conversations';
     protected $primaryKey = 'conversation_id';
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     protected $fillable = [
         'contact_id',

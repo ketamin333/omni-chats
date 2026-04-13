@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Channel;
 use App\Services\Adapters\Telegram\Bot\DTO\TelegramBotUpdate;
+use App\Services\Adapters\Telegram\Bot\TelegramBotUpdateService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -22,8 +23,8 @@ class ProcessTelegramBotUpdateJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(TelegramBotUpdateService $service): void
     {
-
+        $service->process($this->channel, $this->update);
     }
 }
