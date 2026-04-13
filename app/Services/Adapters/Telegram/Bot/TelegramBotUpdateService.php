@@ -4,20 +4,27 @@ namespace App\Services\Adapters\Telegram\Bot;
 
 use App\Commands\Contact\CreateContactCommand;
 use App\Commands\Conversation\CreateConversationCommand;
+use App\Commands\Message\CreateMessageCommand;
+use App\Enums\MessageDirection;
 use App\Enums\Telegram\TelegramBotUpdateType;
 use App\Handlers\Contact\Contracts\CreateContactHandlerInterface;
 use App\Handlers\Conversation\Contracts\CreateConversationHandlerInterface;
+use App\Handlers\Message\Contracts\CreateMessageHandlerInterface;
 use App\Models\Channel;
+use App\Models\Contact;
+use App\Models\Conversation;
 use App\Repositories\Contracts\ConversationRepositoryInterface;
+use App\Services\Adapters\Telegram\Bot\DTO\TelegramBotChat;
 use App\Services\Adapters\Telegram\Bot\DTO\TelegramBotMessage;
 use App\Services\Adapters\Telegram\Bot\DTO\TelegramBotUpdate;
 
-class TelegramBotUpdateService
+readonly class TelegramBotUpdateService
 {
     public function __construct(
-        protected readonly ConversationRepositoryInterface $conversationRepository,
-        protected readonly CreateContactHandlerInterface $createContactHandler,
-        protected readonly CreateConversationHandlerInterface $createConversationHandler,
+        protected ConversationRepositoryInterface    $conversationRepository,
+        protected CreateContactHandlerInterface      $createContactHandler,
+        protected CreateConversationHandlerInterface $createConversationHandler,
+        protected CreateMessageHandlerInterface      $createMessageHandler,
     ) {}
 
     public function process(Channel $channel, TelegramBotUpdate $update): void
@@ -28,28 +35,42 @@ class TelegramBotUpdateService
         };
     }
 
-    protected function handleMessage(Channel $channel, ?TelegramBotMessage $message): void
+    protected function handleMessage(Channel $channel, TelegramBotMessage $message): void
     {
-        $chatId = $message->chat()->id();
-
         $conversation = $this->conversationRepository
-            ->findByChannelAndExternalId($channel, $chatId);
+            ->findByChannelAndExternalId($channel, $message->chat()->id())
+            ?? $this->createConversation($channel, $message->chat());
 
-        if (!$conversation) {
-            $contact = $this->createContactHandler->handle(
-                new CreateContactCommand(
-                    companyId: $channel->company_id,
-                    username: $message->chat()->username(),
-                )
-            );
+        $this->createMessageHandler->handle(
+            new CreateMessageCommand(
+                conversationId: $conversation->conversation_id,
+                externalId: $message->messageId(),
+                direction: MessageDirection::INCOMING,
+                text: $message->text(),
+            )
+        );
+    }
 
-            $conversation = $this->createConversationHandler->handle(
-                new CreateConversationCommand(
-                    contactId: $contact->contact_id,
-                    channelId: $channel->channel_id,
-                    externalId: $chatId
-                )
-            );
-        }
+    protected function createConversation(Channel $channel, TelegramBotChat $chat): Conversation
+    {
+        $contact = $this->createContact($channel, $chat->username());
+
+        return $this->createConversationHandler->handle(
+            new CreateConversationCommand(
+                contactId: $contact->contact_id,
+                channelId: $channel->channel_id,
+                externalId: $chat->id(),
+            )
+        );
+    }
+
+    protected function createContact(Channel $channel, ?string $username = null): Contact
+    {
+        return $this->createContactHandler->handle(
+            new CreateContactCommand(
+                companyId: $channel->company_id,
+                username: $username,
+            )
+        );
     }
 }
