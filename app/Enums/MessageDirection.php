@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum MessageType: string
+enum MessageDirection: string
 {
     case INCOMING = 'incoming';
     case OUTGOING = 'outgoing';

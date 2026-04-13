@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\MessageType;
+use App\Enums\MessageDirection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Message extends Model
 {
@@ -12,12 +13,17 @@ class Message extends Model
 
     protected $fillable = [
         'conversation_id',
-        'content',
-        'type',
         'external_id',
+        'direction',
+        'text',
     ];
 
     protected $casts = [
-        'type' => MessageType::class,
+        'direction' => MessageDirection::class,
     ];
+
+    public function conversation(): BelongsTo
+    {
+        return $this->belongsTo(Conversation::class, 'conversation_id', 'conversation_id');
+    }
 }
