@@ -36,7 +36,7 @@ class TelegramBotMyChatMember
         );
     }
 
-    protected function newChatMember(): TelegramBotNewChatMember
+    public function newChatMember(): TelegramBotNewChatMember
     {
         return new TelegramBotNewChatMember(
             new Collection($this->myChatMember->get('new_chat_member')),

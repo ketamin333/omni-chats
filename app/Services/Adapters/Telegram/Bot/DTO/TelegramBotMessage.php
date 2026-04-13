@@ -34,8 +34,40 @@ class TelegramBotMessage
         return (int) $this->message->get('date');
     }
 
-    public function text(): string
+    public function mediaGroupId(): ?int
+    {
+        return (int) $this->message->get('media_group_id');
+    }
+
+    public function text(): ?string
     {
         return (string) $this->message->get('text');
+    }
+
+    public function caption(): ?string
+    {
+        return (string) $this->message->get('caption');
+    }
+
+    public function document(): ?TelegramBotDocument
+    {
+        if (!$this->message->has('document')) {
+            return null;
+        }
+
+        return new TelegramBotDocument(
+            new Collection($this->message->get('document'))
+        );
+    }
+
+    public function photo(): ?TelegramBotPhoto
+    {
+        if (!$this->message->has('photo')) {
+            return null;
+        }
+
+        return new TelegramBotPhoto(
+            new Collection($this->message->get('photo'))
+        );
     }
 }

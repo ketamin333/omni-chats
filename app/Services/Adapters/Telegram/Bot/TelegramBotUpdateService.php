@@ -46,7 +46,7 @@ readonly class TelegramBotUpdateService
                 conversationId: $conversation->conversation_id,
                 externalId: $message->messageId(),
                 direction: MessageDirection::INCOMING,
-                text: $message->text(),
+                text: $message->text() ?? $message->caption(),
             )
         );
     }

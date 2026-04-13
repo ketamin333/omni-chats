@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\MessageDirection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Message extends Model
 {
@@ -25,5 +26,10 @@ class Message extends Model
     public function conversation(): BelongsTo
     {
         return $this->belongsTo(Conversation::class, 'conversation_id', 'conversation_id');
+    }
+
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(Attachment::class, 'attachmentable');
     }
 }
