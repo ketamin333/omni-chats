@@ -2,72 +2,62 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-use Illuminate\Support\Collection;
-
 class TelegramBotMessage
 {
     public function __construct(
-        protected Collection $message,
+        protected array $message,
     ) {}
 
     public function messageId(): int
     {
-        return (int) $this->message->get('message_id');
+        return (int) $this->message['message_id'];
     }
 
     public function from(): TelegramBotFrom
     {
-        return new TelegramBotFrom(
-            new Collection($this->message->get('from'))
-        );
+        return new TelegramBotFrom($this->message['from']);
     }
 
     public function chat(): TelegramBotChat
     {
-        return new TelegramBotChat(
-            new Collection($this->message->get('chat'))
-        );
+        return new TelegramBotChat($this->message['chat']);
     }
 
     public function date(): int
     {
-        return (int) $this->message->get('date');
+        return (int) $this->message['date'];
     }
 
     public function mediaGroupId(): ?int
     {
-        return (int) $this->message->get('media_group_id');
+        return (int) $this->message['media_group_id'];
     }
 
     public function text(): ?string
     {
-        return (string) $this->message->get('text');
+        return (string) $this->message['text'];
     }
 
     public function caption(): ?string
     {
-        return (string) $this->message->get('caption');
+        return (string) $this->message['caption'];
     }
 
     public function document(): ?TelegramBotDocument
     {
-        if (!$this->message->has('document')) {
+        if (!array_key_exists('document', $this->message)) {
             return null;
         }
 
-        return new TelegramBotDocument(
-            new Collection($this->message->get('document'))
-        );
+        return new TelegramBotDocument($this->message['document']);
     }
 
     public function photo(): ?TelegramBotPhoto
     {
-        if (!$this->message->has('photo')) {
+        if (!array_key_exists('photo', $this->message)) {
             return null;
         }
 
-        return new TelegramBotPhoto(
-            new Collection($this->message->get('photo'))
-        );
+        return new TelegramBotPhoto($this->message['photo']);
     }
 }

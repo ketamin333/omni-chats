@@ -22,7 +22,7 @@ class TelegramBotWebhookController extends Controller
         $this->bus->dispatch(
             new ProcessTelegramBotUpdateJob(
                 $channelTelegramBot,
-                new TelegramBotUpdate($request->collect())
+                new TelegramBotUpdate($request->all())
             )
         );
 

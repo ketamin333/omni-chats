@@ -102,7 +102,7 @@ import {deleteUser, getUsers} from "../api/users.js";
 </script>
 
 <template>
-    <div class="flex flex-col h-full overflow-hidden pt-1 pb-2 text-base">
+    <div class="flex flex-col h-full overflow-hidden pb-2 text-base">
         <DataTable
             scrollable
             scrollHeight="flex"

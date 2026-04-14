@@ -22,7 +22,7 @@ class Attachment extends Model
         'size' => 'integer',
     ];
 
-    public function attachmentable(): MorphTo
+    public function attachable(): MorphTo
     {
         return $this->morphTo();
     }

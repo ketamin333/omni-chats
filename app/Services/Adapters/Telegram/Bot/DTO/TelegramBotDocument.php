@@ -2,36 +2,34 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-use Illuminate\Support\Collection;
-
 class TelegramBotDocument
 {
     public function __construct(
-        protected Collection $document
+        protected array $document
     ) {}
 
     public function fileName(): string
     {
-        return (string) $this->document->get('file_name');
+        return (string) $this->document['file_name'];
     }
 
     public function mimeType(): string
     {
-        return (string) $this->document->get('mime_type');
+        return (string) $this->document['mime_type'];
     }
 
     public function fileId(): string
     {
-        return (string) $this->document->get('file_id');
+        return (string) $this->document['file_id'];
     }
 
     public function fileUniqueId(): string
     {
-        return (string) $this->document->get('file_unique_id');
+        return (string) $this->document['file_unique_id'];
     }
 
     public function fileSize(): int
     {
-        return (int) $this->document->get('file_size');
+        return (int) $this->document['file_size'];
     }
 }

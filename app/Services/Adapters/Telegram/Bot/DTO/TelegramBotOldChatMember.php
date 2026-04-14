@@ -2,28 +2,24 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-use Illuminate\Support\Collection;
-
 class TelegramBotOldChatMember
 {
     public function __construct(
-        protected Collection $oldChatMember,
+        protected array $oldChatMember,
     ) {}
 
     public function user(): TelegramBotUser
     {
-        return new TelegramBotUser(
-            new Collection($this->oldChatMember->get('user'))
-        );
+        return new TelegramBotUser($this->oldChatMember['user']);
     }
 
     public function status(): string
     {
-        return (string) $this->oldChatMember->get('status');
+        return (string) $this->oldChatMember['status'];
     }
 
     public function untilDate(): int
     {
-        return (int) $this->oldChatMember->get('until_date');
+        return (int) $this->oldChatMember['until_date'];
     }
 }

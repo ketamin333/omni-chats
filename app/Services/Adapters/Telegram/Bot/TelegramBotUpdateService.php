@@ -37,8 +37,7 @@ readonly class TelegramBotUpdateService
 
     protected function handleMessage(Channel $channel, TelegramBotMessage $message): void
     {
-        $conversation = $this->conversationRepository
-            ->findByChannelAndExternalId($channel, $message->chat()->id())
+        $conversation = $this->conversationRepository->findByChannelAndExternalId($channel, $message->chat()->id())
             ?? $this->createConversation($channel, $message->chat());
 
         $this->createMessageHandler->handle(

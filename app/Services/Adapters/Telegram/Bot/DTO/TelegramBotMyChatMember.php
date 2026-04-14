@@ -2,44 +2,34 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-use Illuminate\Support\Collection;
-
 class TelegramBotMyChatMember
 {
     public function __construct(
-        protected Collection $myChatMember,
+        protected array $myChatMember,
     ) {}
 
     public function chat(): TelegramBotChat
     {
-        return new TelegramBotChat(
-            new Collection($this->myChatMember->get('chat')),
-        );
+        return new TelegramBotChat($this->myChatMember['chat']);
     }
 
     public function from(): TelegramBotFrom
     {
-        return new TelegramBotFrom(
-            new Collection($this->myChatMember->get('from')),
-        );
+        return new TelegramBotFrom($this->myChatMember['from']);
     }
 
     public function date(): int
     {
-        return (int) $this->myChatMember->get('date');
+        return (int) $this->myChatMember['date'];
     }
 
     public function oldChatMember(): TelegramBotOldChatMember
     {
-        return new TelegramBotOldChatMember(
-            new Collection($this->myChatMember->get('old_chat_member'))
-        );
+        return new TelegramBotOldChatMember($this->myChatMember['old_chat_member']);
     }
 
     public function newChatMember(): TelegramBotNewChatMember
     {
-        return new TelegramBotNewChatMember(
-            new Collection($this->myChatMember->get('new_chat_member')),
-        );
+        return new TelegramBotNewChatMember($this->myChatMember['new_chat_member']);
     }
 }

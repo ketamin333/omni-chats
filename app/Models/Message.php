@@ -30,6 +30,6 @@ class Message extends Model
 
     public function attachments(): MorphMany
     {
-        return $this->morphMany(Attachment::class, 'attachmentable');
+        return $this->morphMany(Attachment::class, 'attachable');
     }
 }

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import userRoutes from './routes/users.js';
 
 const routes = [
     {
@@ -11,8 +10,8 @@ const routes = [
     {
         path: '/chats',
         name: 'chats',
-        meta: { title: 'Чаты' },
-        component: '',
+        meta: { title: 'Чаты',  },
+        component: () => import('../pages/Chats.vue'),
     },
     {
         path: '/tasks',
@@ -26,7 +25,12 @@ const routes = [
         meta: { title: 'Каналы' },
         component: () => import('../pages/Channels.vue'),
     },
-    ...userRoutes,
+    {
+        path: '/users',
+        name: 'users',
+        meta: { title: 'Пользователи' },
+        component: () => import('../pages/Users.vue'),
+    },
 
     { path: '/:pathMatch(.*)*', redirect: 'dashboard' }
 ];

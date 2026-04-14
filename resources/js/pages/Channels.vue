@@ -1,5 +1,5 @@
 <script setup>
-    import {Button, DataTable, Tag, Column, Avatar} from "primevue";
+    import {Button, DataTable, Tag, Column} from "primevue";
     import {CalendarPlus, MessageCirclePlus, Layers, Router, CircleDotDashed, MousePointerClick, Trash2, SquarePen} from "lucide-vue-next";
     import {onMounted, onUnmounted, ref} from "vue";
     import {useDialog} from "primevue/usedialog";
@@ -79,7 +79,7 @@
 </script>
 
 <template>
-    <div class="flex flex-col h-full overflow-hidden pt-1 pb-2 text-base">
+    <div class="flex flex-col h-full overflow-hidden pb-2 text-base">
         <DataTable
             scrollable
             scrollHeight="flex"

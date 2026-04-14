@@ -2,36 +2,34 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-use Illuminate\Support\Collection;
-
 class TelegramBotFrom
 {
     public function __construct(
-        protected Collection $from
+        protected array $from
     ) {}
 
     public function id(): int
     {
-        return (int) $this->from->get('id');
+        return (int) $this->from['id'];
     }
 
     public function isBot(): bool
     {
-        return (bool) $this->from->get('is_bot');
+        return (bool) $this->from['is_bot'];
     }
 
     public function firstName(): ?string
     {
-        return (string) $this->from->get('first_name');
+        return (string) $this->from['first_name'];
     }
 
     public function username(): ?string
     {
-        return (string) $this->from->get('username');
+        return (string) $this->from['username'];
     }
 
     public function languageCode(): string
     {
-        return (string) $this->from->get('language_code');
+        return (string) $this->from['language_code'];
     }
 }
