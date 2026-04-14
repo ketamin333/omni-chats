@@ -3,6 +3,7 @@
 return [
     App\Providers\AdapterServiceProvider::class,
     App\Providers\AppServiceProvider::class,
+    App\Providers\AttachmentServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
     App\Providers\ChannelServiceProvider::class,
     App\Providers\ContactServiceProvider::class,

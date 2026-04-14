@@ -3,7 +3,6 @@
 namespace App\Services\Adapters\Telegram\Bot\Client;
 
 use App\Exceptions\Adapters\Telegram\TelegramBotApiException;
-use App\Services\Adapters\Telegram\Bot\Client\Contracts\TelegramBotClientInterface;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 

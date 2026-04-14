@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Adapters\Telegram\Bot\Client\Contracts;
+namespace App\Services\Adapters\Telegram\Bot\Client;
 
 interface TelegramBotClientInterface
 {

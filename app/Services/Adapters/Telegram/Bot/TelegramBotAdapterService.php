@@ -11,8 +11,7 @@ use App\Handlers\Channel\Contracts\UpdateStatusChannelHandlerInterface;
 use App\Models\Channel;
 use App\Services\Adapters\Contracts\AdapterHandlerInterface;
 use App\Services\Adapters\Contracts\HasCredentialRules;
-use App\Services\Adapters\Telegram\Bot;
-use App\Services\Adapters\Telegram\Bot\Client\Factories\TelegramBotClientFactory;
+use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClientFactory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -25,7 +24,7 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
         private UpdateCredentialsChannelHandlerInterface $updateCredentialsChannelHandler,
     ) {}
 
-    protected function getClient(string $botToken): Bot\Client\Contracts\TelegramBotClientInterface
+    protected function getClient(string $botToken): Client\TelegramBotClientInterface
     {
         return $this->factory->make($botToken);
     }

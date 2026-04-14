@@ -4,8 +4,8 @@ namespace App\Services\Adapters\Telegram\Bot;
 
 use App\Exceptions\Adapters\Telegram\TelegramBotApiException;
 use App\Models\Channel;
-use App\Services\Adapters\Telegram\Bot\Client\Contracts\TelegramBotClientInterface;
-use App\Services\Adapters\Telegram\Bot\Client\Factories\TelegramBotClientFactory;
+use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClientFactory;
+use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClientInterface;
 use App\Services\Adapters\Telegram\Bot\DTO\Contracts\TelegramBotFileInterface;
 use App\Services\Adapters\Telegram\Bot\DTO\Contracts\TelegramBotNamedFileInterface;
 use App\Services\Storage\DTO\StoredFile;

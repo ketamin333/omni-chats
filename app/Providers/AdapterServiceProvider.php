@@ -6,8 +6,8 @@ use App\Handlers\Adapter\Contracts\GetAdaptersHandlerInterface;
 use App\Handlers\Adapter\GetAdaptersHandler;
 use App\Repositories\AdapterRepository;
 use App\Repositories\Contracts\AdapterRepositoryInterface;
-use App\Services\Adapters\Telegram\Bot\Client\Contracts\TelegramBotClientInterface;
 use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClient;
+use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClientInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AdapterServiceProvider extends ServiceProvider
