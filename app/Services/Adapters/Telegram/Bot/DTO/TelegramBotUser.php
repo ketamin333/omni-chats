@@ -10,21 +10,21 @@ class TelegramBotUser
 
     public function id(): int
     {
-        return (int) $this->user['id'];
+        return $this->user['id'];
     }
 
     public function isBot(): bool
     {
-        return (bool) $this->user['is_bot'];
+        return $this->user['is_bot'];
     }
 
     public function firstName(): ?string
     {
-        return (string) $this->user['first_name'];
+        return $this->user['first_name'] ?? null;
     }
 
     public function username(): ?string
     {
-        return (string) $this->user['username'];
+        return $this->user['username'] ?? null;
     }
 }

@@ -11,6 +11,8 @@ class Attachment extends Model
     protected $primaryKey = 'attachment_id';
 
     protected $fillable = [
+        'attachable_type',
+        'attachable_id',
         'original_name',
         'disk',
         'path',

@@ -10,21 +10,21 @@ class TelegramBotChat
 
     public function id(): int
     {
-        return (int) $this->chat['id'];
+        return $this->chat['id'];
     }
 
     public function firstName(): ?string
     {
-        return (string) $this->chat['first_name'];
+        return $this->chat['first_name'] ?? null;
     }
 
     public function username(): ?string
     {
-        return (string) $this->chat['username'];
+        return $this->chat['username'] ?? null;
     }
 
     public function type(): string
     {
-        return (string) $this->chat['type'];
+        return $this->chat['type'];
     }
 }

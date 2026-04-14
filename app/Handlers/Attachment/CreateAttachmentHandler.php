@@ -14,11 +14,13 @@ class CreateAttachmentHandler implements CreateAttachmentHandlerInterface
     public function handle(CreateAttachmentCommand $command): Attachment
     {
         return Attachment::create([
-            'original_name' => $command->originalName,
-            'disk'          => $command->disk,
-            'path'          => $command->path,
-            'mime_type'     => $command->mimeType,
-            'size'          => $command->size,
+            'attachable_type' => $command->attachable->getMorphClass(),
+            'attachable_id'   => $command->attachable->getKey(),
+            'original_name'   => $command->storedFile->originalName,
+            'disk'            => $command->storedFile->disk,
+            'path'            => $command->storedFile->path,
+            'mime_type'       => $command->storedFile->mimeType,
+            'size'            => $command->storedFile->size,
         ]);
     }
 }

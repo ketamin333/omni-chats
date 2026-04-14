@@ -13,41 +13,41 @@ class TelegramBotVideo implements TelegramBotFileInterface, TelegramBotNamedFile
 
     public function duration(): int
     {
-        return (int) $this->video['duration'];
+        return $this->video['duration'];
     }
 
     public function width(): int
     {
-        return (int) $this->video['width'];
+        return $this->video['width'];
     }
 
     public function height(): int
     {
-        return (int) $this->video['height'];
+        return $this->video['height'];
     }
 
     public function fileName(): string
     {
-        return (string) $this->video['file_name'];
+        return $this->video['file_name'];
     }
 
     public function mimeType(): string
     {
-        return (string) $this->video['mime_type'];
+        return $this->video['mime_type'];
     }
 
     public function fileId(): string
     {
-        return (string) $this->video['file_id'];
+        return $this->video['file_id'];
     }
 
     public function fileUniqueId(): string
     {
-        return (string) $this->video['file_unique_id'];
+        return $this->video['file_unique_id'];
     }
 
     public function fileSize(): int
     {
-        return (int) $this->video['file_size'];
+        return $this->video['file_size'];
     }
 }

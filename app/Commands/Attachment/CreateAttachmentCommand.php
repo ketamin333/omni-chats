@@ -2,6 +2,9 @@
 
 namespace App\Commands\Attachment;
 
+use App\Services\Storage\DTO\StoredFile;
+use Illuminate\Database\Eloquent\Model;
+
 readonly class CreateAttachmentCommand
 {
     /**
@@ -10,10 +13,7 @@ readonly class CreateAttachmentCommand
      * Carries validated input from Request to Handler.
      */
     public function __construct(
-        public string $originalName,
-        public string $disk,
-        public string $path,
-        public string $mimeType,
-        public int    $size,
+        public Model      $attachable,
+        public StoredFile $storedFile,
     ) {}
 }

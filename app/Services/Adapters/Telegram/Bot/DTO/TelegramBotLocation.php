@@ -10,11 +10,11 @@ class TelegramBotLocation
 
     public function latitude(): float
     {
-        return (float) $this->location['latitude'];
+        return $this->location['latitude'];
     }
 
     public function longitude(): float
     {
-        return (float) $this->location['longitude'];
+        return $this->location['longitude'];
     }
 }

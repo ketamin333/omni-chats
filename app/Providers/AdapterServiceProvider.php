@@ -22,9 +22,6 @@ class AdapterServiceProvider extends ServiceProvider
 
         /** REPOSITORIES */
         $this->app->bind(AdapterRepositoryInterface::class, AdapterRepository::class);
-
-        /** CLIENTS */
-        $this->app->bind(TelegramBotClientInterface::class, TelegramBotClient::class);
     }
 
     /**

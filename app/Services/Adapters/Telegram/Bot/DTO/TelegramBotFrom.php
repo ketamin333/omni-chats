@@ -10,26 +10,26 @@ class TelegramBotFrom
 
     public function id(): int
     {
-        return (int) $this->from['id'];
+        return $this->from['id'];
     }
 
     public function isBot(): bool
     {
-        return (bool) $this->from['is_bot'];
+        return $this->from['is_bot'];
     }
 
     public function firstName(): ?string
     {
-        return (string) $this->from['first_name'];
+        return $this->from['first_name'] ?? null;
     }
 
     public function username(): ?string
     {
-        return (string) $this->from['username'];
+        return $this->from['username'] ?? null;
     }
 
     public function languageCode(): string
     {
-        return (string) $this->from['language_code'];
+        return $this->from['language_code'];
     }
 }

@@ -20,7 +20,7 @@ class TelegramBotMyChatMember
 
     public function date(): int
     {
-        return (int) $this->myChatMember['date'];
+        return $this->myChatMember['date'];
     }
 
     public function oldChatMember(): TelegramBotOldChatMember

@@ -44,4 +44,13 @@ class TelegramBotUpdate
 
         return new TelegramBotMyChatMember($this->data['my_chat_member']);
     }
+
+    public function editedMessage(): ?TelegramBotEditedMessage
+    {
+        if (!array_key_exists('edited_message', $this->data)) {
+            return null;
+        }
+
+        return new TelegramBotEditedMessage($this->data['edited_message']);
+    }
 }

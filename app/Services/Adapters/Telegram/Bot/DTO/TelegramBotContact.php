@@ -10,16 +10,16 @@ class TelegramBotContact
 
     public function phoneNumber(): ?string
     {
-        return (string) $this->contact['phone_number'];
+        return $this->contact['phone_number'] ?? null;
     }
 
     public function firstName(): ?string
     {
-        return (string) $this->contact['first_name'];
+        return $this->contact['first_name'] ?? null;
     }
 
     public function userId(): int
     {
-        return (int) $this->contact['user_id'];
+        return $this->contact['user_id'];
     }
 }

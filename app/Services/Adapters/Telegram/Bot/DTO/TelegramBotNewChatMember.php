@@ -15,6 +15,6 @@ class TelegramBotNewChatMember
 
     public function status(): string
     {
-        return (string) $this->newChatMember['status'];
+        return $this->newChatMember['status'];
     }
 }

@@ -12,11 +12,14 @@ class ProcessTelegramBotUpdateJob implements ShouldQueue
 {
     use Queueable;
 
+    public int $tries = 3;
+    public int $backoff = 30;
+
     /**
      * Create a new job instance.
      */
     public function __construct(
-        private readonly Channel $channel,
+        private readonly Channel           $channel,
         private readonly TelegramBotUpdate $update
     ) {}
 

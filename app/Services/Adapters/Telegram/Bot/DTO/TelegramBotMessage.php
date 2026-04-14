@@ -10,7 +10,7 @@ class TelegramBotMessage
 
     public function messageId(): int
     {
-        return (int) $this->message['message_id'];
+        return $this->message['message_id'];
     }
 
     public function from(): TelegramBotFrom
@@ -25,22 +25,22 @@ class TelegramBotMessage
 
     public function date(): int
     {
-        return (int) $this->message['date'];
+        return $this->message['date'];
     }
 
     public function mediaGroupId(): ?int
     {
-        return (int) $this->message['media_group_id'];
+        return $this->message['media_group_id'] ?? null;
     }
 
     public function text(): ?string
     {
-        return (string) $this->message['text'];
+        return $this->message['text'] ?? null;
     }
 
     public function caption(): ?string
     {
-        return (string) $this->message['caption'];
+        return $this->message['caption'] ?? null;
     }
 
     public function document(): ?TelegramBotDocument
@@ -77,6 +77,15 @@ class TelegramBotMessage
         }
 
         return new TelegramBotAudio($this->message['audio']);
+    }
+
+    public function video(): ?TelegramBotVideo
+    {
+        if (!array_key_exists('video', $this->message)) {
+            return null;
+        }
+
+        return new TelegramBotVideo($this->message['video']);
     }
 
     public function location(): ?TelegramBotLocation

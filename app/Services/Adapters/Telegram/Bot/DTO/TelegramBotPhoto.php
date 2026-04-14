@@ -14,26 +14,26 @@ class TelegramBotPhoto implements TelegramBotFileInterface
 
     public function fileId(): string
     {
-        return (string) $this->photo['file_id'];
+        return $this->photo['file_id'];
     }
 
     public function fileUniqueId(): string
     {
-        return (string) $this->photo['file_unique_id'];
+        return $this->photo['file_unique_id'];
     }
 
     public function fileSize(): int
     {
-        return (int) $this->photo['file_size'];
+        return $this->photo['file_size'];
     }
 
     public function width(): int
     {
-        return (int) $this->photo['width'];
+        return $this->photo['width'];
     }
 
     public function height(): int
     {
-        return (int) $this->photo['height'];
+        return $this->photo['height'];
     }
 }

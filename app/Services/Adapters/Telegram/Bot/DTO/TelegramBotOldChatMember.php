@@ -15,11 +15,11 @@ class TelegramBotOldChatMember
 
     public function status(): string
     {
-        return (string) $this->oldChatMember['status'];
+        return $this->oldChatMember['status'];
     }
 
     public function untilDate(): int
     {
-        return (int) $this->oldChatMember['until_date'];
+        return $this->oldChatMember['until_date'];
     }
 }

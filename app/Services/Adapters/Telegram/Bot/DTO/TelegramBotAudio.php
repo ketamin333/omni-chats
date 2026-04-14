@@ -13,31 +13,31 @@ class TelegramBotAudio implements TelegramBotFileInterface, TelegramBotNamedFile
 
     public function duration(): int
     {
-        return (int) $this->audio['duration'];
+        return $this->audio['duration'];
     }
 
     public function fileName(): string
     {
-        return (string) $this->audio['file_name'];
+        return $this->audio['file_name'];
     }
 
     public function mimeType(): string
     {
-        return (string) $this->audio['mime_type'];
+        return $this->audio['mime_type'];
     }
 
     public function fileId(): string
     {
-        return (string) $this->audio['file_id'];
+        return $this->audio['file_id'];
     }
 
     public function fileUniqueId(): string
     {
-        return (string) $this->audio['file_unique_id'];
+        return $this->audio['file_unique_id'];
     }
 
     public function fileSize(): int
     {
-        return (int) $this->audio['file_size'];
+        return $this->audio['file_size'];
     }
 }
