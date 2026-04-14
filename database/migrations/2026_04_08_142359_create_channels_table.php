@@ -16,10 +16,12 @@ return new class extends Migration
             $table->id('channel_id');
 
             $table->foreignId('company_id')
+                ->index()
                 ->constrained('companies', 'company_id')
                 ->cascadeOnDelete();
 
             $table->foreignId('adapter_id')
+                ->index()
                 ->nullable()
                 ->constrained('adapters', 'adapter_id')
                 ->nullOnDelete();

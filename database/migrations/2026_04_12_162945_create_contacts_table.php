@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('contact_id');
 
             $table->foreignId('company_id')
+                ->index()
                 ->constrained('companies', 'company_id')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

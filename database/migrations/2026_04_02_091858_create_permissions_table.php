@@ -23,10 +23,12 @@ return new class extends Migration
 
         Schema::create('user_permissions', function (Blueprint $table) {
             $table->foreignId('permission_id')
+                ->index()
                 ->constrained('permissions', 'permission_id')
                 ->cascadeOnDelete();
 
             $table->foreignId('user_id')
+                ->index()
                 ->constrained('users', 'user_id')
                 ->cascadeOnDelete();
 

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('attachment_id');
 
             $table->morphs('attachable');
-
             $table->string('original_name');
             $table->string('disk');
             $table->string('path');

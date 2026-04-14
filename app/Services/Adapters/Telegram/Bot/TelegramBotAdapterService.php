@@ -74,9 +74,9 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
             Log::error($e->getMessage());
 
             $status = match ($e->getHttpCode()) {
-                401, 403 => ChannelStatus::BANNED,
+                403      => ChannelStatus::BANNED,
                 429      => ChannelStatus::RATE_LIMITED,
-                404      => ChannelStatus::INVALID_CREDENTIALS,
+                401, 404 => ChannelStatus::INVALID_CREDENTIALS,
                 default  => ChannelStatus::DISCONNECTED,
             };
 
@@ -90,7 +90,6 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
     {
         try {
             $client = $this->getClient($channel->credentials['bot_token']);
-
             $client->deleteWebhook();
         } catch (TelegramBotApiException $e) {}
     }

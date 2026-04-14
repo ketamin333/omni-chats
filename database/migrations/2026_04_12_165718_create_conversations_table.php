@@ -15,11 +15,13 @@ return new class extends Migration
             $table->uuid('conversation_id')->primary();
 
             $table->foreignId('contact_id')
+                ->index()
                 ->constrained('contacts', 'contact_id')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
             $table->foreignId('channel_id')
+                ->index()
                 ->constrained('channels', 'channel_id')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();

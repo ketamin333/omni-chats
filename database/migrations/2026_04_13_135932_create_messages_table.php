@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id('message_id');
 
             $table->foreignUuid('conversation_id')
+                ->index()
                 ->constrained('conversations', 'conversation_id')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
