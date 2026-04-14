@@ -69,4 +69,31 @@ class TelegramBotMessage
 
         return new TelegramBotVoice($this->message['voice']);
     }
+
+    public function audio(): ?TelegramBotAudio
+    {
+        if (!array_key_exists('audio', $this->message)) {
+            return null;
+        }
+
+        return new TelegramBotAudio($this->message['audio']);
+    }
+
+    public function location(): ?TelegramBotLocation
+    {
+        if (!array_key_exists('location', $this->message)) {
+            return null;
+        }
+
+        return new TelegramBotLocation($this->message['location']);
+    }
+
+    public function contact(): ?TelegramBotContact
+    {
+        if (!array_key_exists('contact', $this->message)) {
+            return null;
+        }
+
+        return new TelegramBotContact($this->message['contact']);
+    }
 }
