@@ -2,7 +2,9 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-class TelegramBotPhoto
+use App\Services\Adapters\Telegram\Bot\DTO\Contracts\TelegramBotFileInterface;
+
+class TelegramBotPhoto implements TelegramBotFileInterface
 {
     public function __construct(
         protected array $photo
@@ -17,21 +19,21 @@ class TelegramBotPhoto
 
     public function fileUniqueId(): string
     {
-        return (string) $this->photo['file_id'];
+        return (string) $this->photo['file_unique_id'];
     }
 
     public function fileSize(): int
     {
-        return (string) $this->photo['file_size'];
+        return (int) $this->photo['file_size'];
     }
 
     public function width(): int
     {
-        return (string) $this->photo['width'];
+        return (int) $this->photo['width'];
     }
 
     public function height(): int
     {
-        return (string) $this->photo['height'];
+        return (int) $this->photo['height'];
     }
 }

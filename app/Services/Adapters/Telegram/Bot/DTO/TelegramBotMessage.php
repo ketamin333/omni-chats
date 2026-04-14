@@ -60,4 +60,13 @@ class TelegramBotMessage
 
         return new TelegramBotPhoto($this->message['photo']);
     }
+
+    public function voice(): ?TelegramBotVoice
+    {
+        if (!array_key_exists('voice', $this->message)) {
+            return null;
+        }
+
+        return new TelegramBotVoice($this->message['voice']);
+    }
 }

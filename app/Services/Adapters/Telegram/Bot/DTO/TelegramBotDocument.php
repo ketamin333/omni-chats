@@ -2,7 +2,10 @@
 
 namespace App\Services\Adapters\Telegram\Bot\DTO;
 
-class TelegramBotDocument
+use App\Services\Adapters\Telegram\Bot\DTO\Contracts\TelegramBotFileInterface;
+use App\Services\Adapters\Telegram\Bot\DTO\Contracts\TelegramBotNamedFileInterface;
+
+class TelegramBotDocument implements TelegramBotFileInterface, TelegramBotNamedFileInterface
 {
     public function __construct(
         protected array $document

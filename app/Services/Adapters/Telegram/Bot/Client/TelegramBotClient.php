@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 class TelegramBotClient implements TelegramBotClientInterface
 {
     protected string $baseUrl = 'https://api.telegram.org/bot';
+    protected string $fileUrl = 'https://api.telegram.org/file/bot';
 
     public function __construct(
         protected string $botToken,
@@ -18,7 +19,18 @@ class TelegramBotClient implements TelegramBotClientInterface
     protected function http(): PendingRequest
     {
         return Http::baseUrl($this->baseUrl . $this->botToken)
-            ->withOptions(['proxy' => config('services.telegram.proxy')]);
+            ->withOptions($this->httpOptions());
+    }
+
+    protected function fileHttp(): PendingRequest
+    {
+        return Http::baseUrl($this->fileUrl . $this->botToken)
+            ->withOptions($this->httpOptions());
+    }
+
+    protected function httpOptions(): array
+    {
+        return ['proxy' => config('services.telegram.proxy')];
     }
 
     public function getMe(): array
@@ -52,5 +64,27 @@ class TelegramBotClient implements TelegramBotClientInterface
         }
 
         return $response->json();
+    }
+
+    public function getFile(string $fileId): array
+    {
+        $response = $this->http()->get('/getFile', ['file_id' => $fileId]);
+
+        if ($response->failed()) {
+            throw TelegramBotApiException::fromStatus($response->status());
+        }
+
+        return $response->json();
+    }
+
+    public function downloadFile(string $filePath): string
+    {
+        $response = $this->fileHttp()->get($filePath);
+
+        if ($response->failed()) {
+            throw TelegramBotApiException::fromStatus($response->status());
+        }
+
+        return $response->body();
     }
 }
