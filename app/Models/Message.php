@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\MessageDirection;
+use App\Enums\MessageStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -17,10 +18,16 @@ class Message extends Model
         'external_id',
         'direction',
         'text',
+        'status',
     ];
 
     protected $casts = [
         'direction' => MessageDirection::class,
+        'status'    => MessageStatus::class,
+    ];
+
+    protected $attributes = [
+        'status' => MessageStatus::PENDING,
     ];
 
     public function conversation(): BelongsTo

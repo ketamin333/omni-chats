@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Enums\BroadcastChannel;
-use App\Http\Resources\User\UserResource;
 use App\Models\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;

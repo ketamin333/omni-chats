@@ -5,19 +5,17 @@ const routes = [
         path: '/dashboard',
         name: 'dashboard',
         meta: { title: 'Дашборд' },
-        // component: import('../pages/Projects.vue'),
     },
     {
         path: '/chats',
         name: 'chats',
         meta: { title: 'Чаты',  },
         component: () => import('../pages/Chats.vue'),
-    },
-    {
-        path: '/tasks',
-        name: 'tasks',
-        meta: { title: 'Задачи' },
-        component: '',
+        children: [
+            {
+                path: ':id',
+            }
+        ]
     },
     {
         path: '/channels',

@@ -9,6 +9,7 @@ use App\Exceptions\Adapters\Telegram\TelegramBotApiException;
 use App\Handlers\Channel\Contracts\UpdateCredentialsChannelHandlerInterface;
 use App\Handlers\Channel\Contracts\UpdateStatusChannelHandlerInterface;
 use App\Models\Channel;
+use App\Models\Message;
 use App\Services\Adapters\Contracts\AdapterHandlerInterface;
 use App\Services\Adapters\Contracts\HasCredentialRules;
 use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClientFactory;
@@ -61,7 +62,7 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
 
             $this->updateCredentialsChannelHandler->handle(
                 new UpdateCredentialsChannelCommand($channel, [
-                    'bot_id' => $bot['id'],
+                    'bot_id'       => $bot['id'],
                     'bot_username' => $bot['username'],
                     'secret_token' => $secret
                 ])
@@ -83,6 +84,18 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
             $this->updateStatusChannelHandler->handle(
                 new UpdateStatusChannelCommand($channel, $status)
             );
+        }
+    }
+
+    public function sendMessage(Channel $channel, Message $message): void
+    {
+        try {
+            $client = $this->getClient($channel->credentials['bot_token']);
+
+
+
+        } catch (TelegramBotApiException $e) {
+
         }
     }
 

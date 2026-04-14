@@ -12,6 +12,7 @@
     import {useApi} from "../composables/useApi.js";
     import {useToast} from "primevue/usetoast";
     import {useConfirm} from "primevue/useconfirm";
+    import UpdateChannelDialog from "../components/Channel/UpdateChannelDialog.vue";
 
     const dialog = useDialog();
     const total = ref(0);
@@ -51,6 +52,14 @@
         },
     });
 
+    const onUpdateChannelClick = () => dialog.open(UpdateChannelDialog, {
+        props: {
+            modal: true,
+            showHeader: false,
+            class: 'w-[38rem]'
+        }
+    });
+
     const onDeleteChannelClick = channelId => confirm.require({
         modal: true,
         message: 'Канал будет помечен как удалённый и скрыт из активного списка',
@@ -64,18 +73,6 @@
             }
         },
     });
-
-    const handleStopChannel = async channelId => execute(
-        async () => await updateStatusChannel(channelId, 'paused'),
-        { successMessage: 'Канал успешно остановен' },
-    );
-
-    const handleStartChannel = async channelId => execute(
-        async () => await updateStatusChannel(channelId, 'connecting'),
-        { successMessage: 'Канал успешно активинован' }
-    );
-
-    const handlers = { handleStopChannel, handleStartChannel };
 </script>
 
 <template>
@@ -154,21 +151,10 @@
                 </template>
                 <template #body="{data: { channel_id, status }}">
                     <div class="flex gap-2">
-                        <Button outlined rounded
+                        <Button outlined rounded @click="onUpdateChannelClick(channel_id)"
                                 v-tooltip.bottom="'Изменить'">
                             <template #icon>
                                 <SquarePen size="14" />
-                            </template>
-                        </Button>
-                        <Button
-                            v-for="handler in channelStatus[status]?.handlers || []"
-                            :key="handler"
-                            outlined rounded
-                            v-tooltip.bottom="channelHandler[handler].label"
-                            @click="handlers[channelHandler[handler].handler](channel_id)"
-                        >
-                            <template #icon>
-                                <component :is="channelHandler[handler].icon" size="14" />
                             </template>
                         </Button>
                         <Button outlined severity="danger" rounded

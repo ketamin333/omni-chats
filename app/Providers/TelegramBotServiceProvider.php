@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClient;
 use App\Services\Adapters\Telegram\Bot\Client\TelegramBotClientInterface;
+use App\Services\Adapters\Telegram\Bot\Handlers\Contracts\TelegramBotChatMemberHandlerInterface;
 use App\Services\Adapters\Telegram\Bot\Handlers\Contracts\TelegramBotMessageHandlerInterface;
+use App\Services\Adapters\Telegram\Bot\Handlers\TelegramBotChatMemberHandler;
 use App\Services\Adapters\Telegram\Bot\Handlers\TelegramBotMessageHandler;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +22,7 @@ class TelegramBotServiceProvider extends ServiceProvider
 
         /** HANDLERS */
         $this->app->bind(TelegramBotMessageHandlerInterface::class, TelegramBotMessageHandler::class);
+        $this->app->bind(TelegramBotChatMemberHandlerInterface::class, TelegramBotChatMemberHandler::class);
     }
 
     /**

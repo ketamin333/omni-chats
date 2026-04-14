@@ -6,7 +6,6 @@ const groups = [
         items: [
             { to: { name: 'dashboard' }, label: 'Дашборд', icon: House },
             { to: { name: 'chats' }, label: 'Чаты', icon: MessageCircle },
-            { to: { name: 'tasks' }, label: 'Задачи', icon: ListChecks },
         ]
     },
     {
