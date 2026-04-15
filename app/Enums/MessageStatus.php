@@ -4,9 +4,10 @@ namespace App\Enums;
 
 enum MessageStatus: string
 {
-    case PENDING  = 'pending';
-    case SENT     = 'sent';
-    case FAILED   = 'failed';
+    case PENDING = 'pending';
+    case SENT = 'sent';
+    case FAILED = 'failed';
+    case RECEIVED = 'received';
 
     public static function values(): array
     {

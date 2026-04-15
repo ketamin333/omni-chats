@@ -20,9 +20,9 @@ class CreateMessageHandler implements CreateMessageHandlerInterface
     public function handle(CreateMessageCommand $command): Message
     {
         $message = Message::create([
-            'conversation_id' => $command->conversationId,
-            'external_id'     => $command->externalId,
+            'conversation_id' => $command->conversation->conversation_id,
             'direction'       => $command->direction,
+            'external_id'     => $command->externalId,
             'text'            => $command->text,
         ]);
 

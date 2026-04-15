@@ -91,11 +91,13 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
     {
         try {
             $client = $this->getClient($channel->credentials['bot_token']);
-
-
+            $client->sendMessage(
+                $message->conversation->external_id,
+                $message->text
+            );
 
         } catch (TelegramBotApiException $e) {
-
+            Log::error($e->getMessage());
         }
     }
 

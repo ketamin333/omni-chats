@@ -38,9 +38,9 @@ readonly class TelegramBotMessageHandler implements TelegramBotMessageHandlerInt
 
         $createdMessage = $this->createMessageHandler->handle(
             new CreateMessageCommand(
-                conversationId: $conversation->conversation_id,
-                externalId: $message->messageId(),
+                conversation: $conversation,
                 direction: MessageDirection::INCOMING,
+                externalId: $message->messageId(),
                 text: $message->text() ?? $message->caption(),
             )
         );

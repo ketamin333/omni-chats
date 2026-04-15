@@ -3,6 +3,7 @@
 namespace App\Commands\Message;
 
 use App\Enums\MessageDirection;
+use App\Models\Conversation;
 
 readonly class CreateMessageCommand
 {
@@ -12,9 +13,9 @@ readonly class CreateMessageCommand
      * Carries validated input from Request to Handler.
      */
     public function __construct(
-        public string $conversationId,
-        public string $externalId,
+        public Conversation     $conversation,
         public MessageDirection $direction,
-        public ?string $text = null,
+        public ?string          $externalId = null,
+        public ?string          $text = null,
     ) {}
 }

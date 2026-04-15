@@ -12,8 +12,8 @@ readonly class SendMessageCommand
      * Carries validated input from Request to Handler.
      */
     public function __construct(
-        protected Conversation $conversation,
-        protected ?string      $text = null
+        public Conversation $conversation,
+        public ?string      $text = null
     ) {}
 
     /**

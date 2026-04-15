@@ -43,6 +43,17 @@ class TelegramBotClient implements TelegramBotClientInterface
         return $response->json();
     }
 
+    public function sendMessage(int $chatId, string $text, array $options = []): array
+    {
+        $response = $this->http()->post('/sendMessage', array_merge(['chat_id' => $chatId, 'text' => $text,], $options));
+
+        if ($response->failed()) {
+            throw TelegramBotApiException::fromStatus($response->status());
+        }
+
+        return $response->json();
+    }
+
     public function setWebhook(string $url, array $options = []): array
     {
         $response = $this->http()->post('/setWebhook', array_merge(['url' => $url], $options));
