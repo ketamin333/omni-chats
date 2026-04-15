@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Handlers\Conversation\Contracts\CreateConversationHandlerInterface;
+use App\Handlers\Conversation\Contracts\GetConversationsHandlerInterface;
 use App\Handlers\Conversation\CreateConversationHandler;
 use App\Repositories\Contracts\ConversationRepositoryInterface;
 use App\Repositories\ConversationRepository;
@@ -16,6 +17,7 @@ class ConversationServiceProvider extends ServiceProvider
     public function register(): void
     {
         /** HANDLERS */
+        $this->app->bind(GetConversationsHandlerInterface::class, CreateConversationHandler::class);
         $this->app->bind(CreateConversationHandlerInterface::class, CreateConversationHandler::class);
 
         /** REPOSITORIES */

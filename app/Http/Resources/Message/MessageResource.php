@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Channel;
+namespace App\Http\Resources\Message;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChannelResource extends JsonResource
+class MessageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,13 +15,11 @@ class ChannelResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'channel_id'   => $this->channel_id,
-            'adapter'      => $this->adapter,
-            'channel_name' => $this->channel_name,
-            'status'       => $this->status,
-            'settings'     => $this->settings,
+            'message_id' => $this->message_id,
+            'direction'  => $this->direction,
+            'text'       => $this->text,
 
-            'timestamps'   => $this->getTimestamps(),
+            'timestamps' => $this->getTimestamps()
         ];
     }
 

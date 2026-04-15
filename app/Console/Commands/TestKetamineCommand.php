@@ -14,7 +14,7 @@ class TestKetamineCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'ketamine-command';
+    protected $signature = 'ketamine';
 
     /**
      * The console command description.
