@@ -4,10 +4,13 @@ namespace App\Services\Adapters\Telegram\Bot;
 
 use App\Commands\Channel\UpdateCredentialsChannelCommand;
 use App\Commands\Channel\UpdateStatusChannelCommand;
+use App\Commands\Message\UpdateStatusMessageCommand;
 use App\Enums\ChannelStatus;
+use App\Enums\MessageStatus;
 use App\Exceptions\Adapters\Telegram\TelegramBotApiException;
 use App\Handlers\Channel\Contracts\UpdateCredentialsChannelHandlerInterface;
 use App\Handlers\Channel\Contracts\UpdateStatusChannelHandlerInterface;
+use App\Handlers\Message\Contracts\UpdateStatusMessageHandlerInterface;
 use App\Models\Channel;
 use App\Models\Message;
 use App\Services\Adapters\Contracts\AdapterHandlerInterface;
@@ -23,6 +26,7 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
         private TelegramBotClientFactory                 $factory,
         private UpdateStatusChannelHandlerInterface      $updateStatusChannelHandler,
         private UpdateCredentialsChannelHandlerInterface $updateCredentialsChannelHandler,
+        private UpdateStatusMessageHandlerInterface      $updateStatusMessageHandler,
     ) {}
 
     protected function getClient(string $botToken): Client\TelegramBotClientInterface
@@ -96,7 +100,14 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
                 $message->text
             );
 
+            $this->updateStatusMessageHandler->handle(
+                new UpdateStatusMessageCommand($message, MessageStatus::SENT)
+            );
         } catch (TelegramBotApiException $e) {
+            $this->updateStatusMessageHandler->handle(
+                new UpdateStatusMessageCommand($message, MessageStatus::FAILED)
+            );
+
             Log::error($e->getMessage());
         }
     }

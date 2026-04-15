@@ -13,4 +13,13 @@ enum MessageStatus: string
     {
         return array_column(self::cases(), 'value');
     }
+
+    public function allowedTransitions(): array
+    {
+        return match ($this) {
+            self::PENDING             => [self::SENT, self::FAILED],
+            self::FAILED              => [self::PENDING],
+            default                   => [],
+        };
+    }
 }
