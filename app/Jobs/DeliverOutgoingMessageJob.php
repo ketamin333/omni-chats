@@ -4,11 +4,12 @@ namespace App\Jobs;
 
 use App\Jobs\Concerns\InteractsWithChannelStatus;
 use App\Models\Channel;
+use App\Models\Message;
 use App\Services\Adapters\AdapterResolver;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class StopChannelJob implements ShouldQueue
+class DeliverOutgoingMessageJob implements ShouldQueue
 {
     use Queueable, InteractsWithChannelStatus;
 
@@ -17,6 +18,7 @@ class StopChannelJob implements ShouldQueue
      */
     public function __construct(
         private readonly Channel $channel,
+        private readonly Message $message,
     ) {}
 
     /**
@@ -24,6 +26,6 @@ class StopChannelJob implements ShouldQueue
      */
     public function handle(AdapterResolver $resolver): void
     {
-        $resolver->resolve($this->channel->adapter)->pause($this->channel);
+        $resolver->resolve($this->channel->adapter)->sendMessage($this->channel, $this->message);
     }
 }

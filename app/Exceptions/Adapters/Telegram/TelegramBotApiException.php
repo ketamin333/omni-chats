@@ -6,8 +6,21 @@ use App\Exceptions\Adapters\AdapterException;
 
 class TelegramBotApiException extends AdapterException
 {
-    public static function fromStatus(int $status): self
+    private function __construct(
+        string $message,
+        public readonly int $httpCode,
+        public readonly int $retryAfter,
+    )
     {
-        return new self("Telegram API request failed with status $status", $status);
+        parent::__construct($message);
+    }
+
+    public static function fromResponse(int $status, array $body): self
+    {
+        return new self(
+            message: $body['description'] ?? "Telegram Client API error: $status",
+            httpCode: $status,
+            retryAfter: $body['parameters']['retry_after'] ?? 60,
+        );
     }
 }

@@ -4,8 +4,9 @@ namespace App\Exceptions\Adapters;
 
 class AdapterRateLimitException extends AdapterException
 {
-    public static function tooManyRequests(): self
-    {
-        return new self('Adapter rate limit exceeded');
+    public function __construct(
+        public readonly int $retryAfter,
+    ) {
+        parent::__construct("Rate limit exceeded. Retry after {$retryAfter} seconds.");
     }
 }

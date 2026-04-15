@@ -35,6 +35,6 @@ class UpdateStatusMessageHandler implements UpdateStatusMessageHandlerInterface
 
         $command->message->update(['status' => $command->status]);
 
-        return $command->message->fresh();
+        return $command->message->refresh();
     }
 }

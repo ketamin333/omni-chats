@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Concerns\InteractsWithChannelStatus;
 use App\Models\Channel;
 use App\Services\Adapters\AdapterResolver;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,7 +10,7 @@ use Illuminate\Foundation\Queue\Queueable;
 
 class ReinitializeChannelJob implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, InteractsWithChannelStatus;
 
     /**
      * Create a new job instance.
@@ -23,7 +24,6 @@ class ReinitializeChannelJob implements ShouldQueue
      */
     public function handle(AdapterResolver $resolver): void
     {
-        $handle = $resolver->resolve($this->channel->adapter);
-        $handle->reinitialize($this->channel);
+        $resolver->resolve($this->channel->adapter)->reinitialize($this->channel);
     }
 }

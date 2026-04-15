@@ -4,12 +4,17 @@ namespace App\Services\Adapters\Telegram\Bot;
 
 use App\Commands\Channel\UpdateCredentialsChannelCommand;
 use App\Commands\Channel\UpdateStatusChannelCommand;
+use App\Commands\Message\UpdateMessageCommand;
 use App\Commands\Message\UpdateStatusMessageCommand;
 use App\Enums\ChannelStatus;
 use App\Enums\MessageStatus;
+use App\Exceptions\Adapters\AdapterAuthException;
+use App\Exceptions\Adapters\AdapterConnectionException;
+use App\Exceptions\Adapters\AdapterRateLimitException;
 use App\Exceptions\Adapters\Telegram\TelegramBotApiException;
 use App\Handlers\Channel\Contracts\UpdateCredentialsChannelHandlerInterface;
 use App\Handlers\Channel\Contracts\UpdateStatusChannelHandlerInterface;
+use App\Handlers\Message\Contracts\UpdateMessageHandlerInterface;
 use App\Handlers\Message\Contracts\UpdateStatusMessageHandlerInterface;
 use App\Models\Channel;
 use App\Models\Message;
@@ -27,9 +32,10 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
         private UpdateStatusChannelHandlerInterface      $updateStatusChannelHandler,
         private UpdateCredentialsChannelHandlerInterface $updateCredentialsChannelHandler,
         private UpdateStatusMessageHandlerInterface      $updateStatusMessageHandler,
+        private UpdateMessageHandlerInterface            $updateMessageHandler,
     ) {}
 
-    protected function getClient(string $botToken): Client\TelegramBotClientInterface
+    private function getClient(string $botToken): Client\TelegramBotClientInterface
     {
         return $this->factory->make($botToken);
     }
@@ -76,18 +82,7 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
                 new UpdateStatusChannelCommand($channel, ChannelStatus::ACTIVE)
             );
         } catch (TelegramBotApiException $e) {
-            Log::error($e->getMessage());
-
-            $status = match ($e->getHttpCode()) {
-                403      => ChannelStatus::BANNED,
-                429      => ChannelStatus::RATE_LIMITED,
-                401, 404 => ChannelStatus::INVALID_CREDENTIALS,
-                default  => ChannelStatus::DISCONNECTED,
-            };
-
-            $this->updateStatusChannelHandler->handle(
-                new UpdateStatusChannelCommand($channel, $status)
-            );
+            $this->handleApiException($e);
         }
     }
 
@@ -95,7 +90,7 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
     {
         try {
             $client = $this->getClient($channel->credentials['bot_token']);
-            $client->sendMessage(
+            $response = $client->sendMessage(
                 $message->conversation->external_id,
                 $message->text
             );
@@ -103,12 +98,15 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
             $this->updateStatusMessageHandler->handle(
                 new UpdateStatusMessageCommand($message, MessageStatus::SENT)
             );
+            $this->updateMessageHandler->handle(
+                new UpdateMessageCommand($message, $response['result']['message_id'])
+            );
         } catch (TelegramBotApiException $e) {
             $this->updateStatusMessageHandler->handle(
                 new UpdateStatusMessageCommand($message, MessageStatus::FAILED)
             );
 
-            Log::error($e->getMessage());
+            $this->handleApiException($e);
         }
     }
 
@@ -117,6 +115,17 @@ readonly class TelegramBotAdapterService implements AdapterHandlerInterface, Has
         try {
             $client = $this->getClient($channel->credentials['bot_token']);
             $client->deleteWebhook();
-        } catch (TelegramBotApiException $e) {}
+        } catch (TelegramBotApiException $e) {
+            $this->handleApiException($e);
+        }
+    }
+
+    private function handleApiException(TelegramBotApiException $e): never
+    {
+        throw match (true) {
+            $e->httpCode === 401 => new AdapterAuthException(),
+            $e->httpCode === 429 => new AdapterRateLimitException($e->retryAfter),
+            default              => new AdapterConnectionException(),
+        };
     }
 }

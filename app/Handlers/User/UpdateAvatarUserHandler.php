@@ -31,6 +31,6 @@ class UpdateAvatarUserHandler implements UpdateUserAvatarHandlerInterface
 
         $this->dispatcher->dispatch(new UserUpdated($command->user));
 
-        return $command->user->fresh();
+        return $command->user->refresh();
     }
 }

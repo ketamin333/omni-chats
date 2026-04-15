@@ -38,6 +38,6 @@ class UpdateStatusChannelHandler implements UpdateStatusChannelHandlerInterface
         $command->channel->update(['status' => $command->status]);
         $this->dispatcher->dispatch(new ChannelUpdated($command->channel));
 
-        return $command->channel->fresh();
+        return $command->channel->refresh();
     }
 }

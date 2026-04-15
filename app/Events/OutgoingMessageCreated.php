@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Channel;
 use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -19,7 +20,7 @@ class OutgoingMessageCreated
      * Create a new event instance.
      */
     public function __construct(
-        public readonly Conversation $conversation,
+        public readonly Channel $channel,
         public readonly Message $message
     ) {}
 }

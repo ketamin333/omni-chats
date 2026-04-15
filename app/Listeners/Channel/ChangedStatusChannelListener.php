@@ -9,8 +9,6 @@ use App\Jobs\InitializeChannelJob;
 use App\Jobs\ReinitializeChannelJob;
 use App\Jobs\StopChannelJob;
 use Illuminate\Contracts\Bus\Dispatcher;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class ChangedStatusChannelListener
 {
@@ -26,11 +24,15 @@ class ChangedStatusChannelListener
      */
     public function handle(ChannelUpdated|ChannelCreated $event): void
     {
-        match ($event->channel->status) {
-            ChannelStatus::PENDING    => $this->bus->dispatch(new InitializeChannelJob($event->channel)),
-            ChannelStatus::CONNECTING => $this->bus->dispatch(new ReinitializeChannelJob($event->channel)),
-            ChannelStatus::PAUSED     => $this->bus->dispatch(new StopChannelJob($event->channel)),
+        $job = match ($event->channel->status) {
+            ChannelStatus::PENDING    => new InitializeChannelJob($event->channel),
+            ChannelStatus::CONNECTING => new ReinitializeChannelJob($event->channel),
+            ChannelStatus::PAUSED     => new StopChannelJob($event->channel),
             default => null,
         };
+
+        if ($job) {
+            $this->bus->dispatch($job);
+        }
     }
 }

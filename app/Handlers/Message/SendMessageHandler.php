@@ -36,7 +36,7 @@ class SendMessageHandler implements SendMessageHandlerInterface
             )
         );
 
-        $this->dispatcher->dispatch(new OutgoingMessageCreated($command->conversation, $message));
+        $this->dispatcher->dispatch(new OutgoingMessageCreated($command->conversation->channel, $message));
 
         return $message;
     }

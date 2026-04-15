@@ -4,6 +4,7 @@ namespace App\Services\Adapters\Telegram\Bot\Client;
 
 use App\Exceptions\Adapters\Telegram\TelegramBotApiException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class TelegramBotClient implements TelegramBotClientInterface
@@ -32,13 +33,17 @@ class TelegramBotClient implements TelegramBotClientInterface
         return ['proxy' => config('services.telegram.proxy')];
     }
 
+    private function throwIfFailed(Response $response): void
+    {
+        if ($response->failed()) {
+            throw TelegramBotApiException::fromResponse($response->status(), $response->json() ?? []);
+        }
+    }
+
     public function getMe(): array
     {
         $response = $this->http()->get('/getMe');
-
-        if ($response->failed()) {
-            throw TelegramBotApiException::fromStatus($response->status());
-        }
+        $this->throwIfFailed($response);
 
         return $response->json();
     }
@@ -46,10 +51,7 @@ class TelegramBotClient implements TelegramBotClientInterface
     public function sendMessage(int $chatId, string $text, array $options = []): array
     {
         $response = $this->http()->post('/sendMessage', array_merge(['chat_id' => $chatId, 'text' => $text,], $options));
-
-        if ($response->failed()) {
-            throw TelegramBotApiException::fromStatus($response->status());
-        }
+        $this->throwIfFailed($response);
 
         return $response->json();
     }
@@ -57,10 +59,7 @@ class TelegramBotClient implements TelegramBotClientInterface
     public function setWebhook(string $url, array $options = []): array
     {
         $response = $this->http()->post('/setWebhook', array_merge(['url' => $url], $options));
-
-        if ($response->failed()) {
-            throw TelegramBotApiException::fromStatus($response->status());
-        }
+        $this->throwIfFailed($response);
 
         return $response->json();
     }
@@ -68,10 +67,7 @@ class TelegramBotClient implements TelegramBotClientInterface
     public function deleteWebhook(array $options = []): array
     {
         $response = $this->http()->get('/deleteWebhook', $options);
-
-        if ($response->failed()) {
-            throw TelegramBotApiException::fromStatus($response->status());
-        }
+        $this->throwIfFailed($response);
 
         return $response->json();
     }
@@ -79,10 +75,7 @@ class TelegramBotClient implements TelegramBotClientInterface
     public function getFile(string $fileId): array
     {
         $response = $this->http()->get('/getFile', ['file_id' => $fileId]);
-
-        if ($response->failed()) {
-            throw TelegramBotApiException::fromStatus($response->status());
-        }
+        $this->throwIfFailed($response);
 
         return $response->json();
     }
@@ -90,10 +83,7 @@ class TelegramBotClient implements TelegramBotClientInterface
     public function downloadFile(string $filePath): string
     {
         $response = $this->fileHttp()->get($filePath);
-
-        if ($response->failed()) {
-            throw TelegramBotApiException::fromStatus($response->status());
-        }
+        $this->throwIfFailed($response);
 
         return $response->body();
     }

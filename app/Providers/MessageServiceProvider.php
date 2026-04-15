@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Events\OutgoingMessageCreated;
 use App\Handlers\Message\Contracts\CreateMessageHandlerInterface;
 use App\Handlers\Message\Contracts\SendMessageHandlerInterface;
+use App\Handlers\Message\Contracts\UpdateMessageHandlerInterface;
 use App\Handlers\Message\Contracts\UpdateStatusMessageHandlerInterface;
 use App\Handlers\Message\CreateMessageHandler;
 use App\Handlers\Message\SendMessageHandler;
+use App\Handlers\Message\UpdateMessageHandler;
 use App\Handlers\Message\UpdateStatusMessageHandler;
 use App\Listeners\Message\DeliverOutgoingMessageListener;
 use Illuminate\Support\Facades\Event;
@@ -23,6 +25,7 @@ class MessageServiceProvider extends ServiceProvider
         /** HANDLERS */
         $this->app->bind(CreateMessageHandlerInterface::class, CreateMessageHandler::class);
         $this->app->bind(SendMessageHandlerInterface::class, SendMessageHandler::class);
+        $this->app->bind(UpdateMessageHandlerInterface::class, UpdateMessageHandler::class);
         $this->app->bind(UpdateStatusMessageHandlerInterface::class, UpdateStatusMessageHandler::class);
     }
 
