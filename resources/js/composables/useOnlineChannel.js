@@ -1,6 +1,6 @@
 import echo from '../echo.js';
 import {ref, watch} from 'vue';
-import {useAuthStore} from "../stores/auth.js";
+import {useAuthStore} from "../stores/useAuthStore.js";
 
 const onlineUsers = ref(new Set());
 

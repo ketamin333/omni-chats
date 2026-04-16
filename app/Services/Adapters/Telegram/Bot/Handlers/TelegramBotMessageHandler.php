@@ -65,7 +65,7 @@ readonly class TelegramBotMessageHandler implements TelegramBotMessageHandlerInt
 
     protected function createConversation(Channel $channel, TelegramBotChat $chat): Conversation
     {
-        $contact = $this->createContact($channel, $chat->username());
+        $contact = $this->createContact($channel, $chat->username() ?? $chat->firstName());
 
         return $this->createConversationHandler->handle(
             new CreateConversationCommand(

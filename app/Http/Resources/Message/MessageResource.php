@@ -2,11 +2,15 @@
 
 namespace App\Http\Resources\Message;
 
+use App\Http\Resources\Attachment\AttachmentResource;
+use App\Http\Resources\Concerns\HasTimestamps;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MessageResource extends JsonResource
 {
+    use HasTimestamps;
+
     /**
      * Transform the resource into an array.
      *
@@ -15,19 +19,13 @@ class MessageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'message_id' => $this->message_id,
-            'direction'  => $this->direction,
-            'text'       => $this->text,
+            'message_id'  => $this->message_id,
+            'direction'   => $this->direction,
+            'status'      => $this->status,
+            'text'        => $this->text,
+            'attachments' => AttachmentResource::collection($this->whenLoaded('attachments')),
 
-            'timestamps' => $this->getTimestamps()
-        ];
-    }
-
-    protected function getTimestamps(): array
-    {
-        return [
-            'created_at' => $this->created_at->unix(),
-            'updated_at' => $this->updated_at->unix(),
+            'timestamps'  => $this->getTimestamps()
         ];
     }
 }

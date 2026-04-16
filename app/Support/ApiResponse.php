@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
@@ -43,6 +44,22 @@ class ApiResponse
                 'per_page'     => $paginator->perPage(),
                 'current_page' => $paginator->currentPage(),
                 'last_page'    => $paginator->lastPage(),
+            ]
+        ]);
+    }
+
+    /**
+     * @param class-string<JsonResource> $resource
+     */
+    public static function cursor(CursorPaginator $paginator, string $resource): JsonResponse
+    {
+        return self::success([
+            'data' => $resource::collection($paginator),
+            'meta' => [
+                'per_page'    => $paginator->perPage(),
+                'next_cursor' => $paginator->nextCursor()?->encode(),
+                'prev_cursor' => $paginator->previousCursor()?->encode(),
+                'has_more'    => $paginator->hasMorePages()
             ]
         ]);
     }

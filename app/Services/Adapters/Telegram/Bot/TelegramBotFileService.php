@@ -13,11 +13,11 @@ use App\Services\Storage\StoragePathGenerator;
 use finfo;
 use Illuminate\Support\Facades\Storage;
 
-class TelegramBotFileService
+readonly class TelegramBotFileService
 {
     public function __construct(
         private TelegramBotClientFactory $factory,
-        private StoragePathGenerator $generator,
+        private StoragePathGenerator     $generator,
     ) {}
 
     public function store(Channel $channel, TelegramBotFileInterface $file): StoredFile

@@ -1,7 +1,7 @@
 <script setup>
-import {onMounted, onUnmounted} from "vue";
+    import {onMounted, onUnmounted} from "vue";
   import Sidebar from "../components/Sidebar/Sidebar.vue";
-  import {useAuthStore} from "../stores/auth.js";
+  import {useAuthStore} from "../stores/useAuthStore.js";
   import {DynamicDialog} from "primevue";
   import AppConfirmDialog from "../components/Common/AppConfirmDialog.vue";
   import AppToast from "../components/Common/AppToast.vue";

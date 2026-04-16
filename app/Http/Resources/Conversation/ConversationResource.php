@@ -25,7 +25,7 @@ class ConversationResource extends JsonResource
             'status'          => $this->status,
             'contact'         => new ContactResource($this->contact),
             'channel'         => new ChannelResource($this->channel),
-            'last_message'    => $this->whenNotNull($this->lastMessage, fn() => new MessageResource($this->lastMessage)),
+            'last_message' => $this->lastMessage ? new MessageResource($this->lastMessage) : null,
 
             'timestamps'      => $this->getTimestamps()
         ];
