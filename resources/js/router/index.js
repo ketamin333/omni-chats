@@ -14,6 +14,8 @@ const routes = [
         children: [
             {
                 path: ':id',
+                name: 'chats.detail',
+                component: () => import('../pages/ChatDetail.vue'),
             }
         ]
     },

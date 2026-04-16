@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Channel;
 
+use App\Http\Resources\Adapter\AdapterListResource;
+use App\Http\Resources\Adapter\AdapterResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +18,7 @@ class ChannelResource extends JsonResource
     {
         return [
             'channel_id'   => $this->channel_id,
-            'adapter'      => $this->adapter,
+            'adapter'      => new AdapterListResource($this->whenLoaded('adapter')),
             'channel_name' => $this->channel_name,
             'status'       => $this->status,
             'settings'     => $this->settings,

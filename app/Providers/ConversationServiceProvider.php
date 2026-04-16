@@ -6,6 +6,7 @@ use App\Handlers\Conversation\Contracts\CreateConversationHandlerInterface;
 use App\Handlers\Conversation\Contracts\GetConversationHandlerInterface;
 use App\Handlers\Conversation\Contracts\GetConversationsHandlerInterface;
 use App\Handlers\Conversation\CreateConversationHandler;
+use App\Handlers\Conversation\GetConversationHandler;
 use App\Handlers\Conversation\GetConversationsHandler;
 use App\Repositories\Contracts\ConversationRepositoryInterface;
 use App\Repositories\ConversationRepository;
@@ -20,7 +21,7 @@ class ConversationServiceProvider extends ServiceProvider
     {
         /** HANDLERS */
         $this->app->bind(GetConversationsHandlerInterface::class, GetConversationsHandler::class);
-        $this->app->bind(GetConversationHandlerInterface::class, CreateConversationHandler::class);
+        $this->app->bind(GetConversationHandlerInterface::class, GetConversationHandler::class);
         $this->app->bind(CreateConversationHandlerInterface::class, CreateConversationHandler::class);
 
         /** REPOSITORIES */

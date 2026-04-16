@@ -22,6 +22,7 @@ class ContactResource extends JsonResource
             'username'   => $this->username,
             'phone'      => $this->phone,
             'email'      => $this->email,
+            'avatar_url' => $this->avatar_url,
 
             'timestamps' => $this->getTimestamps(),
         ];

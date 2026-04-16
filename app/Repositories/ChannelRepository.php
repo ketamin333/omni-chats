@@ -13,6 +13,7 @@ class ChannelRepository implements ChannelRepositoryInterface
     public function getPaginated(GetChannelsQuery $query): LengthAwarePaginator
     {
         return Channel::where('company_id', $query->companyId)
+            ->with(['adapter'])
             ->paginate($query->perPage);
     }
 

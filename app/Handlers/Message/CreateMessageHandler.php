@@ -21,6 +21,7 @@ class CreateMessageHandler implements CreateMessageHandlerInterface
     {
         $message = Message::create([
             'conversation_id' => $command->conversation->conversation_id,
+            'sender_id'       => $command->direction->isIncoming() ? null : $command->sender?->user_id,
             'direction'       => $command->direction,
             'external_id'     => $command->externalId,
             'text'            => $command->text,

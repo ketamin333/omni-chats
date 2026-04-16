@@ -30,11 +30,11 @@ class TestKetamineCommand extends Command
     {
         $conversation = Conversation::with('channel.adapter')->first();
 
-        $handler = app(SendMessageHandlerInterface::class);
-        $handler->handle(new SendMessageCommand(
-            conversation: $conversation,
-            text: 'test message',
-        ));
+//        $handler = app(SendMessageHandlerInterface::class);
+//        $handler->handle(new SendMessageCommand(
+//            conversation: $conversation,
+//            text: 'test message',
+//        ));
 
         $this->info('Done');
     }

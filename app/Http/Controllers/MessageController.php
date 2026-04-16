@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Commands\Message\SendMessageCommand;
 use App\Handlers\Conversation\Contracts\GetConversationHandlerInterface;
 use App\Handlers\Message\Contracts\GetMessagesHandlerInterface;
+use App\Handlers\Message\Contracts\SendMessageHandlerInterface;
 use App\Http\Requests\Message\IndexRequest;
+use App\Http\Requests\Message\StoreRequest;
 use App\Http\Resources\Message\MessageResource;
 use App\Models\Message;
 use App\Queries\Conversation\GetConversationQuery;
@@ -18,6 +21,7 @@ class MessageController extends Controller
     public function __construct(
         private readonly GetConversationHandlerInterface $getConversationHandler,
         private readonly GetMessagesHandlerInterface     $getMessagesHandler,
+        private readonly SendMessageHandlerInterface     $sendMessageHandler,
     ) {}
 
     /**
@@ -39,9 +43,17 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request, string $conversationId): JsonResponse
     {
-        //
+        $conversation = $this->getConversationHandler->handle(
+            new GetConversationQuery($request->user()->company_id, $conversationId),
+        );
+
+        $message = $this->sendMessageHandler->handle(
+            SendMessageCommand::fromRequest($request, $conversation, $request->user()),
+        );
+
+        return ApiResponse::success(new MessageResource($message));
     }
 
     /**

@@ -1,31 +1,27 @@
 <script setup>
     import {Avatar} from "primevue";
     import dayjs from "../../config/dayjs.js";
-    import {useConversationStore} from "../../stores/useConversationStore.js";
+    import {messageStatus} from "../../config/messageConfig.js";
 
-    const props = defineProps({
-        conversation: Object
-    });
+    const props = defineProps({ conversation: Object });
 
-    const store = useConversationStore();
-
-    const { contact, last_message } = props.conversation;
-    const label = (contact.username ?? contact.phone ?? '?').charAt(0).toUpperCase();
-
-    const onConversationClick = () => store.setActive(props.conversation)
+    const { contact, last_message: lastMessage = null, conversation_id: conversationId } = props.conversation;
+    const { username } = contact;
+    const { text = null, status, timestamps: { created_at: messageCreatedUnix = null } } = lastMessage;
 </script>
 
 <template>
-    <div class="flex p-4 items-center gap-3" @click="onConversationClick">
-        <Avatar :label="label" shape="circle" size="large" class="shrink-0" />
-        <div class="flex flex-col grow">
-            <div class="flex justify-between">
-                <span class="text-base font-semibold">{{ contact.username }}</span>
-                <span class="text-base text-muted-color">
-                    {{ last_message ? dayjs.unix(last_message.timestamps.created_at).format('HH:mm') : '' }}
-                </span>
+    <RouterLink class="flex items-center gap-3 p-4" :to="{ name: 'chats.detail', params: { id: conversationId } }">
+        <Avatar size="large" shape="circle" class="shrink-0" />
+        <div class="flex flex-col grow min-w-0">
+            <div class="flex justify-between text-base gap-4 grow">
+                <span class="font-semibold text-color truncate">{{ username }}</span>
+                <div class="flex gap-2 items-center">
+                    <component :is="messageStatus[status].icon" size="14" />
+                    <span class="text-muted-color">{{ dayjs.unix(messageCreatedUnix).format('HH:mm') }}</span>
+                </div>
             </div>
-            <div class="text-sm text-muted-color">{{ last_message?.text }}</div>
+            <span class="text-muted-color text-sm truncate grow">{{ text }}</span>
         </div>
-    </div>
+    </RouterLink>
 </template>

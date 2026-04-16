@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Contact extends Model
 {
@@ -17,8 +18,13 @@ class Contact extends Model
     protected $fillable = [
         'company_id',
         'username',
+        'avatar',
         'phone',
         'email'
+    ];
+
+    protected $attributes = [
+        'username' => 'Новый контакт'
     ];
 
     public function company(): BelongsTo
@@ -29,5 +35,10 @@ class Contact extends Model
     public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class, 'channel_id', 'channel_id');
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar ? Storage::url($this->avatar) : null;
     }
 }

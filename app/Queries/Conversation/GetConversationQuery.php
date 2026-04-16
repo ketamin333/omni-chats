@@ -10,7 +10,7 @@ readonly class GetConversationQuery
      * Carries filter/pagination params from Request to Handler.
      */
     public function __construct(
-        public int $companyId,
-        public int $conversationId,
+        public int    $companyId,
+        public string $conversationId,
     ) {}
 }

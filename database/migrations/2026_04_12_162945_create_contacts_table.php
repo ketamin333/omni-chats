@@ -20,7 +20,8 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->string('username')->nullable();
+            $table->string('username');
+            $table->string('avatar')->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('email')->nullable();
 

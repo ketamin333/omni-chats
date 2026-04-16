@@ -15,6 +15,7 @@ class Message extends Model
 
     protected $fillable = [
         'conversation_id',
+        'sender_id',
         'external_id',
         'direction',
         'text',
@@ -38,5 +39,10 @@ class Message extends Model
     public function attachments(): MorphMany
     {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function sender(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sender_id', 'user_id');
     }
 }

@@ -12,8 +12,9 @@ readonly class CreateContactCommand
     public function __construct(
         public int     $companyId,
         public ?string $username = null,
-        public ?string $phone = null,
-        public ?string $email = null
+        public ?string $avatar   = null,
+        public ?string $phone    = null,
+        public ?string $email    = null
     ) {}
 
     /**

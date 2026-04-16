@@ -22,6 +22,13 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
+            $table->foreignId('sender_id')
+                ->nullable()
+                ->index()
+                ->constrained('users', 'user_id')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+
             $table->string('external_id')->nullable();
             $table->enum('direction', MessageDirection::values());
             $table->text('text')->nullable();

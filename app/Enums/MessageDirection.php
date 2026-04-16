@@ -11,4 +11,14 @@ enum MessageDirection: string
     {
         return array_column(self::cases(), 'value');
     }
+
+    public function isIncoming(): bool
+    {
+        return $this === self::INCOMING;
+    }
+
+    public function isOutgoing(): bool
+    {
+        return $this === self::OUTGOING;
+    }
 }

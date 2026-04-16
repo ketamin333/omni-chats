@@ -26,6 +26,7 @@ class ConversationRepository implements ConversationRepositoryInterface
         return Conversation::whereHas('channel', function ($q) use ($query) {
             $q->where('company_id', $query->companyId);
         })
+            ->with(['contact', 'channel'])
             ->where('conversation_id', $query->conversationId)
             ->firstOrFail();
     }

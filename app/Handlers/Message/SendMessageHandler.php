@@ -32,6 +32,7 @@ class SendMessageHandler implements SendMessageHandlerInterface
             new CreateMessageCommand(
                 conversation: $command->conversation,
                 direction: MessageDirection::OUTGOING,
+                sender: $command->sender,
                 text: $command->text,
             )
         );
