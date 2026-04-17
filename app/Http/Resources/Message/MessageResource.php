@@ -20,14 +20,15 @@ class MessageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'message_id'  => $this->message_id,
-            'sender'      => new UserListResource($this->whenLoaded('sender')),
-            'direction'   => $this->direction,
-            'status'      => $this->status,
-            'text'        => $this->text,
-            'attachments' => AttachmentResource::collection($this->whenLoaded('attachments')),
+            'message_id'      => $this->message_id,
+            'conversation_id' => $this->conversation_id,
+            'sender'          => new UserListResource($this->whenLoaded('sender')),
+            'direction'       => $this->direction,
+            'status'          => $this->status,
+            'text'            => $this->text,
+            'attachments'     => AttachmentResource::collection($this->whenLoaded('attachments')),
 
-            'timestamps'  => $this->getTimestamps()
+            'timestamps'      => $this->getTimestamps()
         ];
     }
 }

@@ -1,4 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory, RouteMeta} from 'vue-router';
+
+declare module 'vue-router' {
+    interface RouteMeta {
+        title?: string;
+    }
+}
 
 const routes = [
     {

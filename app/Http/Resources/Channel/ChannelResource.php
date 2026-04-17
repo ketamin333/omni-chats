@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Channel;
 
 use App\Http\Resources\Adapter\AdapterListResource;
-use App\Http\Resources\Adapter\AdapterResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

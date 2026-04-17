@@ -1,13 +1,14 @@
 <script setup>
     import {Avatar} from "primevue";
+    import {computed} from "vue";
     import dayjs from "../../config/dayjs.js";
     import {messageStatus} from "../../config/messageConfig.js";
 
     const props = defineProps({ conversation: Object });
 
-    const { contact, last_message: lastMessage = null, conversation_id: conversationId } = props.conversation;
-    const { username } = contact;
-    const { text = null, status, timestamps: { created_at: messageCreatedUnix = null } } = lastMessage;
+    const lastMessage = computed(() => props.conversation.last_message);
+    const conversationId = props.conversation.conversation_id;
+    const username = props.conversation.contact.username;
 </script>
 
 <template>
@@ -17,11 +18,11 @@
             <div class="flex justify-between text-base gap-4 grow">
                 <span class="font-semibold text-color truncate">{{ username }}</span>
                 <div class="flex gap-2 items-center">
-                    <component :is="messageStatus[status].icon" size="14" />
-                    <span class="text-muted-color">{{ dayjs.unix(messageCreatedUnix).format('HH:mm') }}</span>
+                    <component :is="messageStatus[lastMessage.status].icon" size="14" />
+                    <span class="text-muted-color">{{ dayjs.unix(lastMessage.timestamps.created_at).format('HH:mm') }}</span>
                 </div>
             </div>
-            <span class="text-muted-color text-sm truncate grow">{{ text }}</span>
+            <span class="text-muted-color text-sm truncate grow">{{ lastMessage.text }}</span>
         </div>
     </RouterLink>
 </template>

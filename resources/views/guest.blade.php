@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('vite')
-    @vite(['resources/css/app.css', 'resources/js/guest.js'])
+    @vite(['resources/css/app.css', 'resources/js/guest.ts'])
 @endsection
 
 @section('root')

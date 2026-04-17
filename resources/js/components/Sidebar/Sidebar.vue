@@ -1,8 +1,8 @@
 <script setup>
-    import {useAuthStore} from "../../stores/useAuthStore.js";
+    import {useAuthStore} from "@/stores/useAuthStore.ts";
     import {Image, Button, InputText, Menu, IconField, InputIcon, Avatar} from "primevue";
     import { ChevronRight, LogOut, Layers, Search } from "lucide-vue-next";
-    import { ref } from 'vue';
+    import {ref} from 'vue';
     import SidebarGroupItems from "./SidebarGroupItems.vue";
     import groups from "../../config/navigation.js";
 

@@ -21,9 +21,12 @@ class MessageCreated implements ShouldBroadcastNow
         public readonly Message $message
     ) {}
 
-    public function broadcastOn(): PrivateChannel
+    public function broadcastOn(): array
     {
-        return new PrivateChannel("conversations.{$this->message->conversation_id}");
+        return [
+            new PrivateChannel("conversations.{$this->message->conversation_id}"),
+            new PrivateChannel("chats.{$this->message->conversation->channel->company_id}")
+        ];
     }
 
     public function broadcastWith(): array

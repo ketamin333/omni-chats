@@ -1,5 +1,5 @@
-import { ref } from 'vue';
-import { useToast } from 'primevue/usetoast';
+import {ref} from 'vue';
+import {useToast} from 'primevue/usetoast';
 
 export const useApi = () => {
     const loading = ref(false);

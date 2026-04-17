@@ -20,9 +20,9 @@ class ContactResource extends JsonResource
         return [
             'contact_id' => $this->contact_id,
             'username'   => $this->username,
+            'avatar_url' => $this->avatar_url,
             'phone'      => $this->phone,
             'email'      => $this->email,
-            'avatar_url' => $this->avatar_url,
 
             'timestamps' => $this->getTimestamps(),
         ];

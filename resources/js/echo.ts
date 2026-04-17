@@ -1,6 +1,12 @@
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
-import axiosInstance from './api/axios.js';
+import axiosInstance from './api/axios';
+
+declare global {
+    interface Window {
+        Pusher: typeof Pusher
+    }
+}
 
 window.Pusher = Pusher;
 
@@ -12,15 +18,15 @@ const echo = new Echo({
     wssPort: import.meta.env.VITE_REVERB_PORT,
     forceTLS: import.meta.env.VITE_REVERB_SCHEME === 'https',
     enabledTransports: ['ws', 'wss'],
-    authorizer: channel => ({
-        authorize: (socketId, callback) => {
+    authorizer: (channel: { name: string }) => ({
+        authorize: (socketId: string, callback: CallableFunction) => {
             axiosInstance
                 .post('/broadcasting/auth', {
                     socket_id: socketId,
                     channel_name: channel.name
                 })
                 .then(r => callback(null, r))
-                .catch(e => callback(e));
+                .catch(e => callback(e, null));
         }
     }),
 });

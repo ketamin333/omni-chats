@@ -1,21 +1,21 @@
 <script setup>
     import {onMounted, onUnmounted} from "vue";
-  import Sidebar from "../components/Sidebar/Sidebar.vue";
-  import {useAuthStore} from "../stores/useAuthStore.js";
-  import {DynamicDialog} from "primevue";
-  import AppConfirmDialog from "../components/Common/AppConfirmDialog.vue";
-  import AppToast from "../components/Common/AppToast.vue";
-  import {useOnlineChannel} from "../composables/useOnlineChannel.js";
+    import Sidebar from "../components/Sidebar/Sidebar.vue";
+    import {useAuthStore} from "../stores/useAuthStore";
+    import {DynamicDialog} from "primevue";
+    import AppConfirmDialog from "../components/Common/AppConfirmDialog.vue";
+    import AppToast from "../components/Common/AppToast.vue";
+    import {useOnlineChannel} from "../composables/useOnlineChannel.js";
 
-  const authStore = useAuthStore();
-  const { subscribe: subscribeOnline, unsubscribe: unsubscribeOnline } = useOnlineChannel();
+    const authStore = useAuthStore();
+    const { subscribe: subscribeOnline, unsubscribe: unsubscribeOnline } = useOnlineChannel();
 
-  onMounted(() => {
-      authStore.fetchUser();
-      subscribeOnline();
-  });
+    onMounted(() => {
+        authStore.fetchUser();
+        subscribeOnline();
+    });
 
-  onUnmounted(() => unsubscribeOnline());
+    onUnmounted(() => unsubscribeOnline());
 </script>
 
 <template>

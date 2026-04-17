@@ -2,14 +2,22 @@
     import ConversationItem from "./ConversationItem.vue";
     import {Tag} from "primevue";
     import {storeToRefs} from "pinia";
-    import {onMounted, ref} from "vue";
+    import {onMounted, onUnmounted, ref} from "vue";
     import {useConversationStore} from "../../stores/useConversationStore.js";
+    import {useChatsChannel} from '../../composables/useChatsChannel.js';
 
     const store = useConversationStore();
-    const { conversations, total } = storeToRefs(store);
-    const { load } = store;
 
-    onMounted(() => load());
+    const { load, updateLastMessage } = store;
+    const { subscribe, unsubscribe } = useChatsChannel(message => updateLastMessage(message));
+    const { conversations, total } = storeToRefs(store);
+
+    onMounted(() => {
+        load();
+        subscribe();
+    });
+
+    onUnmounted(() => unsubscribe());
 </script>
 
 <template>

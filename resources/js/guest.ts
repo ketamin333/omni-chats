@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
-import preset from "./theme.js";
+import preset from "./theme";
 import Login from "./pages/Login.vue";
 import {createPinia} from "pinia";
 
