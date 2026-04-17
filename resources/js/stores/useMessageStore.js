@@ -14,7 +14,6 @@ export const useMessageStore = defineStore('messages', () => {
         loading.value = true;
 
         const response = (await getMessages(id)).data;
-        console.log(response);
 
         messages.value = response.data.reverse();
         nextCursor.value = response.meta.next_cursor;
@@ -23,5 +22,7 @@ export const useMessageStore = defineStore('messages', () => {
         loading.value = false;
     };
 
-    return { messages, load, loading };
+    const addMessage = message => messages.value.push(message);
+
+    return { messages, load, loading, addMessage };
 });

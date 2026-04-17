@@ -2,17 +2,15 @@
 
 namespace App\Events;
 
-use App\Enums\BroadcastChannel;
+use App\Http\Resources\Message\MessageResource;
 use App\Models\Message;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageCreated
+class MessageCreated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,4 +20,14 @@ class MessageCreated
     public function __construct(
         public readonly Message $message
     ) {}
+
+    public function broadcastOn(): PrivateChannel
+    {
+        return new PrivateChannel("conversations.{$this->message->conversation_id}");
+    }
+
+    public function broadcastWith(): array
+    {
+        return (new MessageResource($this->message))->resolve();
+    }
 }

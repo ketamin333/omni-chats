@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /** MESSAGES ROUTES */
     Route::get('conversations/{conversationId}/messages', [MessageController::class, 'index']);
+    Route::post('conversations/{conversationId}/messages', [MessageController::class, 'store']);
 
     /** PERMISSIONS ROUTES */
     Route::get('permissions', [PermissionController::class, 'index']);

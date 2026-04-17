@@ -40,7 +40,7 @@
 </script>
 
 <template>
-    <div class="grow flex flex-col justify-end gap-3 p-4 bg-surface-100 overflow-y-auto">
+    <div class="flex-1 flex overflow-y-auto justify-end gap-3 p-4 flex-col">
         <div
             v-for="group in groups"
             :key="group.messages[0].message_id"
@@ -53,6 +53,7 @@
                 <div
                     v-for="(message, index) in group.messages"
                     :key="message.message_id"
+                    class="text-base"
                     :class="bubbleClass(group.direction, index, group.messages.length)"
                 >
                     {{ message.text }}

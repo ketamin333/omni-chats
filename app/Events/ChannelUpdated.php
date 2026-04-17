@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use App\Enums\BroadcastChannel;
 use App\Http\Resources\Channel\ChannelResource;
+use App\Models\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -19,12 +19,12 @@ class ChannelUpdated implements ShouldDispatchAfterCommit, ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-       public readonly \App\Models\Channel $channel
+       public readonly Channel $channel
     ) {}
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel(BroadcastChannel::CHANNELS->value);
+        return new PrivateChannel("channels.{$this->channel->company_id}");
     }
 
     public function broadcastWith(): array

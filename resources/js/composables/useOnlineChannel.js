@@ -5,12 +5,13 @@ import {useAuthStore} from "../stores/useAuthStore.js";
 const onlineUsers = ref(new Set());
 
 export function useOnlineChannel() {
-
     const auth = useAuthStore();
 
     const subscribe = () => {
-        watch(() => auth.user, (user) => {
-            if (!user) return;
+        watch(() => auth.user, user => {
+            if (!user) {
+                return;
+            }
 
             echo.join(`online.${user.company_id}`)
                 .here(users => {

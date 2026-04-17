@@ -25,7 +25,7 @@ class ChannelDeleted implements ShouldDispatchAfterCommit, ShouldBroadcast
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel(BroadcastChannel::CHANNELS->value);
+        return new PrivateChannel("channels.{$this->channel->company_id}");
     }
 
     public function broadcastWith(): array
