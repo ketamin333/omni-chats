@@ -1,6 +1,19 @@
-import {ListChecks, House, UsersRound, MessageCircle, Layers} from "lucide-vue-next";
+import { ListChecks, House, UsersRound, MessageCircle, Layers } from "lucide-vue-next";
+import type { Component } from "vue";
+import type { RouteLocationRaw } from "vue-router";
 
-const groups = [
+interface NavigationItem {
+    to: RouteLocationRaw;
+    label: string;
+    icon: Component;
+}
+
+interface NavigationGroup {
+    label: string;
+    items: NavigationItem[];
+}
+
+const groups: NavigationGroup[] = [
     {
         label: 'Основное',
         items: [

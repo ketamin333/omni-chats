@@ -1,5 +1,5 @@
 <script setup>
-    import {adapterNamesConfig} from "../../config/adapterConfig.js";
+    import {adapterNamesConfig} from "../../config/adapterConfig";
     import {Check} from "lucide-vue-next";
     import {Tag} from "primevue";
     import {computed} from "vue";

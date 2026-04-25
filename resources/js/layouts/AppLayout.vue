@@ -5,7 +5,7 @@
     import {DynamicDialog} from "primevue";
     import AppConfirmDialog from "../components/Common/AppConfirmDialog.vue";
     import AppToast from "../components/Common/AppToast.vue";
-    import {useOnlineChannel} from "../composables/useOnlineChannel.js";
+    import {useOnlineChannel} from "../composables/useOnlineChannel";
 
     const authStore = useAuthStore();
     const { subscribe: subscribeOnline, unsubscribe: unsubscribeOnline } = useOnlineChannel();

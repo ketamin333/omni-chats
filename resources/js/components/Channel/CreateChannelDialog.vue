@@ -2,12 +2,12 @@
     import {computed, inject, onMounted, ref} from "vue";
     import {X, Router, Code, Check, Sun, ChevronRight, ChevronLeft, Sparkles} from "lucide-vue-next";
     import {Stepper, StepList, StepPanels, Step, StepPanel, Button, Divider, InputText, Textarea, Avatar} from 'primevue';
-    import {createChannel} from "../../api/channels.js";
+    import {createChannel} from "@/api/channels.ts";
     import ChannelAdapterNameCard from "./ChannelAdapterNameCard.vue";
-    import {useApi} from "../../composables/useApi.js";
-    import {getAdapters} from "../../api/adapters.js";
+    import {useApi} from "@/composables/useApi.ts";
+    import {getAdapters} from "@/api/adapters.ts";
     import ChannelAdapterTypeCard from "./ChannelAdapterTypeCard.vue";
-    import {adapterNamesConfig, adapterTypesConfig} from "../../config/adapterConfig.js";
+    import {adapterNamesConfig, adapterTypesConfig} from "@/config/adapterConfig.ts";
 
     const dialogRef = inject('dialogRef');
     const activeStep = ref('1');

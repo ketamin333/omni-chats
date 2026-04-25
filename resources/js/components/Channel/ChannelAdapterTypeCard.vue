@@ -1,6 +1,6 @@
 <script setup>
     import {Check} from "lucide-vue-next";
-    import {adapterTypesConfig, adapterNamesConfig} from "../../config/adapterConfig.js";
+    import {adapterTypesConfig, adapterNamesConfig} from "@/config/adapterConfig.ts";
     import {Avatar} from "primevue";
     import {computed} from "vue";
 

@@ -11,6 +11,7 @@ const routes = [
         path: '/dashboard',
         name: 'dashboard',
         meta: { title: 'Дашборд' },
+        redirect: '/chats',
     },
     {
         path: '/chats',

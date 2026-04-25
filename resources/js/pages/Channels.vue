@@ -1,78 +1,52 @@
-<script setup>
-    import {Button, DataTable, Tag, Column} from "primevue";
-    import {CalendarPlus, MessageCirclePlus, Layers, Router, CircleDotDashed, MousePointerClick, Trash2, SquarePen} from "lucide-vue-next";
-    import {onMounted, onUnmounted, ref} from "vue";
-    import {useDialog} from "primevue/usedialog";
-    import CreateChannelDialog from "../components/Channel/CreateChannelDialog.vue";
-    import {useChannelsChannel} from "../composables/useChannelsChannel.js";
-    import {deleteChannel, getChannels, updateStatusChannel} from "../api/channels.js";
-    import {adapterNamesConfig} from "../config/adapterConfig.js";
-    import dayjs from "../config/dayjs.js";
-    import {channelHandler, channelStatus} from "../config/channelConfig.js";
-    import {useApi} from "../composables/useApi.js";
-    import {useToast} from "primevue/usetoast";
-    import {useConfirm} from "primevue/useconfirm";
-    import UpdateChannelDialog from "../components/Channel/UpdateChannelDialog.vue";
+<script setup lang="ts">
+    import { Button, DataTable, Tag, Column } from 'primevue'
+    import {
+        CalendarPlus, MessageCirclePlus, Layers, Router,
+        CircleDotDashed, MousePointerClick, Trash2, SquarePen
+    } from 'lucide-vue-next'
+    import { onMounted, onUnmounted } from 'vue'
+    import { useDialog } from 'primevue/usedialog'
+    import { useToast } from 'primevue/usetoast'
+    import { useConfirm } from 'primevue/useconfirm'
+    import CreateChannelDialog from '@/components/Channel/CreateChannelDialog.vue'
+    import UpdateChannelDialog from '@/components/Channel/UpdateChannelDialog.vue'
+    import { useChannelsChannel } from '@/composables/useChannelsChannel'
+    import { useChannelStore } from '@/stores/useChannelStore'
+    import { adapterNamesConfig } from '@/config/adapterConfig'
+    import { channelStatus } from '@/config/channelConfig'
+    import dayjs from '@/config/dayjs'
 
-    const dialog = useDialog();
-    const total = ref(0);
-    const channels = ref([]);
-    const loading = ref(false);
-    const perPage = 25;
-    const page = ref(1);
+    const dialog = useDialog()
+    const toast = useToast()
+    const confirm = useConfirm()
 
-    const toast = useToast();
-    const confirm = useConfirm();
+    const store = useChannelStore()
+    const { subscribe, unsubscribe } = useChannelsChannel(store.channels, store.total)
 
-    const { subscribe, unsubscribe } = useChannelsChannel(channels, total);
-    const { execute } = useApi();
-
-    onMounted(() => { loadChannels(); subscribe(); });
-    onUnmounted(() => unsubscribe());
-
-    const loadChannels = async () => {
-        loading.value = true;
-        const response = (await getChannels(page.value)).data;
-
-        total.value = response.meta.total;
-        channels.value = response.data;
-        loading.value = false;
-    };
-
-    const onPage = e => {
-        page.value = e.page + 1;
-        loadChannels();
-    };
+    onMounted(() => { store.load(); subscribe() })
+    onUnmounted(() => unsubscribe())
 
     const onCreateChannelClick = () => dialog.open(CreateChannelDialog, {
-        props: {
-            modal: true,
-            showHeader: false,
-            class: 'w-[38rem]'
-        },
-    });
+        props: { modal: true, showHeader: false, class: 'w-[38rem]' },
+    })
 
-    const onUpdateChannelClick = () => dialog.open(UpdateChannelDialog, {
-        props: {
-            modal: true,
-            showHeader: false,
-            class: 'w-[38rem]'
-        }
-    });
+    const onUpdateChannelClick = (channelId: string) => dialog.open(UpdateChannelDialog, {
+        props: { modal: true, showHeader: false, class: 'w-[38rem]' },
+        data: { channelId },
+    })
 
-    const onDeleteChannelClick = channelId => confirm.require({
-        modal: true,
+    const onDeleteChannelClick = (channelId: string) => confirm.require({
         message: 'Канал будет помечен как удалённый и скрыт из активного списка',
         header: 'Вы действительно хотите удалить канал?',
         accept: async () => {
             try {
-                await deleteChannel(channelId);
-                toast.add({ severity: 'success', summary: 'Канал успешно удален' });
-            } catch (e) {
-                toast.add({ severity: 'error', summary: e.message, detail: e.errors });
+                await store.remove(channelId)
+                toast.add({ severity: 'success', summary: 'Канал успешно удален' })
+            } catch (e: any) {
+                toast.add({ severity: 'error', summary: e.message, detail: e.errors })
             }
         },
-    });
+    })
 </script>
 
 <template>
@@ -80,12 +54,12 @@
         <DataTable
             scrollable
             scrollHeight="flex"
-            :value="channels"
-            :loading="loading"
+            :value="store.channels"
+            :loading="store.loading"
             paginator
-            :total-records="total"
-            :rows="perPage"
-            @page="onPage"
+            :total-records="store.total"
+            :rows="store.perPage"
+            @page="store.onPage"
             lazy
         >
             <template #header>
@@ -93,81 +67,68 @@
                     <div class="flex flex-col">
                         <div class="flex gap-2 items-center">
                             <span class="text-color font-bold text-2xl">Каналы</span>
-                            <Tag :value="total" />
+                            <Tag :value="store.total" />
                         </div>
                         <span class="text-muted-color text-base">Добавляйте новые каналы связи</span>
                     </div>
-                    <div class="flex gap-2">
-                        <Button label="Добавить" @click="onCreateChannelClick">
-                            <template #icon><MessageCirclePlus size="14" /></template>
-                        </Button>
-                    </div>
+                    <Button label="Добавить" @click="onCreateChannelClick">
+                        <template #icon><MessageCirclePlus size="14" /></template>
+                    </Button>
                 </div>
             </template>
-            <Column header="Канал" field="channel_name">
-                <template #header>
-                    <Layers size="14" />
-                </template>
-                <template #body="{data: { channel_name }}">
-                    <span class="font-medium text-color">{{ channel_name }}</span>
-                </template>
-            </Column>
-            <Column header="Адаптер" field="channel_name">
-                <template #header>
-                    <Router size="14" />
-                </template>
-                <template #body="{data: { adapter: { adapter_name, adapter_type } }}">
-                    <Tag :value="adapterNamesConfig[adapter_name].slugs[adapter_type]?.label"
-                         :severity="adapterNamesConfig[adapter_name].tagSeverity || 'contrast'" />
+
+            <Column field="channel_name">
+                <template #header><Layers size="14" /></template>
+                <template #body="{ data }">
+                    <span class="font-medium text-color">{{ data.channel_name }}</span>
                 </template>
             </Column>
-            <Column header="Статус" field="status">
-                <template #header>
-                    <CircleDotDashed size="14" />
+
+            <Column field="adapter">
+                <template #header><Router size="14" /></template>
+                <template #body="{ data }">
+                    <Tag
+                        :value="adapterNamesConfig[data.adapter.adapter_name].slugs[data.adapter.adapter_type]?.label"
+                        :severity="adapterNamesConfig[data.adapter.adapter_name].tagSeverity || 'contrast'"
+                    />
                 </template>
-                <template #body="{data: { status }}">
+            </Column>
+
+            <Column field="status">
+                <template #header><CircleDotDashed size="14" /></template>
+                <template #body="{ data }">
+                    <Tag :value="channelStatus[data.status].label" :severity="channelStatus[data.status].severity">
+                        <template #icon>
+                            <component :is="channelStatus[data.status].icon" size="12" />
+                        </template>
+                    </Tag>
+                </template>
+            </Column>
+
+            <Column field="created_at">
+                <template #header><CalendarPlus size="14" /></template>
+                <template #body="{ data }">
                     <span class="text-muted-color">
-                        <Tag :value="channelStatus[status].label" :severity="channelStatus[status].severity">
-                            <template #icon>
-                                <component size="12" :is="channelStatus[status].icon || ''" />
-                            </template>
-                        </Tag>
+                        {{ dayjs.unix(data.timestamps.created_at).format('DD/MM/YYYY') }}
                     </span>
                 </template>
             </Column>
-            <Column header="Создан" field="created_at">
-                <template #header>
-                    <CalendarPlus size="14" />
-                </template>
-                <template #body="{data: { timestamps: { created_at } }}">
-                    <span class="text-muted-color">
-                        {{ dayjs.unix(created_at).format('DD/MM/YYYY') }}
-                    </span>
-                </template>
-            </Column>
-            <Column header="Действия">
-                <template #header>
-                    <MousePointerClick size="14" />
-                </template>
-                <template #body="{data: { channel_id, status }}">
+
+            <Column>
+                <template #header><MousePointerClick size="14" /></template>
+                <template #body="{ data }">
                     <div class="flex gap-2">
-                        <Button outlined rounded @click="onUpdateChannelClick(channel_id)"
-                                v-tooltip.bottom="'Изменить'">
-                            <template #icon>
-                                <SquarePen size="14" />
-                            </template>
+                        <Button outlined rounded v-tooltip.bottom="'Изменить'"
+                                @click="onUpdateChannelClick(data.channel_id)">
+                            <template #icon><SquarePen size="14" /></template>
                         </Button>
-                        <Button outlined severity="danger" rounded
-                                @click="onDeleteChannelClick(channel_id)"
-                                v-tooltip.bottom="'Удалить'">
-                            <template #icon>
-                                <Trash2 size="14" />
-                            </template>
+                        <Button outlined rounded severity="danger" v-tooltip.bottom="'Удалить'"
+                                @click="onDeleteChannelClick(data.channel_id)">
+                            <template #icon><Trash2 size="14" /></template>
                         </Button>
                     </div>
                 </template>
             </Column>
         </DataTable>
     </div>
-
 </template>
