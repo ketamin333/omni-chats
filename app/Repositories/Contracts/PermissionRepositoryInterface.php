@@ -10,5 +10,5 @@ interface PermissionRepositoryInterface
 
     public function getIdsBySlug(array $slugs): Collection;
 
-    public function flush(): void;
+    public function forget(): void;
 }

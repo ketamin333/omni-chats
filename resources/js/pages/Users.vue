@@ -1,28 +1,25 @@
-<script setup>
-import {onMounted, onUnmounted, ref} from "vue";
-import {deleteUser, getUsers} from "../api/users.js";
-    import {DataTable, Column, Button, Avatar, IconField, InputText, InputIcon, Tag} from 'primevue';
-    import {Search, UserRoundPlus, X, MousePointerClick, SquarePen, Trash2, Mail,
-        Phone, CalendarDays, CircleUserRound, CalendarPlus, CircleFadingPlus
-    } from 'lucide-vue-next';
-    import CreateUserDialog from "../components/User/CreateUserDialog.vue";
-    import UpdateUserDialog from "../components/User/UpdateUserDialog.vue";
-    import {useDialog} from "primevue/usedialog";
-    import {useUsersChannel} from '../composables/useUsersChannel.js';
-    import {useDebounce} from "../composables/useDebounce.js";
-    import dayjs from "../config/dayjs.js";
-    import {useOnlineChannel} from "../composables/useOnlineChannel.js";
-    import {useConfirm} from "primevue/useconfirm";
-    import {useToast} from "primevue/usetoast";
+<script setup lang="ts">
+    import { onMounted, onUnmounted } from "vue";
+    import { deleteUser } from "@/api/users";
+    import { DataTable, Column, Button, Avatar, IconField, InputText, InputIcon, Tag } from 'primevue';
+    import { Search, UserRoundPlus, X, MousePointerClick, SquarePen, Trash2, Mail, Phone, CalendarDays, CircleUserRound, CalendarPlus, CircleDotDashed } from 'lucide-vue-next';
+    import CreateUserDialog from "@/components/User/CreateUserDialog.vue";
+    import UpdateUserDialog from "@/components/User/UpdateUserDialog.vue";
+    import { useDialog } from "primevue/usedialog";
+    import { useUsersChannel } from '@/composables/useUsersChannel';
+    import { useDebounce } from "@/composables/useDebounce";
+    import dayjs from "@/config/dayjs";
+    import { useOnlineChannel } from "@/composables/useOnlineChannel";
+    import { useConfirm } from "primevue/useconfirm";
+    import { useToast } from "primevue/usetoast";
+    import { useUserStore } from "@/stores/useUserStore";
+    import { storeToRefs } from "pinia";
 
-    const loading = ref(false);
-    const sortField = ref(null);
-    const sortOrder = ref(null);
-    const search = ref('');
-    const users = ref([]);
-    const total = ref(0);
     const perPage = 25;
-    const page = ref(1);
+
+    const store = useUserStore();
+    const { users, loading, total, page, search, sortField, sortOrder } = storeToRefs(store);
+    const { load } = store;
 
     const dialog = useDialog();
     const confirm = useConfirm();
@@ -32,53 +29,38 @@ import {deleteUser, getUsers} from "../api/users.js";
     const { onlineUsers } = useOnlineChannel();
 
     onMounted(() => {
-        loadUsers();
+        load();
         subscribeUsers();
     });
 
     onUnmounted(() => unsubscribeUsers());
 
-    const isOnline = userId => onlineUsers.value.has(userId);
+    const isOnline = (userId: number) => onlineUsers.value.has(userId);
 
-    const loadUsers = async () => {
-        loading.value = true;
-        const response = (await getUsers(page.value, sortField.value, sortOrder.value, search.value || null)).data;
-
-        total.value = response.meta.total;
-        users.value = response.data;
-        loading.value = false;
-    };
-
-    const onPage = e => {
+    const onPage = (e: { page: number }) => {
         page.value = e.page + 1;
-        loadUsers();
+        load();
     };
 
     const resetUsers = () => {
         page.value = 1;
-        loadUsers();
+        load();
     };
 
     useDebounce(search, resetUsers);
 
-    const onSort = e => {
+    const onSort = (e: { sortField: string; sortOrder: number }) => {
         sortField.value = e.sortField;
-        sortOrder.value = e.sortOrder === 1
-            ? 'asc' : 'desc';
-
+        sortOrder.value = e.sortOrder === 1 ? 'asc' : 'desc';
         resetUsers();
     };
 
-    const onUpdateUserClick = userId => dialog.open(UpdateUserDialog, {
-        props: {
-            modal: true,
-            showHeader: false,
-            class: 'w-[44rem]',
-        },
-        data: {userId}
+    const onUpdateUserClick = (userId: number) => dialog.open(UpdateUserDialog, {
+        props: { modal: true, showHeader: false, class: 'w-[44rem]' },
+        data: { userId }
     });
 
-    const onDeleteUserClick = userId => confirm.require({
+    const onDeleteUserClick = (userId: number) => confirm.require({
         modal: true,
         message: 'Пользователь будет помечен как удалённый и скрыт из активного списка',
         header: 'Вы действительно хотите удалить пользователя?',
@@ -86,42 +68,39 @@ import {deleteUser, getUsers} from "../api/users.js";
             try {
                 await deleteUser(userId);
                 toast.add({ severity: 'success', summary: 'Пользователь успешно удален' });
-            } catch (e) {
-                toast.add({ severity: 'error', summary: e.message, detail: e.errors });
+            } catch (e: unknown) {
+                const error = e as { message: string; errors?: Record<string, string[]> };
+                toast.add({ severity: 'error', summary: error.message, detail: error.errors });
             }
         },
     });
 
     const onCreateUserClick = () => dialog.open(CreateUserDialog, {
-        props: {
-            modal: true,
-            showHeader: false,
-            class: 'w-[44rem]',
-        },
+        props: { modal: true, showHeader: false, class: 'w-[44rem]' },
     });
 </script>
 
 <template>
-    <div class="flex flex-col h-full overflow-hidden pt-1 pb-2 text-base">
+    <div class="flex flex-col h-full overflow-hidden pb-2 text-base">
         <DataTable
             scrollable
             scrollHeight="flex"
             :value="users"
             :loading="loading"
-            lazy
             paginator
             @page="onPage"
             :rows="perPage"
             :total-records="total"
             @sort="onSort"
             removable-sort
+            lazy
         >
             <template #header>
                 <div class="shrink-0 flex justify-between items-start">
                     <div class="flex flex-col">
                         <div class="flex gap-2 items-center">
                             <span class="text-color font-bold text-2xl">Пользователи</span>
-                            <Tag :value="total"></Tag>
+                            <Tag :value="total" />
                         </div>
                         <span class="text-muted-color text-base">Добавляйте сотрудников и настраивайте их права доступа</span>
                     </div>
@@ -169,7 +148,7 @@ import {deleteUser, getUsers} from "../api/users.js";
             </Column>
             <Column header="Активность">
                 <template #header>
-                    <CircleFadingPlus size="14" />
+                    <CircleDotDashed size="14" />
                 </template>
                 <template #body="{data: { user_id }}" >
                     <Tag v-bind="isOnline(user_id)
@@ -202,18 +181,18 @@ import {deleteUser, getUsers} from "../api/users.js";
                 </template>
                 <template #body="{data: { user_id }}">
                     <div class="flex gap-2">
-                        <Button outlined rounded severity="danger"
-                                @click="onDeleteUserClick(user_id)"
-                                v-tooltip.bottom="'Удалить'">
-                            <template #icon>
-                                <Trash2 size="14" />
-                            </template>
-                        </Button>
                         <Button outlined rounded
                                 @click="onUpdateUserClick(user_id)"
                                 v-tooltip.bottom="'Изменить'">
                             <template #icon>
                                 <SquarePen size="14" />
+                            </template>
+                        </Button>
+                        <Button outlined rounded severity="danger"
+                                @click="onDeleteUserClick(user_id)"
+                                v-tooltip.bottom="'Удалить'">
+                            <template #icon>
+                                <Trash2 size="14" />
                             </template>
                         </Button>
                     </div>

@@ -1,12 +1,19 @@
 <?php
 
+use App\Broadcasting\ChannelsChannel;
+use App\Broadcasting\ChatsChannel;
+use App\Broadcasting\ConversationsChannel;
 use App\Broadcasting\OnlineChannel;
 use App\Broadcasting\UsersChannel;
-use App\Enums\BroadcastChannel;
 use Illuminate\Support\Facades\Broadcast;
 
 /** USERS CHANNEL */
-Broadcast::channel(BroadcastChannel::USER->value, UsersChannel::class);
-
+Broadcast::channel('users.{companyId}', UsersChannel::class);
 /** ONLINE CHANNEL */
-Broadcast::channel(BroadcastChannel::ONLINE->value, OnlineChannel::class);
+Broadcast::channel('online.{companyId}', OnlineChannel::class);
+/** CHANNELS CHANNEL */
+Broadcast::channel('channels.{companyId}', ChannelsChannel::class);
+/** CONVERSATIONS CHANNEL */
+Broadcast::channel('conversations.{conversationId}', ConversationsChannel::class);
+/** CHATS CHANNEL */
+Broadcast::channel('chats.{companyId}', ChatsChannel::class);

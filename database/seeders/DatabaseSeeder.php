@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this
             ->call(PermissionSeeder::class)
-            ->call(ExampleSeeder::class);
+            ->call(ExampleSeeder::class)
+            ->call(AdapterSeeder::class);
     }
 }

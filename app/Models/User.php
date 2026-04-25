@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\HasPermissions;
+use App\Models\Concerns\HasPermissions;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -39,9 +39,7 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar
-            ? Storage::url($this->avatar)
-            : null;
+        return $this->avatar ? Storage::url($this->avatar) : null;
     }
 
     public function company(): BelongsTo

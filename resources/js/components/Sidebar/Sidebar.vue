@@ -1,21 +1,30 @@
 <script setup>
-    import {useAuthStore} from "../../stores/auth.js";
-    import { Image, Button, InputText, Popover, IconField, InputIcon } from "primevue";
+    import {useAuthStore} from "@/stores/useAuthStore";
+    import {Image, Button, InputText, Menu, IconField, InputIcon, Avatar} from "primevue";
     import { ChevronRight, LogOut, Layers, Search } from "lucide-vue-next";
-    import { ref } from 'vue';
+    import {ref} from 'vue';
     import SidebarGroupItems from "./SidebarGroupItems.vue";
-    import groups from "../../config/navigation.js";
-    import UserInfo from "../User/UserInfo.vue";
+    import groups from "../../config/navigation";
 
     const auth = useAuthStore();
 
-    const userPopover = ref();
-    const toggle = event => userPopover.value.toggle(event);
+    const userMenu = ref();
 
-    async function logout() {
+    const logout = async () => {
         await auth.logout();
         window.location.href = '/login';
-    }
+    };
+
+    const menuItems = [
+        {
+            label: 'Основное',
+            items: [
+                { label: 'Выйти', icon: LogOut, command: () => logout() }
+            ]
+        }
+    ];
+
+    const toggleMenu = e => userMenu.value.toggle(e);
 </script>
 
 <template>
@@ -27,26 +36,31 @@
             </RouterLink>
             <IconField>
                 <InputIcon><Search size="14" /></InputIcon>
-                <InputText placeholder="Поиск..." fluid type="text" />
+                <InputText placeholder="Поиск..." fluid type="text" as="button" />
             </IconField>
             <SidebarGroupItems v-for="group in groups" :group="group" :key="group.label" />
         </div>
         <div class="flex justify-between gap-2 items-center px-4 py-3 bg-surface-0 shadow-sm rounded-lg">
-            <UserInfo
-                :username="auth.user?.username"
-                :email="auth.user?.email"
-                :avatar="auth.user?.avatar_url"
-            />
-            <Button variant="text" severity="secondary" @click="toggle">
+            <div class="flex gap-2 items-center flex-1 min-w-0">
+                <Avatar :image="auth.user?.avatar_url"
+                        :label="!auth.user?.avatar_url ? auth.user?.username?.charAt(0).toUpperCase() : undefined"
+                        shape="circle" class="shrink-0" />
+                <div class="flex flex-col min-w-20 overflow-hidden flex-1">
+                    <span class="font-semibold truncate text-color text-base">{{ auth.user?.username }}</span>
+                    <span class="truncate text-sm text-muted-color">{{ auth.user?.email }}</span>
+                </div>
+            </div>
+            <Button variant="outlined" size="small" rounded class="shrink-0" @click="toggleMenu">
                 <template #icon><ChevronRight size="14" /></template>
             </Button>
-            <Popover ref="userPopover">
-                <div class="flex flex-col gap-1">
-                    <Button variant="text" fluid label="Выйти" @click="logout">
-                        <template #icon><LogOut size="18" /></template>
-                    </Button>
-                </div>
-            </Popover>
+            <Menu ref="userMenu" :popup="true" :model="menuItems">
+                <template #item="{ item }">
+                    <div class="p-menu-item-link" @click="item.command">
+                        <component :is="item.icon" size="14"></component>
+                        <span>{{ item.label }}</span>
+                    </div>
+                </template>
+            </Menu>
         </div>
     </div>
 </template>

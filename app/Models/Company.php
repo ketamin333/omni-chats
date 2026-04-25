@@ -25,4 +25,9 @@ class Company extends Model
     {
         return $this->hasMany(User::class, 'company_id', 'company_id');
     }
+
+    public function channels(): HasMany
+    {
+        return $this->hasMany(Channel::class, 'company_id', 'company_id');
+    }
 }

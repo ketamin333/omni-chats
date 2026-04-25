@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdapterController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -23,8 +26,20 @@ Route::middleware('auth:sanctum')->group(function () {
     /** CHANNELS ROUTES */
     Route::apiResource('channels', ChannelController::class)
         ->parameter('channel', 'channelId');
+    Route::patch('channels/{channelId}/status', [ChannelController::class, 'updateStatus']);
+
+    /** CONVERSATION ROUTES */
+    Route::apiResource('conversations', ConversationController::class)
+        ->parameter('conversation', 'conversationId');
+
+    /** MESSAGES ROUTES */
+    Route::get('conversations/{conversationId}/messages', [MessageController::class, 'index']);
+    Route::post('conversations/{conversationId}/messages', [MessageController::class, 'store']);
 
     /** PERMISSIONS ROUTES */
     Route::get('permissions', [PermissionController::class, 'index']);
+
+    /** ADAPTERS ROUTES */
+    Route::get('adapters', [AdapterController::class, 'index']);
 });
 

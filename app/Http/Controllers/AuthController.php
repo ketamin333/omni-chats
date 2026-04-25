@@ -11,6 +11,7 @@ use App\Support\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,7 @@ class AuthController extends Controller
         private readonly LogoutHandlerInterface $logoutHandler,
     ) {}
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): Response
     {
         $auth = $this->loginHandler->handle(LoginCommand::fromRequest($request));
 
@@ -27,14 +28,14 @@ class AuthController extends Controller
             throw new AuthenticationException('Неверный email или пароль');
         }
 
-        return ApiResponse::success(null);
+        return ApiResponse::noContent();
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request): Response
     {
         $this->logoutHandler->handle($request);
 
-        return ApiResponse::success(null);
+        return ApiResponse::noContent();
     }
 
     public function me(Request $request): JsonResponse

@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Enums\Role;
+use App\Enums\PermissionSlug;
 use App\Models\Channel;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -14,7 +14,7 @@ class ChannelPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermission(PermissionSlug::CHANNELS_MANAGE);
     }
 
     /**
@@ -30,7 +30,7 @@ class ChannelPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermission(PermissionSlug::CHANNELS_MANAGE);
     }
 
     /**
@@ -38,7 +38,7 @@ class ChannelPolicy
      */
     public function update(User $user, Channel $channel): bool
     {
-        return false;
+        return $user->hasPermission(PermissionSlug::CHANNELS_MANAGE);
     }
 
     /**
@@ -46,22 +46,6 @@ class ChannelPolicy
      */
     public function delete(User $user, Channel $channel): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Channel $channel): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Channel $channel): bool
-    {
-        return false;
+        return $user->hasPermission(PermissionSlug::CHANNELS_MANAGE);
     }
 }

@@ -17,7 +17,7 @@ class MakeHandler extends Command
                                          {--command : Generate a Command DTO}
                                          {--query : Generate a Query DTO}';
 
-    protected $description = 'Create a new Handler (Command/Query + Handler)';
+    protected $description = 'Create a new handler (Command/Query + Handler)';
 
     protected array $createdFiles = [];
 

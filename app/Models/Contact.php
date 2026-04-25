@@ -4,17 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Contact extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'contacts';
     protected $primaryKey = 'contact_id';
 
     protected $fillable = [
-        'channel_id',
-        'external_id',
-        'name',
+        'company_id',
+        'username',
         'avatar',
+        'phone',
+        'email'
+    ];
+
+    protected $attributes = [
+        'username' => 'Новый контакт'
     ];
 
     public function company(): BelongsTo
@@ -22,8 +32,13 @@ class Contact extends Model
         return $this->belongsTo(Company::class, 'company_id', 'company_id');
     }
 
-    public function channel(): BelongsTo
+    public function conversations(): HasMany
     {
-        return $this->belongsTo(Channel::class, 'channel_id', 'channel_id');
+        return $this->hasMany(Conversation::class, 'channel_id', 'channel_id');
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->avatar ? Storage::url($this->avatar) : null;
     }
 }

@@ -55,7 +55,7 @@
         --p-avatar-background: var(--color-surface-100);
     }
 
-    .p-select-option {
+    .p-select-option, .p-menu-list {
         @apply text-base
     }
 
@@ -73,6 +73,10 @@
 
     .p-datatable-sort-icon {
         --p-datatable-sort-icon-size: 12px;
+    }
+
+    .p-steppanels {
+        --p-stepper-steppanels-padding: 0;
     }
 
     .p-avatar-label {

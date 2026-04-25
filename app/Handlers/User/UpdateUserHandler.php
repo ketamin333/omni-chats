@@ -33,7 +33,7 @@ class UpdateUserHandler implements UpdateUserHandlerInterface
             $command->user->update($data);
             $this->dispatcher->dispatch(new UserUpdated($command->user));
 
-            return $command->user->fresh();
+            return $command->user->refresh();
         });
     }
 }

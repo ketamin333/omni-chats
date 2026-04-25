@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'telegram' => [
+        'proxy' => env('TELEGRAM_PROXY'),
+    ],
+
 ];
